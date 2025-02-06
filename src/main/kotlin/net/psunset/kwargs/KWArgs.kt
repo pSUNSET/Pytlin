@@ -35,17 +35,20 @@ class KWArgs : LinkedHashMap<String, Any> {
     }
 
     /**
-     * Example:
+     * For example:
      * ```
      * val goodToPrice = kwargsOf("apple" to 3, "orange" to 2.5f)
      * ```
      * Now, we know the value from `"apple"` is 3 which is a [Int].
-     * And the value from `"orange"` is 2.5f which is a [Float]
+     * And the value from `"orange"` is 2.5f which is a [Float].
      * So we can directly cast them into right class when we need to get them.
      * ```
-     * val priceOfApple = goodToPrice["apple", Int::class] // It is an integer
-     * val priceOfOrange = goodToPrice["orange", Float::class] // It is a float
-     * println("Total price is ${priceOfApple + priceOfOrange}") // Result: The price of apple is 3
+     * val priceOfApple = goodToPrice["apple", Int::class]
+     * // It is an integer
+     * val priceOfOrange = goodToPrice["orange", Float::class]
+     * // It is a float
+     * println("Total price is ${priceOfApple + priceOfOrange}")
+     * // Result: Total price is 5.5
      * ```
      * @param type The class which return value should belong to. Please ensure that the cast will be successful.
      * @return The value which is already cast to the correct class.
@@ -56,17 +59,20 @@ class KWArgs : LinkedHashMap<String, Any> {
     }
 
     /**
-     * Usage:
+     * For example:
      * ```
      * val goodToPrice = kwargsOf("apple" to 3, "orange" to 2.5f)
      * ```
      * Now, we know the value from `"apple"` is 3 which is a [Int].
-     * And the value from `"orange"` is 2.5f which is a [Float]
+     * And the value from `"orange"` is 2.5f which is a [Float].
      * So we can directly cast them into right class when we need to get them.
      * ```
-     * val priceOfApple = goodToPrice["apple", Int::class] // It is an integer
-     * val priceOfOrange = goodToPrice["orange", Float::class] // It is a float
-     * println("Total price is ${priceOfApple + priceOfOrange}") // Result: The price of apple is 3
+     * val priceOfApple = goodToPrice["apple", Int::class]
+     * // It is an integer
+     * val priceOfOrange = goodToPrice["orange", Float::class]
+     * // It is a float
+     * println("Total price is ${priceOfApple + priceOfOrange}")
+     * // Result: Total price is 5.5
      * ```
      * @param type The class which return value should belong to. Please ensure that the cast will be successful.
      * @return The value which is already cast to the correct class.
@@ -77,6 +83,23 @@ class KWArgs : LinkedHashMap<String, Any> {
     }
 
     /**
+     * For example:
+     * ```
+     * val goodToPrice = kwargsOf("apple" to 3, "orange" to 2.5f)
+     * ```
+     * Now, we know the value from `"apple"` is 3 which is a [Int].
+     * And the value from `"orange"` is 2.5f which is a [Float].
+     * So we can directly cast them into right class when we need to get them.
+     * But when we need the price of banana, it should return 0 or null because here is no banana.
+     * To avoid the key not existing error, we can add a default value in getter.
+     * ```
+     * val priceOfApple = goodToPrice["apple", 0]
+     * // It will be 3 instead of 0 because the key named "apple" exists.
+     * val priceOfBanana = goodToPrice["banana", 0]
+     * // It will be 0 because can't find key named "banana".
+     * println("Total price is ${priceOfApple + priceOfOrange}")
+     * // Result: Total price is 3
+     * ```
      * @return The value got by key if the key exists in kwargs; otherwise default.
      */
     operator fun get(key: String, default: Any): Any {
@@ -85,6 +108,24 @@ class KWArgs : LinkedHashMap<String, Any> {
 
 
     /**
+     * For example:
+     * ```
+     * val goodToPrice = kwargsOf("apple" to 3, "orange" to 2.5f)
+     * ```
+     * Now, we know the value from `"apple"` is 3 which is a [Int].
+     * And the value from `"orange"` is 2.5f which is a [Float].
+     * So we can directly cast them into right class when we need to get them.
+     * But when we need the price of banana, it should return 0 or null because here is no banana.
+     * To avoid the key not existing error, we can add a default value in getter.
+     * ```
+     * val priceOfApple = goodToPrice["apple", 0, Int::class]
+     * // It will be 3 instead of 0 because the key named "apple" exists.
+     * // Both 3 and 0 are integer, so we can directly cast the value returned into Int.
+     * val priceOfBanana = goodToPrice["banana", 0, Int::class]
+     * // It will be 0 which is a integer because can't find key named "banana".
+     * println("Total price is ${priceOfApple + priceOfOrange}")
+     * // Result: Total price is 3
+     * ```
      * @param type The class which return value should belong to. Please ensure that the cast will be successful.
      * @return The value got by key if the key exists in kwargs; otherwise default. No matter what you got, it will be cast into correct class.
      */
