@@ -4,7 +4,7 @@ A library for implementing the `kwargs` features of python!
 
 # QuickStart:
 
-## Maven
+### Maven
 
 Add `kwargs-for-kotlin` to your dependencies in POM file:
 
@@ -17,15 +17,15 @@ Add `kwargs-for-kotlin` to your dependencies in POM file:
 </dependency>
 ```
 
-## Gradle
+### Gradle
 
 Add `kwargs-for-kotlin` to your dependencies in build file:
 
-Groovy (build.gradle):
+Groovy (build.gradle): 
 
 ```groovy
 dependencies {
-    implementation "io.github.psunset:kwargs-for-kotlin:1.0.1"
+    implementation 'io.github.psunset:kwargs-for-kotlin:1.0.1'
 }
 ```
 
@@ -37,13 +37,13 @@ dependencies {
 }
 ```
 
-### Then build your project:
+Then build your project:
 
 ```
 ./gradlew build
 ```
 
-## JAR File
+### JAR File
 Directly download the kwargs-for-kotlin-x.y.z.jar file in [release](https://github.com/pSUNSET/KWArgsForKotlin/releases).
 Then import it into your module.
 
