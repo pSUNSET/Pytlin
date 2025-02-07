@@ -44,7 +44,6 @@ dependencies {
 ```
 
 ## JAR File
-
 Directly download the kwargs-for-kotlin-x.y.z.jar file in [release](https://github.com/pSUNSET/KWArgsForKotlin/releases).
 Then import it into your module.
 
