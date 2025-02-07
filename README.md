@@ -10,7 +10,7 @@ Sorry... I will finish this later.
 
 ## Gradle
 
-### Add `kotlin-for-forge` to your dependencies in build file:
+Add `kotlin-for-forge` to your dependencies in build file:
 
 Groovy (build.gradle):  
 ```groovy
@@ -26,7 +26,7 @@ dependencies {
 }
 ```
 
-### Then build your project:
+Then build your project:
 ```
 ./gradlew build
 ```
