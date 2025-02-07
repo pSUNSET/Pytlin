@@ -18,11 +18,15 @@ for ((k, v) in _properties) {
     project.setProperty(k as String, v)
 }
 
-group = "io.github.psunset"
-version = "1.0.0"
+val repo_group_id       = project.property("group_id") as String
+val repo_artifact_id    = project.property("artifact_id") as String
+val repo_version        = project.property("version") as String
+
+group = repo_group_id
+version = repo_version
 
 base {
-    archivesName = "kwargs-for-kotlin"
+    archivesName = repo_artifact_id
 }
 
 java {
@@ -48,14 +52,15 @@ kotlin {
 publishing {
     publications {
         create<MavenPublication>("mavenKt") {
-            groupId = "io.github.psunset"
-            artifactId = "kwargs-for-kotlin"
+            groupId = repo_group_id
+            artifactId = repo_artifact_id
+            version = repo_version
 
             from(components["java"])
 
             pom {
-                name = "KWArgs For Kotlin"
-                description = "A KWArgs implementation"
+                name = "KWArgs for Kotlin"
+                description = "A implementation of `kwargs`"
                 url = "https://github.com/pSUNSET/KWArgsForKotlin"
                 licenses {
                     license {
@@ -78,13 +83,11 @@ publishing {
         }
     }
 
-
-    repositories {
-        maven {
-            // change to point to your repo, e.g. http://my.org/repo
-            url = uri(layout.buildDirectory.dir("repo"))
-        }
-    }
+//    repositories {
+//        maven {
+//            url = uri(layout.buildDirectory.dir("repo"))
+//        }
+//    }
 }
 
 nmcp {
@@ -100,5 +103,5 @@ nmcp {
 }
 
 signing {
-    sign(publishing.publications["mavenKt"]) //It's after adding this specific line that I got the error of no configured signatory
+    sign(publishing.publications["mavenKt"])
 }
