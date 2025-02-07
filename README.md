@@ -10,7 +10,7 @@ Sorry... I will finish this later.
 
 ## Gradle
 
-Add `kotlin-for-forge` to your dependencies in build file:
+Add `kwargs-for-kotlin` to your dependencies in build file:
 
 Groovy (build.gradle):  
 ```groovy
