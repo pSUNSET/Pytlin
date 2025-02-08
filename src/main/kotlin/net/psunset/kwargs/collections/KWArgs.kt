@@ -8,7 +8,6 @@ import kotlin.reflect.KClass
  * Though we can't make it directly be as parameters in a function.
  * We can still use that to save some data with this format.
  *
- *
  * It is like a map, but key is always [String]. And value is [Any] because it can save all data you want.
  * But there is a point that I make all function here won't return `null`.
  * I know it is too dangerous if there are some `null` data as a value in the kwargs.
@@ -51,29 +50,13 @@ class KWArgs : LinkedHashMap<String, Any> {
      * // Result: Total price is 5.5
      * ```
      * @param type The class which return value should belong to. Please ensure that the cast will be successful.
-     * @return The value which is already cast to the correct class.
+     * @return The value which is already cast into the correct class.
      */
     @Suppress("UNCHECKED_CAST")
     @JvmName("getAs")
     operator fun <T : Any> get(key: String, type: KClass<T>): T = this[key] as T
 
     /**
-     * @param type The class which return value should belong to. Please ensure that the cast will be successful.
-     * @return The value which is already cast to the correct class.
-     * @see get get(key: String, type: KClass<T>)
-     */
-    @Suppress("UNCHECKED_CAST")
-    @JvmName("getAs")
-    operator fun <T : Any> get(key: String, type: Class<T>): T = this[key] as T
-
-    /**
-     * I recommend that always add the type of return value with other overload function.
-     * @return The value got by key if the key exists in kwargs; otherwise defaultValue.
-     * @see get get(key: String, defaultValue: T, type: KClass<T>) or get(key: String, defaultValue: T, type: Class<T>)
-     */
-    operator fun get(key: String, defaultValue: Any): Any = this.getOrDefault(key, defaultValue)
-
-    /**
      * For example:
      * ```
      * val goodToPrice = kwargsOf("apple" to 3, "orange" to 2.5f)
@@ -81,51 +64,20 @@ class KWArgs : LinkedHashMap<String, Any> {
      * Now, we know the value from `"apple"` is 3 which is a [Int].
      * And the value from `"orange"` is 2.5f which is a [Float].
      * So we can directly cast them into right class when we need to get them.
-     * But when we need the price of banana, it should return 0 or null because here is no banana.
-     * To avoid the key not existing error, we can add a default value in getter.
-     * ```
-     * val priceOfApple = goodToPrice["apple", 0, Int::class]
-     * // It will be 3 instead of 0 because the key named "apple" exists.
-     * // Both 3 and 0 are integer, so we can directly cast the value returned into Int.
-     * val priceOfBanana = goodToPrice["banana", 0, Int::class]
-     * // It will be 0 which is a integer because can't find key named "banana".
-     * println("Total price is ${priceOfApple + priceOfBanana}")
-     * // Result: Total price is 3
-     * ```
-     * @param type The class which return value should belong to. Please ensure that the cast will be successful.
-     * @return The value got by key if the key exists in kwargs; otherwise defaultValue. No matter what you got, it will be cast into correct class.
-     */
-    @Suppress("UNCHECKED_CAST")
-    @JvmName("getAs")
-    operator fun <T : Any> get(key: String, defaultValue: T, type: KClass<T>): T =
-        this.getOrDefault(key, defaultValue) as T
-
-    /**
-     * For example:
      * ```
      * val goodToPrice = kwargsOf("apple" to 3, "orange" to 2.5f)
-     * ```
-     * Now, we know the value from `"apple"` is 3 which is a [Int].
-     * And the value from `"orange"` is 2.5f which is a [Float].
-     * So we can directly cast them into right class when we need to get them.
-     * But when we need the price of banana, it should return 0 or null because here is no banana.
-     * To avoid the key not existing error, we can add a default value in getter.
-     * ```
-     * val priceOfApple = goodToPrice["apple", 0, Int::class]
-     * // It will be 3 instead of 0 because the key named "apple" exists.
-     * // Both 3 and 0 are integer, so we can directly cast the value returned into Int.
-     * val priceOfBanana = goodToPrice["banana", 0, Int::class]
-     * // It will be 0 which is a integer because can't find key named "banana".
+     * val priceOfApple = goodToPrice["apple", 0]
+     * val priceOfBanana = goodToPrice["banana", 0.0]
+     * // It is 0.0 because there is no key named `banana` in goodToPrice.
      * println("Total price is ${priceOfApple + priceOfBanana}")
-     * // Result: Total price is 3
+     * // Result: Total price is 3.0
+     * // It means that priceOfBanana is set to the defaultValue we provide and that priceOfBanana is cast into a Double.
      * ```
-     * @param type The class which return value should belong to. Please ensure that the cast will be successful.
-     * @return The value got by key if the key exists in kwargs; otherwise defaultValue. No matter what you got, it will be cast into correct class.
+     * @return The value got by key if the value is present and not `null`; otherwise defaultValue.
      */
     @Suppress("UNCHECKED_CAST")
-    @JvmName("getAs")
-    operator fun <T : Any> get(key: String, defaultValue: T, type: Class<T>): T =
-        this.getOrDefault(key, defaultValue) as T
+    @JvmName("getOrDefaultAs")
+    operator fun <T> get(key: String, defaultValue: T): T = (this[key] as T?) ?: defaultValue
 
     /**
      * The difference between this function and [remove] is that this function only accepts non-null value.
@@ -136,100 +88,75 @@ class KWArgs : LinkedHashMap<String, Any> {
 
     /**
      * @param type The class which return value should belong to. Please ensure that the cast will be successful.
-     * @return The value which is already cast to the correct class.
+     * @return The value which is already cast into the correct class.
      */
     @Suppress("UNCHECKED_CAST")
     @JvmName("popAs")
     fun <T : Any> pop(key: String, type: KClass<T>): T = this.pop(key) as T
 
     /**
-     * @param type The class which return value should belong to. Please ensure that the cast will be successful.
-     * @return The value which is already cast to the correct class.
-     */
-    @Suppress("UNCHECKED_CAST")
-    @JvmName("popAs")
-    fun <T : Any> pop(key: String, type: Class<T>): T = this.pop(key) as T
-
-    /**
      * I recommend that always add the type of return value with other overload function.
      * The difference between this function and [remove] is that the second parameter in this function is defaultValue.
-     * @return The value got by key if the key exists in kwargs; otherwise defaultValue
+     * @return The value got by key if the value is present and not `null`; otherwise defaultValue
      * @see remove remove(Object key, Object value) (Java)
-     * @see pop pop(key: String, defaultValue: T, type: KClass<T>) or pop(key: String, defaultValue: T, type: Class<T>)
-     */
-    fun pop(key: String, defaultValue: Any): Any = this.remove(key) ?: defaultValue
-
-    /**
-     * The difference between this function and [remove] is that the second parameter in this function is defaultValue.
-     * @param type The class which return value should belong to. Please ensure that the cast will be successful.
-     * @return The value got by key if the key exists in kwargs; otherwise defaultValue. No matter what you got, it will be cast into correct class.
      */
     @Suppress("UNCHECKED_CAST")
-    @JvmName("popAs")
-    fun <T : Any> pop(key: String, defaultValue: T, type: KClass<T>): T = (this.remove(key) as T?) ?: defaultValue
+    @JvmName("popOrDefaultAs")
+    fun <T> pop(key: String, defaultValue: T): T = (this.remove(key) as T?) ?: defaultValue
 
     /**
-     * The difference between this function and [remove] is that the second parameter in this function is defaultValue.
-     * @param type The class which return value should belong to. Please ensure that the cast will be successful.
-     * @return The value got by key if the key exists in kwargs; otherwise defaultValue. No matter what you got, it will be cast into correct class.
-     */
-    @Suppress("UNCHECKED_CAST")
-    @JvmName("popAs")
-    fun <T : Any> pop(key: String, defaultValue: T, type: Class<T>): T = (this.remove(key) as T?) ?: defaultValue
-
-    /**
-     * Plus other [KWArgs] or a [Map] in correct format should return [KWArgs] instead of [Map]
+     * Add other [KWArgs] or a [Map] in correct format should return [KWArgs] instead of [Map]
      * @see Map.plus
      */
     operator fun plus(other: Map<String, Any>): KWArgs = KWArgs(this).apply { putAll(other) }
 
     /**
-     * Plus plural `Pair<String, Any>` should return [KWArgs] instead of [Map]
+     * Add plural `Pair<String, Any>` should return [KWArgs] instead of [Map]
      * @see Map.plus
      */
     operator fun plus(pairs: Sequence<Pair<String, Any>>): KWArgs = KWArgs(this).apply { putAll(pairs) }
 
     /**
-     * Plus plural `Pair<String, Any>` should return [KWArgs] instead of [Map]
+     * Add plural `Pair<String, Any>` should return [KWArgs] instead of [Map]
      * @see Map.plus
      */
     operator fun plus(pairs: Array<out Pair<String, Any>>): KWArgs = KWArgs(this).apply { putAll(pairs) }
 
     /**
-     * Plus plural `Pair<String, Any>` should return [KWArgs] instead of [Map]
+     * Add plural `Pair<String, Any>` should return [KWArgs] instead of [Map]
      * @see Map.plus
      */
     operator fun plus(pairs: Iterable<Pair<String, Any>>): KWArgs = KWArgs(this).apply { putAll(pairs) }
 
     /**
-     * Plus a `Pair<String, Any>` should return [KWArgs] instead of [Map]
+     * Add a `Pair<String, Any>` should return [KWArgs] instead of [Map]
      * @see Map.plus
      */
     operator fun plus(pairs: Pair<String, Any>): KWArgs = KWArgs(this).apply { put(pairs.first, pairs.second) }
 
     /**
-     * Minus some entries of the kwargs should return [KWArgs] instead of [Map]
+     * Remove some entries of the kwargs should return [KWArgs] instead of [Map]
      * @see Map.minus
      */
-    operator fun minus(key: String): KWArgs = this.toKwargs().apply { minusAssign(key) }
+    operator fun minus(key: String): KWArgs = KWArgs(this).apply { minusAssign(key) }
 
     /**
-     * Minus some entries of the kwargs should return [KWArgs] instead of [Map]
+     * Remove some entries of the kwargs should return [KWArgs] instead of [Map]
      * @see Map.minus
      */
-    operator fun minus(keys: Array<out String>): KWArgs = this.toKwargs().apply { minusAssign(keys) }
+    operator fun minus(keys: Array<out String>): KWArgs = KWArgs(this).apply { minusAssign(keys) }
 
     /**
-     * Minus some entries of the kwargs should return [KWArgs] instead of [Map]
+     * Remove some entries of the kwargs should return [KWArgs] instead of [Map]
      * @see Map.minus
      */
-    operator fun minus(keys: Iterable<String>): KWArgs = this.toKwargs().apply { minusAssign(keys) }
+    operator fun minus(keys: Iterable<String>): KWArgs = KWArgs(this).apply { minusAssign(keys) }
 
     /**
-     * Minus some entries of the kwargs should return [KWArgs] instead of [Map]
+     * Remove some entries of the kwargs should return [KWArgs] instead of [Map]
      * @see Map.minus
      */
-    operator fun minus(keys: Sequence<String>): KWArgs = this.toKwargs().apply { minusAssign(keys) }
+    operator fun minus(keys: Sequence<String>): KWArgs = KWArgs(this).apply { minusAssign(keys) }
 
     /**
      * Call [pop] function
@@ -239,60 +166,48 @@ class KWArgs : LinkedHashMap<String, Any> {
 
     /**
      * Call [pop] function
-     * @param p Should be in correct format: (key to type) or Pair(key, type)
+     * @param keyToType Should be in correct format: (key to type) or Pair(key, type)
      * @see pop pop(key: String, type: KClass<T>)
      */
-    @JvmName("divAsKClass")
-    operator fun <T: Any> div(p: Pair<String, KClass<T>>): T = this.pop(p.first, p.second)
-
-    /**
-     * Call [pop] function
-     * @param p Should be in correct format: (key to type) or Pair(key, type)
-     * @see pop pop(key: String, type: Class<T>)
-     */
-    @JvmName("divAsClass")
-    operator fun <T: Any> div(p: Pair<String, Class<T>>): T = this.pop(p.first, p.second)
+    @JvmName("divAs")
+    operator fun <T : Any> div(keyToType: Pair<String, KClass<T>>): T = this.pop(keyToType.first, keyToType.second)
 
     /**
      * Call [pop] function.
-     * But, to be honestly, I recommend you to directly use [pop] function.
-     * Because this function is too non-intuitive.
-     * @param p Should be in correct format: (key to defaultValue) or Pair(key, defaultValue)
+     * @param keyToDefaultValue Should be in correct format: (key to defaultValue) or Pair(key, defaultValue)
      * @see pop pop(key: String, defaultValue: Any)
      */
-    operator fun div(p: Pair<String, Any>): Any = this.pop(p.first, p.second)
+    @JvmName("divOrDefaultAs")
+    operator fun <T> div(keyToDefaultValue: Pair<String, T>): T =
+        this.pop(keyToDefaultValue.first, keyToDefaultValue.second)
+
+
+    /**
+     * Call [remove] function
+     * @see remove remove(Object key) (Java)
+     */
+    operator fun divAssign(key: String) {
+        this.remove(key)
+    }
 
     /**
      * Call [pop] function
-     * For example:
-     * ```
-     * val goodToPrice = kwargsOf("apple" to 3, "orange" to 2.5f)
-     * val priceOfApple = goodToPrice / Triple("apple", 0, Int::class)
-     * val priceOfBanana = goodToPrice / Triple("banana", 0, Int::class)
-     * println("Total price is ${priceOfApple + priceOfBanana}") // Result: Total price is 3
-     * println("Good existing now: $goodToPrice") // Result: Good existing now: {orange=2.5}
-     * ```
-     * @param t Should be in correct format: Triple(key, defaultValue, type)
-     * @see pop pop(key: String, defaultValue: T, type: KClass<T>)
+     * @param keyToType Should be in correct format: (key to type) or Pair(key, type)
+     * @see pop pop(key: String, type: KClass<T>)
      */
-    @JvmName("divAsKClass")
-    operator fun <T: Any> div(t: Triple<String, T, KClass<T>>): T = this.pop(t.first, t.second, t.third)
-
+    @JvmName("divAssignAs")
+    operator fun <T : Any> divAssign(keyToType: Pair<String, KClass<T>>) {
+        this.pop(keyToType.first, keyToType.second)
+    }
     /**
-     * Call [pop] function
-     * For example:
-     * ```
-     * val goodToPrice = kwargsOf("apple" to 3, "orange" to 2.5f)
-     * val priceOfApple = goodToPrice / Triple("apple", 0, Int::class)
-     * val priceOfBanana = goodToPrice / Triple("banana", 0, Int::class)
-     * println("Total price is ${priceOfApple + priceOfBanana}") // Result: Total price is 3
-     * println("Good existing now: $goodToPrice") // Result: Good existing now: {orange=2.5}
-     * ```
-     * @param t Should be in correct format: Triple(key, defaultValue, type)
-     * @see pop pop(key: String, defaultValue: T, type: Class<T>)
+     * Call [pop] function.
+     * @param keyToDefaultValue Should be in correct format: (key to defaultValue) or Pair(key, defaultValue)
+     * @see pop pop(key: String, defaultValue: Any)
      */
-    @JvmName("divAsClass")
-    operator fun <T: Any> div(t: Triple<String, T, Class<T>>): T = this.pop(t.first, t.second, t.third)
+    @JvmName("divAssignOrDefaultAs")
+    operator fun <T : Any> divAssign(keyToDefaultValue: Pair<String, T>) {
+        this.pop(keyToDefaultValue.first, keyToDefaultValue.second)
+    }
 }
 
 /**
@@ -328,4 +243,20 @@ fun mapCapacity(expectedSize: Int): Int = when {
  */
 fun Map<String, Any>.toKwargs(): KWArgs {
     return KWArgs(this)
+}
+
+
+/**
+ * Returns a new [KWArgs] containing all key-value pairs from the original map.
+ * But all keys will be cast into [String]
+ *
+ * The returned map preserves the entry iteration order of the original map.
+ */
+@JvmName("strKeyToKwargs")
+fun <K : Any, V : Any> Map<K, V>.toKwargs(): KWArgs {
+    return KWArgs().apply {
+        for ((k, v) in this@toKwargs) {
+            this@apply[k.toString()] = v
+        }
+    }
 }
