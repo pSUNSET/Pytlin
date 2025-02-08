@@ -59,7 +59,7 @@ publishing {
 
             pom {
                 name = "KWArgs for Kotlin"
-                description = "A implementation of `kwargs`"
+                description = "A implementation of some features of python for kotlin."
                 url = "https://github.com/pSUNSET/KWArgsForKotlin"
                 licenses {
                     license {
