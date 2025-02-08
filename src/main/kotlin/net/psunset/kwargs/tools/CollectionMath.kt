@@ -9,11 +9,10 @@ import kotlin.experimental.ExperimentalTypeInference
 /**************************************** SUM ****************************************/
 
 /**
- * A static function which is like `sum()` in python.
- * But I think the better way is using `iter.sum()` function which is below this function.
+ * A static function which is like `sum(iterable)` in python and [max]`(a, b)` in kotlin.
+ * But I think that using `iter.sum()` function which is below this function is a better way.
  * Also, We don't know what precise user need.
- * So we directly cast all elements into [Double].
- * It causes that the return type is [Double] as well.
+ * So we directly cast all elements into [Double] which causes that the return type is [Double] as well.
  * @return The sum of the all elements in the `iter` as [Double].
  */
 @Deprecated(
@@ -28,6 +27,7 @@ fun <N: Number> sum(iter: Iterable<N>): Double {
 /**
  * @return The sum of the all elements in the collection as [Double].
  */
+@JvmName("sumOfNumberToDouble")
 fun <N: Number> Iterable<N>.sum(): Double {
     return this.sumOf(Number::toDouble)
 }
@@ -106,11 +106,10 @@ inline fun <T> Stream<T>.sumOf(selector: (T) -> ULong): ULong {
 /**************************************** PRODUCT ****************************************/
 
 /**
- * A static function which is like `sum()` in python.
+ * A static function which is like `sum(iterable)` in python and [max]`(a, b)` in kotlin.
  * But I think the better way is using `iter.prod()` function which is below this function.
  * Also, We don't know what precise user need.
- * So we directly cast all elements into [Double].
- * It causes that the return type is [Double] as well.
+ * So we directly cast all elements into [Double] which causes that the return type is [Double] as well.
  * @return The prod of the all elements in the `iter` as [Double].
  */
 @Deprecated(
@@ -125,6 +124,7 @@ fun <N: Number> prod(iter: Iterable<N>): Double {
 /**
  * @return The prod of the all elements in the collection as [Double].
  */
+@JvmName("prodOfNumberToDouble")
 fun <N: Number> Iterable<N>.prod(): Double {
     return this.prodOf(Number::toDouble)
 }
