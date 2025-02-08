@@ -6,26 +6,48 @@ A library for implementing the `kwargs` features of python!
 
 ### Maven
 
-Add `kwargs-for-kotlin` to your dependencies in POM file:
+Add `kwargs-for-kotlin` to your dependencies tag in POM file:
 
 (pom.xml):
+
 ```xml
+
 <dependency>
     <groupId>io.github.psunset</groupId>
     <artifactId>kwargs-for-kotlin</artifactId>
-    <version>1.0.2</version>
+    <version>${kwargs_for_kotlin.version}</version>
 </dependency>
+```
+
+Then setting `kwargs_for_kotlin.version` in your properties tag in the same file:
+
+(pom.xml):
+
+```xml
+
+<properties>
+    <kwargs_for_kotlin.version>x.y.z</kwargs_for_kotlin.version>
+</properties>
+```
+
+Please replace the `x.y.z` to an available version by checking
+out [releases](https://github.com/pSUNSET/KWArgsForKotlin/releases).
+
+Eventually, install the library:
+
+```
+mvn install
 ```
 
 ### Gradle
 
 Add `kwargs-for-kotlin` to your dependencies in build file:
 
-Groovy (build.gradle): 
+Groovy (build.gradle):
 
 ```groovy
 dependencies {
-    implementation 'io.github.psunset:kwargs-for-kotlin:1.0.2'
+    implementation "io.github.psunset:kwargs-for-kotlin:$kwargs_for_kotlin_version"
 }
 ```
 
@@ -33,18 +55,31 @@ Kotlin (build.gradle.kts):
 
 ```kotlin
 dependencies {
-    implementation("io.github.psunset:kwargs-for-kotlin:1.0.2")
+    implementation("io.github.psunset:kwargs-for-kotlin:$kwargs_for_kotlin_version")
 }
 ```
 
-Then build your project:
+Then setting `kwargs_for_kotlin_version` in your properties file:
+
+(gradle.properties):
+
+```properties
+kwargs_for_kotlin_version=x.y.z
+```
+
+Please replace the `x.y.z` to an available version by checking
+out [releases](https://github.com/pSUNSET/KWArgsForKotlin/releases).
+
+Eventually, build your project:
 
 ```
 ./gradlew build
 ```
 
 ### JAR File
-Directly download the kwargs-for-kotlin-x.y.z.jar file in [release](https://github.com/pSUNSET/KWArgsForKotlin/releases).
+
+Directly download the kwargs-for-kotlin-x.y.z.jar file
+in [releases](https://github.com/pSUNSET/KWArgsForKotlin/releases).
 Then import it into your module.
 
 # Features
@@ -104,4 +139,7 @@ fun main() {
 ```
 
 # In Java
-Are you looking for the same one but in java? Check out [here](https://github.com/pSUNSET/KWArgsForJava).
+
+Are you looking for the same one but in java? Check out [here](https://github.com/pSUNSET/KWArgsForJava).  
+But, honestly, kotlin one has more features than java one.  
+So please use this one as you can.
