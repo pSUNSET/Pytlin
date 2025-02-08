@@ -9,9 +9,9 @@ import kotlin.reflect.KClass
  * We can still use that to save some data with this format.
  *
  * It is like a map, but key is always [String]. And value is [Any] because it can save all data you want.
- * But there is a point that I make all function here won't return `null`.
- * I know it is too dangerous if there are some `null` data as a value in the kwargs.
- * But I think it is more convenient and intuitive.
+ * But there is a point that we make all function here won't return `null`.
+ * We know it is too dangerous if there are some `null` data as a value in the kwargs.
+ * But we think it is more convenient and intuitive.
  */
 class KWArgs : LinkedHashMap<String, Any> {
 
@@ -93,7 +93,6 @@ class KWArgs : LinkedHashMap<String, Any> {
     fun <T : Any> pop(key: String, type: KClass<T>): T = this.pop(key) as T
 
     /**
-     * I recommend that always add the type of return value with other overload function.
      * The difference between this function and [remove] is that the second parameter in this function is defaultValue.
      * @return The value got by key if the value is present and not `null`; otherwise defaultValue
      * @see remove remove(Object key, Object value) (Java)

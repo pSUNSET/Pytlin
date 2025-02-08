@@ -69,8 +69,8 @@ def f(*args, **kwargs) -> int:
 
 sum_result = f(*range(1, 10), 15, 20, method='add')
 print(sum_result) # Result: 80
-mul_result = f(*range(1, 5), method='mul')
-print(mul_result) # Result: 24
+prod_result = f(*range(1, 5), method='mul')
+print(prod_result) # Result: 24
 ```
 
 Now you do the same thing in kotlin by:
@@ -94,12 +94,12 @@ fun main() {
     )
     println(sum_result) // Result: 80
 
-    val mul_result = f(
+    val prod_result = f(
         listOf(*(1..<5).toList().toTypedArray()), kwargsOf(
             "method" to "mul"
         )
     )
-    println(mul_result) // Result: 24
+    println(prod_result) // Result: 24
 }
 ```
 
