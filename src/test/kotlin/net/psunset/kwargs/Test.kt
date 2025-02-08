@@ -8,5 +8,8 @@ class Test {
      */
     @org.junit.jupiter.api.Test
     fun test() {
+        val kwargs = kwargsOf()
+
+        println(!!kwargs)
     }
 }

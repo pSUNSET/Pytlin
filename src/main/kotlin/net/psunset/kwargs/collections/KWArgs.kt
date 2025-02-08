@@ -22,6 +22,7 @@ class KWArgs : LinkedHashMap<String, Any> {
 
     /**
      * Idea from python.
+     * `this.toBool()` equals to `!!this`
      * @return `true` when the length of this kwargs is not 0; otherwise `false`.
      */
     inline fun toBool(): Boolean = !this.isEmpty()
@@ -53,7 +54,6 @@ class KWArgs : LinkedHashMap<String, Any> {
      * @return The value which is already cast into the correct class.
      */
     @Suppress("UNCHECKED_CAST")
-    @JvmName("getAs")
     operator fun <T : Any> get(key: String, type: KClass<T>): T = this[key] as T
 
     /**
@@ -76,7 +76,6 @@ class KWArgs : LinkedHashMap<String, Any> {
      * @return The value got by key if the value is present and not `null`; otherwise defaultValue.
      */
     @Suppress("UNCHECKED_CAST")
-    @JvmName("getOrDefaultAs")
     operator fun <T> get(key: String, defaultValue: T): T = (this[key] as T?) ?: defaultValue
 
     /**
@@ -91,7 +90,6 @@ class KWArgs : LinkedHashMap<String, Any> {
      * @return The value which is already cast into the correct class.
      */
     @Suppress("UNCHECKED_CAST")
-    @JvmName("popAs")
     fun <T : Any> pop(key: String, type: KClass<T>): T = this.pop(key) as T
 
     /**
@@ -101,7 +99,6 @@ class KWArgs : LinkedHashMap<String, Any> {
      * @see remove remove(Object key, Object value) (Java)
      */
     @Suppress("UNCHECKED_CAST")
-    @JvmName("popOrDefaultAs")
     fun <T> pop(key: String, defaultValue: T): T = (this.remove(key) as T?) ?: defaultValue
 
     /**
@@ -252,7 +249,7 @@ fun Map<String, Any>.toKwargs(): KWArgs {
  *
  * The returned map preserves the entry iteration order of the original map.
  */
-@JvmName("strKeyToKwargs")
+@JvmName("strKeyAndToKwargs")
 fun <K : Any, V : Any> Map<K, V>.toKwargs(): KWArgs {
     return KWArgs().apply {
         for ((k, v) in this@toKwargs) {
