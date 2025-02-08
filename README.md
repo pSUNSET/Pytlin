@@ -58,16 +58,17 @@ For example, in python:
 from functools import reduce
 import operator
 
+
 def f(*args, **kwargs) -> int:
     method = kwargs.pop('method', 'add')
     match(method):
         case 'add': result = sum(args)
         case 'mul': result = reduce(operator.mul, args, 1)
+        case _: result = 2147483647 # Invalid method
     return result
 
 sum_result = f(*range(1, 10), 15, 20, method='add')
 print(sum_result) # Result: 80
-
 mul_result = f(*range(1, 5), method='mul')
 print(mul_result) # Result: 24
 ```
@@ -76,11 +77,12 @@ Now you do the same thing in kotlin by:
 
 ```kotlin
 fun f(args: Iterable<Int>, kwargs: KWArgs): Int {
-    val method = kwargs / Triple("method", "add", String::class)
+    val method = kwargs / ("method" to "add") 
+    // "method" is key; "add" is defaultValue
     return when (method) {
         "add" -> args.sum()
         "mul" -> args.prod() // A feature in this library
-        else -> Int.MAX_VALUE // Invalid method in kwargs
+        else -> Int.MAX_VALUE // Invalid method
     }
 }
 
