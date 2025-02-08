@@ -29,8 +29,8 @@ class KWArgs : LinkedHashMap<String, Any> {
 
     /**
      * Idea from python.
-     * When you use `!` operator, it stands for you make it as a [Boolean].
-     * @return `!this.toBool()`.
+     * When you use `!` operator, it stands for that you hope to make it as a [Boolean].
+     * @return `!this.toBool()`
      */
     inline operator fun not(): Boolean = this.isEmpty()
 
