@@ -98,3 +98,6 @@ val mul_result = f(
 )
 println(mul_result) // Result: 24
 ```
+
+# In Java
+Are you looking for the same one but in java? Check out [here](https://github.com/pSUNSET/KWArgsForJava).
