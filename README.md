@@ -111,7 +111,7 @@ print(prod_result) # Result: 24
 Now you do the same thing in kotlin by:
 
 ```kotlin
-fun f(args: Iterable<Int>, kwargs: KWArgs): Int {
+fun f(vararg args: Int, kwargs: KWArgs): Int {
     val method = kwargs / ("method" to "add")
     // "method" is key; "add" is defaultValue
     return when (method) {
@@ -123,14 +123,16 @@ fun f(args: Iterable<Int>, kwargs: KWArgs): Int {
 
 fun main() {
     val sum_result = f(
-        listOf(*(1..<10).toList().toTypedArray(), 15, 20), kwargsOf(
+        *(1..<10).toList().toTypedArray().toIntArray(), 15, 20,
+        kwargs = kwargsOf(
             "method" to "add"
         )
     )
     println(sum_result) // Result: 80
 
     val prod_result = f(
-        listOf(*(1..<5).toList().toTypedArray()), kwargsOf(
+        *(1..<5).toList().toTypedArray().toIntArray(),
+        kwargs = kwargsOf(
             "method" to "mul"
         )
     )
