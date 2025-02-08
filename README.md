@@ -13,7 +13,7 @@ Add `kwargs-for-kotlin` to your dependencies in POM file:
 <dependency>
     <groupId>io.github.psunset</groupId>
     <artifactId>kwargs-for-kotlin</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 
@@ -25,7 +25,7 @@ Groovy (build.gradle):
 
 ```groovy
 dependencies {
-    implementation 'io.github.psunset:kwargs-for-kotlin:1.0.1'
+    implementation 'io.github.psunset:kwargs-for-kotlin:1.0.2'
 }
 ```
 
@@ -33,7 +33,7 @@ Kotlin (build.gradle.kts):
 
 ```kotlin
 dependencies {
-    implementation("io.github.psunset:kwargs-for-kotlin:1.0.1")
+    implementation("io.github.psunset:kwargs-for-kotlin:1.0.2")
 }
 ```
 
