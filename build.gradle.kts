@@ -2,7 +2,6 @@ import java.io.FileReader
 import java.util.*
 
 plugins {
-    `java-library`
     kotlin("jvm") version "2.1.0"
     `maven-publish`
     signing
