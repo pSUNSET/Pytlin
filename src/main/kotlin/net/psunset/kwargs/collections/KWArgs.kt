@@ -102,56 +102,56 @@ class KWArgs : LinkedHashMap<String, Any> {
     fun <T> pop(key: String, defaultValue: T): T = (this.remove(key) as T?) ?: defaultValue
 
     /**
-     * Add other [KWArgs] or a [Map] in correct format should return [KWArgs] instead of [Map]
-     * @see Map.plus
+     * Add a `Pair<String, Any>` should return [KWArgs] instead of [Map]
+     * @see Map.plus Map<out K, V>.plus(pair: Pair<K, V>)
      */
-    operator fun plus(other: Map<String, Any>): KWArgs = KWArgs(this).apply { putAll(other) }
+    operator fun plus(pair: Pair<String, Any>): KWArgs = KWArgs(this).apply { put(pair.first, pair.second) }
 
     /**
      * Add plural `Pair<String, Any>` should return [KWArgs] instead of [Map]
-     * @see Map.plus
+     * @see Map.plus Map<out K, V>.plus(pairs: Iterable<Pair<K, V>>)
      */
-    operator fun plus(pairs: Sequence<Pair<String, Any>>): KWArgs = KWArgs(this).apply { putAll(pairs) }
+    operator fun plus(pairs: Iterable<Pair<String, Any>>): KWArgs = KWArgs(this).apply { putAll(pairs) }
 
     /**
      * Add plural `Pair<String, Any>` should return [KWArgs] instead of [Map]
-     * @see Map.plus
+     * @see Map.plus Map<out K, V>.plus(pairs: Array<out Pair<K, V>>)
      */
     operator fun plus(pairs: Array<out Pair<String, Any>>): KWArgs = KWArgs(this).apply { putAll(pairs) }
 
     /**
      * Add plural `Pair<String, Any>` should return [KWArgs] instead of [Map]
-     * @see Map.plus
+     * @see Map.plus Map<out K, V>.plus(pairs: Sequence<Pair<K, V>>)
      */
-    operator fun plus(pairs: Iterable<Pair<String, Any>>): KWArgs = KWArgs(this).apply { putAll(pairs) }
+    operator fun plus(pairs: Sequence<Pair<String, Any>>): KWArgs = KWArgs(this).apply { putAll(pairs) }
 
     /**
-     * Add a `Pair<String, Any>` should return [KWArgs] instead of [Map]
-     * @see Map.plus
+     * Add other [KWArgs] or a [Map] in correct format should return [KWArgs] instead of [Map]
+     * @see Map.plus Map<out K, V>.plus(map: Map<out K, V>)
      */
-    operator fun plus(pairs: Pair<String, Any>): KWArgs = KWArgs(this).apply { put(pairs.first, pairs.second) }
+    operator fun plus(other: Map<String, Any>): KWArgs = KWArgs(this).apply { putAll(other) }
 
     /**
      * Remove some entries of the kwargs should return [KWArgs] instead of [Map]
-     * @see Map.minus
+     * @see Map.minus Map<out K, V>.minus(key: K)
      */
     operator fun minus(key: String): KWArgs = KWArgs(this).apply { minusAssign(key) }
 
     /**
      * Remove some entries of the kwargs should return [KWArgs] instead of [Map]
-     * @see Map.minus
-     */
-    operator fun minus(keys: Array<out String>): KWArgs = KWArgs(this).apply { minusAssign(keys) }
-
-    /**
-     * Remove some entries of the kwargs should return [KWArgs] instead of [Map]
-     * @see Map.minus
+     * @see Map.minus Map<out K, V>.minus(keys: Iterable<K>)
      */
     operator fun minus(keys: Iterable<String>): KWArgs = KWArgs(this).apply { minusAssign(keys) }
 
     /**
      * Remove some entries of the kwargs should return [KWArgs] instead of [Map]
-     * @see Map.minus
+     * @see Map.minus Map<out K, V>.minus(keys: Array<out K>)
+     */
+    operator fun minus(keys: Array<out String>): KWArgs = KWArgs(this).apply { minusAssign(keys) }
+
+    /**
+     * Remove some entries of the kwargs should return [KWArgs] instead of [Map]
+     * @see Map.minus Map<out K, V>.minus(keys: Sequence<K>)
      */
     operator fun minus(keys: Sequence<String>): KWArgs = KWArgs(this).apply { minusAssign(keys) }
 
@@ -166,7 +166,7 @@ class KWArgs : LinkedHashMap<String, Any> {
      * @param keyToType Should be in correct format: (key to type) or Pair(key, type)
      * @see pop pop(key: String, type: KClass<T>)
      */
-    @JvmName("divAs")
+    @JvmName("div2PopAs")
     operator fun <T : Any> div(keyToType: Pair<String, KClass<T>>): T = this.pop(keyToType.first, keyToType.second)
 
     /**
@@ -174,7 +174,6 @@ class KWArgs : LinkedHashMap<String, Any> {
      * @param keyToDefaultValue Should be in correct format: (key to defaultValue) or Pair(key, defaultValue)
      * @see pop pop(key: String, defaultValue: Any)
      */
-    @JvmName("divOrDefaultAs")
     operator fun <T> div(keyToDefaultValue: Pair<String, T>): T =
         this.pop(keyToDefaultValue.first, keyToDefaultValue.second)
 
@@ -192,7 +191,7 @@ class KWArgs : LinkedHashMap<String, Any> {
      * @param keyToType Should be in correct format: (key to type) or Pair(key, type)
      * @see pop pop(key: String, type: KClass<T>)
      */
-    @JvmName("divAssignAs")
+    @JvmName("divAssign2PopAs")
     operator fun <T : Any> divAssign(keyToType: Pair<String, KClass<T>>) {
         this.pop(keyToType.first, keyToType.second)
     }
@@ -201,7 +200,6 @@ class KWArgs : LinkedHashMap<String, Any> {
      * @param keyToDefaultValue Should be in correct format: (key to defaultValue) or Pair(key, defaultValue)
      * @see pop pop(key: String, defaultValue: Any)
      */
-    @JvmName("divAssignOrDefaultAs")
     operator fun <T : Any> divAssign(keyToDefaultValue: Pair<String, T>) {
         this.pop(keyToDefaultValue.first, keyToDefaultValue.second)
     }
@@ -249,7 +247,7 @@ fun Map<String, Any>.toKwargs(): KWArgs {
  *
  * The returned map preserves the entry iteration order of the original map.
  */
-@JvmName("strKeyAndToKwargs")
+@JvmName("toKwargsByStrKeys")
 fun <K : Any, V : Any> Map<K, V>.toKwargs(): KWArgs {
     return KWArgs().apply {
         for ((k, v) in this@toKwargs) {
