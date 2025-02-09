@@ -1,29 +1,28 @@
 package net.psunset.kwargs.collections
 
 import kotlin.reflect.KClass
+import org.jetbrains.annotations.Nullable
 
 /**
  * Idea is from python.
- * In python, keyword arguments is a very convenient way to store data.
+ * In python, keyword arguments feature, as known as kwargs, is a very convenient way to store data.
  * Though we can't make it directly be as parameters in a function.
  * We can still use that to save some data with this format.
  *
- * It is like a map, but key is always [String]. And value is [Any] because it can save all data you want.
- * But there is a point that we make all function here won't return `null`.
- * We know it is too dangerous if there are some `null` data as a value in the kwargs.
- * But we think it is more convenient and intuitive.
+ * It's like a map, but key is always [String]. And value is [Any]`?` because it can save all data you want.
+ * All the values are [Nullable]
  */
-class KWArgs : LinkedHashMap<String, Any> {
+class KWArgs : LinkedHashMap<String, Any?> {
 
     constructor(initialCapacity: Int, loadFactor: Float) : super(initialCapacity, loadFactor)
     constructor(initialCapacity: Int) : super(initialCapacity)
     constructor() : super()
-    constructor(m: Map<out String, Any>) : super(m)
+    constructor(m: Map<out String, Any?>) : super(m)
 
     /**
      * Idea from python.
      * `this.toBool()` equals to `!!this`
-     * @return `true` when the length of this kwargs is not 0; otherwise `false`.
+     * @return `true` when the length of this kwargs isn't 0 which also stands for the kwargs isn't empty; otherwise `false`.
      */
     inline fun toBool(): Boolean = !this.isEmpty()
 
@@ -50,11 +49,11 @@ class KWArgs : LinkedHashMap<String, Any> {
      * println("Total price is ${priceOfApple + priceOfOrange}")
      * // Result: Total price is 5.5
      * ```
-     * @param type The class which return value should belong to. Please ensure that the cast will be successful.
-     * @return The value which is already cast into the correct class.
+     * @param type The class which return value should belong to. Please ensure that the cast can be executed smoothly.
+     * @return The value got by key with cast into the correct class.
      */
     @Suppress("UNCHECKED_CAST")
-    operator fun <T : Any> get(key: String, type: KClass<T>): T = this[key] as T
+    operator fun <T : Any> get(key: String, type: KClass<T>): T? = this[key] as T?
 
     /**
      * For example:
@@ -63,7 +62,7 @@ class KWArgs : LinkedHashMap<String, Any> {
      * ```
      * Now, we know the value from `"apple"` is 3 which is a [Int].
      * And the value from `"orange"` is 2.5f which is a [Float].
-     * So we can directly cast them into right class when we need to get them.
+     * So we can directly cast them into the right class when we need to get them.
      * ```
      * val goodToPrice = kwargsOf("apple" to 3, "orange" to 2.5f)
      * val priceOfApple = goodToPrice["apple", 0]
@@ -73,62 +72,69 @@ class KWArgs : LinkedHashMap<String, Any> {
      * // Result: Total price is 3.0
      * // It means that priceOfBanana is set to the defaultValue we provide and that priceOfBanana is cast into a Double.
      * ```
-     * @return The value got by key if the value is present and not `null`; otherwise defaultValue.
+     * @return The value got by key with cast into the class of defaultValue if the value is present and not `null`;
+     * otherwise defaultValue
      */
     @Suppress("UNCHECKED_CAST")
-    operator fun <T> get(key: String, defaultValue: T): T = (this[key] as T?) ?: defaultValue
+    operator fun <T : Any?> get(key: String, defaultValue: T): T = (this[key] as T?) ?: defaultValue
 
     /**
-     * The difference between this function and [remove] is that this function only accepts non-null value.
-     * So please ensure that the key exists in the kwargs.
-     * @see remove
+     * In fact, this function is same as [remove].
+     * @see remove remove(Object key) (Java)
      */
-    fun pop(key: String): Any = this.remove(key)!!
+    fun pop(key: String): Any? = this.remove(key)
 
     /**
+     * Get the value with the key.
+     * In the meantime, key-value pairs got removed.
+     * The difference between this function and [remove] is that the second parameter in target type will be returned.
      * @param type The class which return value should belong to. Please ensure that the cast will be successful.
-     * @return The value which is already cast into the correct class.
-     */
-    @Suppress("UNCHECKED_CAST")
-    fun <T : Any> pop(key: String, type: KClass<T>): T = this.pop(key) as T
-
-    /**
-     * The difference between this function and [remove] is that the second parameter in this function is defaultValue.
-     * @return The value got by key if the value is present and not `null`; otherwise defaultValue
+     * @return The value got by key with cast into the correct class.
      * @see remove remove(Object key, Object value) (Java)
      */
     @Suppress("UNCHECKED_CAST")
-    fun <T> pop(key: String, defaultValue: T): T = (this.remove(key) as T?) ?: defaultValue
+    fun <T : Any> pop(key: String, type: KClass<T>): T? = this.pop(key) as T?
 
     /**
-     * Add a `Pair<String, Any>` should return [KWArgs] instead of [Map]
+     * Get the value with the key.
+     * In the meantime, key-value pairs got removed if the key is present.
+     * The difference between this function and [remove] is that the second parameter in this function is defaultValue.
+     * @return The value got by key with cast into the class of defaultValue if the value is present and not `null`;
+     * otherwise defaultValue
+     * @see remove remove(Object key, Object value) (Java)
+     */
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Any?> pop(key: String, defaultValue: T): T = (this.remove(key) as T?) ?: defaultValue
+
+    /**
+     * Add a `Pair<String, Any?>` should return [KWArgs] instead of [Map]
      * @see Map.plus Map<out K, V>.plus(pair: Pair<K, V>)
      */
-    operator fun plus(pair: Pair<String, Any>): KWArgs = KWArgs(this).apply { put(pair.first, pair.second) }
+    operator fun plus(pair: Pair<String, Any?>): KWArgs = KWArgs(this).apply { put(pair.first, pair.second) }
 
     /**
-     * Add plural `Pair<String, Any>` should return [KWArgs] instead of [Map]
+     * Add plural `Pair<String, Any?>` should return [KWArgs] instead of [Map]
      * @see Map.plus Map<out K, V>.plus(pairs: Iterable<Pair<K, V>>)
      */
-    operator fun plus(pairs: Iterable<Pair<String, Any>>): KWArgs = KWArgs(this).apply { putAll(pairs) }
+    operator fun plus(pairs: Iterable<Pair<String, Any?>>): KWArgs = KWArgs(this).apply { putAll(pairs) }
 
     /**
-     * Add plural `Pair<String, Any>` should return [KWArgs] instead of [Map]
+     * Add plural `Pair<String, Any?>` should return [KWArgs] instead of [Map]
      * @see Map.plus Map<out K, V>.plus(pairs: Array<out Pair<K, V>>)
      */
-    operator fun plus(pairs: Array<out Pair<String, Any>>): KWArgs = KWArgs(this).apply { putAll(pairs) }
+    operator fun plus(pairs: Array<out Pair<String, Any?>>): KWArgs = KWArgs(this).apply { putAll(pairs) }
 
     /**
-     * Add plural `Pair<String, Any>` should return [KWArgs] instead of [Map]
+     * Add plural `Pair<String, Any?>` should return [KWArgs] instead of [Map]
      * @see Map.plus Map<out K, V>.plus(pairs: Sequence<Pair<K, V>>)
      */
-    operator fun plus(pairs: Sequence<Pair<String, Any>>): KWArgs = KWArgs(this).apply { putAll(pairs) }
+    operator fun plus(pairs: Sequence<Pair<String, Any?>>): KWArgs = KWArgs(this).apply { putAll(pairs) }
 
     /**
      * Add other [KWArgs] or a [Map] in correct format should return [KWArgs] instead of [Map]
      * @see Map.plus Map<out K, V>.plus(map: Map<out K, V>)
      */
-    operator fun plus(other: Map<String, Any>): KWArgs = KWArgs(this).apply { putAll(other) }
+    operator fun plus(other: Map<String, Any?>): KWArgs = KWArgs(this).apply { putAll(other) }
 
     /**
      * Remove some entries of the kwargs should return [KWArgs] instead of [Map]
@@ -158,22 +164,22 @@ class KWArgs : LinkedHashMap<String, Any> {
      * Call [pop] function
      * @see pop pop(key: String)
      */
-    operator fun div(key: String): Any = this.pop(key)
+    operator fun div(key: String): Any? = this.pop(key)
 
     /**
      * Call [pop] function
-     * @param keyToType Should be in correct format: (key to type) or Pair(key, type)
+     * @param keyToType Should be in correct format: `key to type` or `Pair(key, type)`
      * @see pop pop(key: String, type: KClass<T>)
      */
     @JvmName("div2PopAs")
-    operator fun <T : Any> div(keyToType: Pair<String, KClass<T>>): T = this.pop(keyToType.first, keyToType.second)
+    operator fun <T : Any> div(keyToType: Pair<String, KClass<T>>): T? = this.pop(keyToType.first, keyToType.second)
 
     /**
      * Call [pop] function.
-     * @param keyToDefaultValue Should be in correct format: (key to defaultValue) or Pair(key, defaultValue)
-     * @see pop pop(key: String, defaultValue: Any)
+     * @param keyToDefaultValue Should be in correct format: `key to defaultValue` or `Pair(key, defaultValue)`
+     * @see pop pop(key: String, defaultValue: Any?)
      */
-    operator fun <T> div(keyToDefaultValue: Pair<String, T>): T =
+    operator fun <T : Any?> div(keyToDefaultValue: Pair<String, T>): T =
         this.pop(keyToDefaultValue.first, keyToDefaultValue.second)
 
 
@@ -187,19 +193,20 @@ class KWArgs : LinkedHashMap<String, Any> {
 
     /**
      * Call [pop] function
-     * @param keyToType Should be in correct format: (key to type) or Pair(key, type)
+     * @param keyToType Should be in correct format: `key to type` or `Pair(key, type)`
      * @see pop pop(key: String, type: KClass<T>)
      */
     @JvmName("divAssign2PopAs")
     operator fun <T : Any> divAssign(keyToType: Pair<String, KClass<T>>) {
         this.pop(keyToType.first, keyToType.second)
     }
+
     /**
      * Call [pop] function.
-     * @param keyToDefaultValue Should be in correct format: (key to defaultValue) or Pair(key, defaultValue)
-     * @see pop pop(key: String, defaultValue: Any)
+     * @param keyToDefaultValue Should be in correct format: `key to defaultValue` or `Pair(key, defaultValue)`
+     * @see pop pop(key: String, defaultValue: Any?)
      */
-    operator fun <T : Any> divAssign(keyToDefaultValue: Pair<String, T>) {
+    operator fun <T : Any?> divAssign(keyToDefaultValue: Pair<String, T>) {
         this.pop(keyToDefaultValue.first, keyToDefaultValue.second)
     }
 }
@@ -218,7 +225,7 @@ inline fun kwargsOf(): KWArgs = KWArgs()
  *
  * Entries of the map are iterated in the order they were specified.
  */
-fun kwargsOf(vararg pairs: Pair<String, Any>): KWArgs = KWArgs(mapCapacity(pairs.size)).apply { putAll(pairs) }
+fun kwargsOf(vararg pairs: Pair<String, Any?>): KWArgs = KWArgs(mapCapacity(pairs.size)).apply { putAll(pairs) }
 
 /**
  * Copy of [kotlin.collections.mapCapacity]
@@ -235,19 +242,19 @@ fun mapCapacity(expectedSize: Int): Int = when {
  *
  * The returned map preserves the entry iteration order of the original map.
  */
-fun Map<String, Any>.toKwargs(): KWArgs {
+fun Map<String, Any?>.toKwargs(): KWArgs {
     return KWArgs(this)
 }
 
 
 /**
  * Returns a new [KWArgs] containing all key-value pairs from the original map.
- * But all keys will be cast into [String]
+ * But all keys inside are cast into [String]
  *
  * The returned map preserves the entry iteration order of the original map.
  */
 @JvmName("toKwargsByStrKeys")
-fun <K : Any, V : Any> Map<K, V>.toKwargs(): KWArgs {
+fun <K : Any, V : Any?> Map<K, V>.toKwargs(): KWArgs {
     return KWArgs().apply {
         for ((k, v) in this@toKwargs) {
             this@apply[k.toString()] = v
