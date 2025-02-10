@@ -1,4 +1,4 @@
-@file:JvmName("PyKwargs")
+@file:JvmName("KwargsKt")
 
 package net.psunset.kwargs.collections
 
