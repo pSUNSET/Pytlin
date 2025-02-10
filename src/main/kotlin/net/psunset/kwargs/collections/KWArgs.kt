@@ -1,7 +1,6 @@
 package net.psunset.kwargs.collections
 
 import kotlin.reflect.KClass
-import org.jetbrains.annotations.Nullable
 
 /**
  * Idea is from python.
@@ -10,7 +9,7 @@ import org.jetbrains.annotations.Nullable
  * We can still use that to save some data with this format.
  *
  * It's like a map, but key is always [String]. And value is [Any]`?` because it can save all data you want.
- * All the values are [Nullable]
+ * All the values are nullable.
  */
 class KWArgs : LinkedHashMap<String, Any?> {
 
@@ -22,7 +21,7 @@ class KWArgs : LinkedHashMap<String, Any?> {
     /**
      * Idea from python.
      * `this.toBool()` equals to `!!this`
-     * @return `true` when the length of this kwargs isn't 0 which also stands for the kwargs isn't empty; otherwise `false`.
+     * @return `true` when the kwargs isn't empty; otherwise `false`.
      */
     inline fun toBool(): Boolean = !this.isEmpty()
 

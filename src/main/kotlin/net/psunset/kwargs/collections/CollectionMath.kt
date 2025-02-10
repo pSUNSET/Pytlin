@@ -121,7 +121,7 @@ fun <N: Number> prod(iter: Iterable<N>): Double {
  */
 @JvmName("prodOfNumberToDouble")
 fun <N: Number> Iterable<N>.prod(): Double {
-    return this.prodOf(Number::toDouble)
+    return this.prodOf { it.toDouble() }
 }
 
 /**

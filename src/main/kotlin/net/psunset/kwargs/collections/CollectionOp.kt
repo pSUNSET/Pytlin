@@ -41,8 +41,56 @@ inline operator fun <reified T: Any> Array<T>.times(n: Int): Array<T> {
 }
 
 /**
+ * The feature is same as [Array.times] function.
+ * But make it available in a [ByteArray].
+ */
+operator fun ByteArray.times(n: Int): ByteArray = (this.toTypedArray() * n).toByteArray()
+
+/**
+ * The feature is same as [Array.times] function.
+ * But make it available in a [CharArray].
+ */
+operator fun CharArray.times(n: Int): CharArray = (this.toTypedArray() * n).toCharArray()
+
+/**
+ * The feature is same as [Array.times] function.
+ * But make it available in a [ShortArray].
+ */
+operator fun ShortArray.times(n: Int): ShortArray = (this.toTypedArray() * n).toShortArray()
+
+/**
+ * The feature is same as [Array.times] function.
+ * But make it available in a [IntArray].
+ */
+operator fun IntArray.times(n: Int): IntArray = (this.toTypedArray() * n).toIntArray()
+
+/**
+ * The feature is same as [Array.times] function.
+ * But make it available in a [LongArray].
+ */
+operator fun LongArray.times(n: Int): LongArray = (this.toTypedArray() * n).toLongArray()
+
+/**
+ * The feature is same as [Array.times] function.
+ * But make it available in a [FloatArray].
+ */
+operator fun FloatArray.times(n: Int): FloatArray = (this.toTypedArray() * n).toFloatArray()
+
+/**
+ * The feature is same as [Array.times] function.
+ * But make it available in a [DoubleArray].
+ */
+operator fun DoubleArray.times(n: Int): DoubleArray = (this.toTypedArray() * n).toDoubleArray()
+
+/**
+ * The feature is same as [Array.times] function.
+ * But make it available in a [BooleanArray].
+ */
+operator fun BooleanArray.times(n: Int): BooleanArray = (this.toTypedArray() * n).toBooleanArray()
+
+/**
  * Idea from python.
- * If `n` is less than 1, this mutable list object will be empty and convert into a [List];
+ * If `n` is less than 1, this mutable list object will be a [EmptyList];
  * otherwise, this list will be stretch and the data inside is duplicated.
  * For example:
  * ```
