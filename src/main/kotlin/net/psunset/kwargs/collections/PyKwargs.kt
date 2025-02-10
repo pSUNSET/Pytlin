@@ -1,3 +1,5 @@
+@file:JvmName("PyKwargs")
+
 package net.psunset.kwargs.collections
 
 import kotlin.reflect.KClass
