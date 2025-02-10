@@ -31,7 +31,7 @@ Then setting `kwargs_for_kotlin.version` in your properties tag in the same file
 ```
 
 Please replace the `x.y.z` to an available version by checking
-out [releases](https://github.com/pSUNSET/KWArgsForKotlin/releases).
+out [releases](https://github.com/pSUNSET/KwargsForKotlin/releases).
 
 Eventually, install the library:
 
@@ -68,7 +68,7 @@ kwargs_for_kotlin_version=x.y.z
 ```
 
 Please replace the `x.y.z` to an available version by checking
-out [releases](https://github.com/pSUNSET/KWArgsForKotlin/releases).
+out [releases](https://github.com/pSUNSET/KwargsForKotlin/releases).
 
 Eventually, build your project:
 
@@ -79,7 +79,7 @@ Eventually, build your project:
 ### JAR File
 
 Directly download the kwargs-for-kotlin-x.y.z.jar file
-in [releases](https://github.com/pSUNSET/KWArgsForKotlin/releases).
+in [releases](https://github.com/pSUNSET/KwargsForKotlin/releases).
 Then import it into your module.
 
 # Features
@@ -142,6 +142,6 @@ fun main() {
 
 # In Java
 
-Are you looking for the same one but in java? Check out [here](https://github.com/pSUNSET/KWArgsForJava).  
+Are you looking for the same one but in java? Check out [here](https://github.com/pSUNSET/KwargsForJava).  
 But, honestly, kotlin one has more features than java one.  
 So please use this one as you can.
