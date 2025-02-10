@@ -3,7 +3,6 @@ package net.psunset.kwargs.collections
 import kotlin.reflect.KClass
 
 /**
- * Idea is from python.
  * In python, keyword arguments feature, as known as kwargs, is a very convenient way to store data.
  * Though we can't make it directly be as parameters in a function.
  * We can still use that to save some data with this format.
@@ -11,7 +10,7 @@ import kotlin.reflect.KClass
  * It's like a map, but key is always [String]. And value is [Any]`?` because it can save all data you want.
  * All the values are nullable.
  */
-class KWArgs : LinkedHashMap<String, Any?> {
+class Kwargs : LinkedHashMap<String, Any?> {
 
     constructor(initialCapacity: Int, loadFactor: Float) : super(initialCapacity, loadFactor)
     constructor(initialCapacity: Int) : super(initialCapacity)
@@ -19,14 +18,12 @@ class KWArgs : LinkedHashMap<String, Any?> {
     constructor(m: Map<out String, Any?>) : super(m)
 
     /**
-     * Idea from python.
      * `this.toBool()` equals to `!!this`
      * @return `true` when the kwargs isn't empty; otherwise `false`.
      */
     inline fun toBool(): Boolean = !this.isEmpty()
 
     /**
-     * Idea from python.
      * When you use `!` operator, it stands for that you hope to make it as a [Boolean].
      * @return `!this.toBool()`
      */
@@ -106,58 +103,58 @@ class KWArgs : LinkedHashMap<String, Any?> {
     fun <T : Any?> pop(key: String, defaultValue: T): T = (this.remove(key) as T?) ?: defaultValue
 
     /**
-     * Add a `Pair<String, Any?>` should return [KWArgs] instead of [Map]
+     * Add a `Pair<String, Any?>` should return [Kwargs] instead of [Map]
      * @see Map.plus Map<out K, V>.plus(pair: Pair<K, V>)
      */
-    operator fun plus(pair: Pair<String, Any?>): KWArgs = KWArgs(this).apply { put(pair.first, pair.second) }
+    operator fun plus(pair: Pair<String, Any?>): Kwargs = Kwargs(this).apply { put(pair.first, pair.second) }
 
     /**
-     * Add plural `Pair<String, Any?>` should return [KWArgs] instead of [Map]
+     * Add plural `Pair<String, Any?>` should return [Kwargs] instead of [Map]
      * @see Map.plus Map<out K, V>.plus(pairs: Iterable<Pair<K, V>>)
      */
-    operator fun plus(pairs: Iterable<Pair<String, Any?>>): KWArgs = KWArgs(this).apply { putAll(pairs) }
+    operator fun plus(pairs: Iterable<Pair<String, Any?>>): Kwargs = Kwargs(this).apply { putAll(pairs) }
 
     /**
-     * Add plural `Pair<String, Any?>` should return [KWArgs] instead of [Map]
+     * Add plural `Pair<String, Any?>` should return [Kwargs] instead of [Map]
      * @see Map.plus Map<out K, V>.plus(pairs: Array<out Pair<K, V>>)
      */
-    operator fun plus(pairs: Array<out Pair<String, Any?>>): KWArgs = KWArgs(this).apply { putAll(pairs) }
+    operator fun plus(pairs: Array<out Pair<String, Any?>>): Kwargs = Kwargs(this).apply { putAll(pairs) }
 
     /**
-     * Add plural `Pair<String, Any?>` should return [KWArgs] instead of [Map]
+     * Add plural `Pair<String, Any?>` should return [Kwargs] instead of [Map]
      * @see Map.plus Map<out K, V>.plus(pairs: Sequence<Pair<K, V>>)
      */
-    operator fun plus(pairs: Sequence<Pair<String, Any?>>): KWArgs = KWArgs(this).apply { putAll(pairs) }
+    operator fun plus(pairs: Sequence<Pair<String, Any?>>): Kwargs = Kwargs(this).apply { putAll(pairs) }
 
     /**
-     * Add other [KWArgs] or a [Map] in correct format should return [KWArgs] instead of [Map]
+     * Add other [Kwargs] or a [Map] in correct format should return [Kwargs] instead of [Map]
      * @see Map.plus Map<out K, V>.plus(map: Map<out K, V>)
      */
-    operator fun plus(other: Map<String, Any?>): KWArgs = KWArgs(this).apply { putAll(other) }
+    operator fun plus(other: Map<String, Any?>): Kwargs = Kwargs(this).apply { putAll(other) }
 
     /**
-     * Remove some entries of the kwargs should return [KWArgs] instead of [Map]
+     * Remove some entries of the kwargs should return [Kwargs] instead of [Map]
      * @see Map.minus Map<out K, V>.minus(key: K)
      */
-    operator fun minus(key: String): KWArgs = KWArgs(this).apply { minusAssign(key) }
+    operator fun minus(key: String): Kwargs = Kwargs(this).apply { minusAssign(key) }
 
     /**
-     * Remove some entries of the kwargs should return [KWArgs] instead of [Map]
+     * Remove some entries of the kwargs should return [Kwargs] instead of [Map]
      * @see Map.minus Map<out K, V>.minus(keys: Iterable<K>)
      */
-    operator fun minus(keys: Iterable<String>): KWArgs = KWArgs(this).apply { minusAssign(keys) }
+    operator fun minus(keys: Iterable<String>): Kwargs = Kwargs(this).apply { minusAssign(keys) }
 
     /**
-     * Remove some entries of the kwargs should return [KWArgs] instead of [Map]
+     * Remove some entries of the kwargs should return [Kwargs] instead of [Map]
      * @see Map.minus Map<out K, V>.minus(keys: Array<out K>)
      */
-    operator fun minus(keys: Array<out String>): KWArgs = KWArgs(this).apply { minusAssign(keys) }
+    operator fun minus(keys: Array<out String>): Kwargs = Kwargs(this).apply { minusAssign(keys) }
 
     /**
-     * Remove some entries of the kwargs should return [KWArgs] instead of [Map]
+     * Remove some entries of the kwargs should return [Kwargs] instead of [Map]
      * @see Map.minus Map<out K, V>.minus(keys: Sequence<K>)
      */
-    operator fun minus(keys: Sequence<String>): KWArgs = KWArgs(this).apply { minusAssign(keys) }
+    operator fun minus(keys: Sequence<String>): Kwargs = Kwargs(this).apply { minusAssign(keys) }
 
     /**
      * Call [pop] function
@@ -211,50 +208,40 @@ class KWArgs : LinkedHashMap<String, Any?> {
 }
 
 /**
- * Returns an empty new [KWArgs].
+ * Returns an empty new [Kwargs].
  */
-inline fun kwargsOf(): KWArgs = KWArgs()
+inline fun kwargsOf(): Kwargs = Kwargs()
 
 
 /**
- * Returns a new [KWArgs] with the specified contents, given as a list of pairs
+ * Returns a new [Kwargs] with the specified contents, given as a list of pairs
  * where the first component is the key and the second is the value.
  *
  * If multiple pairs have the same key, the resulting map will contain the value from the last of those pairs.
  *
  * Entries of the map are iterated in the order they were specified.
  */
-fun kwargsOf(vararg pairs: Pair<String, Any?>): KWArgs = KWArgs(mapCapacity(pairs.size)).apply { putAll(pairs) }
+fun kwargsOf(vararg pairs: Pair<String, Any?>): Kwargs = Kwargs(mapCapacity(pairs.size)).apply { putAll(pairs) }
 
 /**
- * Copy of [kotlin.collections.mapCapacity]
- */
-fun mapCapacity(expectedSize: Int): Int = when {
-    expectedSize < 0 -> expectedSize
-    expectedSize < 3 -> expectedSize + 1
-    expectedSize < (1 shl (Int.SIZE_BITS - 2)) -> ((expectedSize / 0.75F) + 1.0F).toInt()
-    else -> Int.MAX_VALUE
-}
-
-/**
- * Returns a new [KWArgs] containing all key-value pairs from the original map.
+ * Returns a new [Kwargs] containing all key-value pairs from the original map.
  *
  * The returned map preserves the entry iteration order of the original map.
  */
-fun Map<String, Any?>.toKwargs(): KWArgs {
-    return KWArgs(this)
+fun Map<String, Any?>.toKwargs(): Kwargs {
+    return Kwargs(this)
 }
 
 
 /**
- * Returns a new [KWArgs] containing all key-value pairs from the original map.
+ * Returns a new [Kwargs] containing all key-value pairs from the original map.
  * But all keys inside are cast into [String]
  *
  * The returned map preserves the entry iteration order of the original map.
  */
 @JvmName("toKwargsByStrKeys")
-fun <K : Any, V : Any?> Map<K, V>.toKwargs(): KWArgs {
-    return KWArgs().apply {
+fun <K : Any, V : Any?> Map<K, V>.toKwargs(): Kwargs {
+    return Kwargs().apply {
         for ((k, v) in this@toKwargs) {
             this@apply[k.toString()] = v
         }

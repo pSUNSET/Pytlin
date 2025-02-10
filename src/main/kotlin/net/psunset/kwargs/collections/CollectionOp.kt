@@ -1,8 +1,6 @@
 package net.psunset.kwargs.collections
 
 /**
- * Idea from python.
- *
  * For example:
  * ```
  * val list = mutableListOf(0, 1, 2)
@@ -89,7 +87,6 @@ operator fun DoubleArray.times(n: Int): DoubleArray = (this.toTypedArray() * n).
 operator fun BooleanArray.times(n: Int): BooleanArray = (this.toTypedArray() * n).toBooleanArray()
 
 /**
- * Idea from python.
  * If `n` is less than 1, this mutable list object will be a [EmptyList];
  * otherwise, this list will be stretch and the data inside is duplicated.
  * For example:

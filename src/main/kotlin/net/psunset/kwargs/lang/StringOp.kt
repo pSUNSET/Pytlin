@@ -1,12 +1,7 @@
 package net.psunset.kwargs.lang
 
-import com.sun.jdi.CharType
-import net.psunset.kwargs.collections.KWArgs
+import net.psunset.kwargs.collections.Kwargs
 import net.psunset.kwargs.collections.times
-import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
-import kotlin.reflect.typeOf
-import org.jetbrains.annotations.NotNull
 
 /**
  * @return A string made with `n` raw string.
@@ -43,10 +38,10 @@ operator fun String.times(n: Int): String {
  * )
  * println(hi3) // Result: hello world hello world hello world!
  * ```
- * @param kwargs Please ensure both "n" and "separator" are [NotNull]. Other args are all used by [String.times] function.
+ * @param kwargs Please ensure both "n" and "separator" are not `null`. Other args are all used by [String.times] function.
  * @see String.times times(n: Int, separator: CharSequence, prefix: CharSequence, postfix: CharSequence, limit: Int, truncated: CharSequence, transform: ((String) -> CharSequence)?)
  */
-operator fun String.times(kwargs: KWArgs): String {
+operator fun String.times(kwargs: Kwargs): String {
     val n = kwargs / ("n" to  Int::class)
     val sep = kwargs / ("separator" to (kwargs / ("sep" to CharSequence::class))) // Accept using either "separator" or "sep" simply.
     val prefix = kwargs / ("prefix" to "")
@@ -54,7 +49,7 @@ operator fun String.times(kwargs: KWArgs): String {
     val limit = kwargs / ("limit" to -1)
     val truncated = kwargs / ("truncated" to "...")
     @Suppress("UNCHECKED_CAST")
-    val transform = (kwargs / ("transform" to Function::class)) as ((String) -> CharSequence)? // Can't mark what the class transform should be, so use `as` to cast it here.
+    val transform = (kwargs / ("transform" to Function1::class)) as ((String) -> CharSequence)? // Can't mark what the class transform should be, so use `as` to cast it here.
 
     if (n == null || sep == null) {
         throw IllegalArgumentException("The \"n\" key and \"sep\" key should exist in kwargs. And the values got by them should be present and non-null.")

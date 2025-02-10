@@ -526,3 +526,13 @@ inline fun <T> Stream<T>.prodOf(selector: (T) -> ULong): ULong {
     }
     return prod
 }
+
+/**
+ * Copy of [kotlin.collections.mapCapacity]
+ */
+fun mapCapacity(expectedSize: Int): Int = when {
+    expectedSize < 0 -> expectedSize
+    expectedSize < 3 -> expectedSize + 1
+    expectedSize < (1 shl (Int.SIZE_BITS - 2)) -> ((expectedSize / 0.75F) + 1.0F).toInt()
+    else -> Int.MAX_VALUE
+}

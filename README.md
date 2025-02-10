@@ -1,4 +1,4 @@
-# KWArgs for Kotlin
+# Kwargs for Kotlin
 
 A library for implementing the `kwargs` features of python!
 
@@ -84,7 +84,7 @@ Then import it into your module.
 
 # Features
 
-### Keyword Argument in Python
+### `kwargs` in Python
 
 When you want to define a function in python, you can define `*args` and `**kwargs`.  
 For example, in python:
