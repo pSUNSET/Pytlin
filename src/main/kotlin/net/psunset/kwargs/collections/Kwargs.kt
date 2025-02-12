@@ -2,7 +2,120 @@
 
 package net.psunset.kwargs.collections
 
+import net.psunset.kwargs.lang.not
+import java.util.function.BiFunction
 import kotlin.reflect.KClass
+
+/**
+ * Honestly, this class isn't the original class for `kwargs` but [MutableKwargs].
+ * So the most function is copied from it.
+ * For more information, please check it out.
+ *
+ * The difference between this class and [MutableKwargs] is that all key-value pairs in this class can't be changed.
+ * @see MutableKwargs
+ */
+class Kwargs : HashMap<String, Any?> {
+
+    constructor() : super()
+    constructor(m: Map<out String, Any?>) : super(m)
+
+    @Suppress("UNCHECKED_CAST")
+    operator fun <T : Any> get(key: String, type: KClass<T>): T? = this[key] as T?
+
+    @Suppress("UNCHECKED_CAST")
+    operator fun <T : Any?> get(key: String, defaultValue: T): T = (this[key] as T?) ?: defaultValue
+
+    /**
+     * Make self a [MutableKwargs]
+     */
+    fun mutable(): MutableKwargs = MutableKwargs(this)
+
+    //**************************************** INVALID FUNCTIONS ****************************************//
+
+    @Deprecated("This class is an immutable collection which is read-only.", level = DeprecationLevel.HIDDEN)
+    override fun put(key: String, value: Any?) = throw UnsupportedOperationException()
+
+    @Deprecated("This class is an immutable collection which is read-only.", level = DeprecationLevel.HIDDEN)
+    override fun putAll(from: Map<out String, Any?>) = throw UnsupportedOperationException()
+
+    @Deprecated("This class is an immutable collection which is read-only.", level = DeprecationLevel.HIDDEN)
+    override fun putIfAbsent(key: String, value: Any?) = throw UnsupportedOperationException()
+
+    @Deprecated("This class is an immutable collection which is read-only.", level = DeprecationLevel.HIDDEN)
+    override fun remove(key: String) = throw UnsupportedOperationException()
+
+    @Deprecated("This class is an immutable collection which is read-only.", level = DeprecationLevel.HIDDEN)
+    override fun remove(key: String, value: Any?) = throw UnsupportedOperationException()
+
+    @Deprecated("This class is an immutable collection which is read-only.", level = DeprecationLevel.HIDDEN)
+    override fun replaceAll(function: BiFunction<in String, in Any?, out Any?>) = throw UnsupportedOperationException()
+
+    @Deprecated("This class is an immutable collection which is read-only.", level = DeprecationLevel.HIDDEN)
+    override fun replace(key: String, value: Any?) = throw UnsupportedOperationException()
+
+    @Deprecated("This class is an immutable collection which is read-only.", level = DeprecationLevel.HIDDEN)
+    override fun replace(key: String, oldValue: Any?, newValue: Any?) = throw UnsupportedOperationException()
+
+    @Deprecated("This class is an immutable collection which is read-only.", level = DeprecationLevel.HIDDEN)
+    override fun clear() = throw UnsupportedOperationException()
+
+    @Deprecated(
+        "This class is an immutable collection which is read-only.",
+        replaceWith = ReplaceWith("this[key]"),
+        level = DeprecationLevel.ERROR
+    )
+    operator fun div(key: String): Nothing = throw UnsupportedOperationException()
+
+    @Deprecated(
+        "This class is an immutable collection which is read-only.",
+        replaceWith = ReplaceWith("this[keyToType.first, keyToType.second]"),
+        level = DeprecationLevel.ERROR
+    )
+    @JvmName("div2PopAs")
+    operator fun <T : Any> div(keyToType: Pair<String, KClass<T>>): Nothing = throw UnsupportedOperationException()
+
+
+    @Deprecated(
+        "This class is an immutable collection which is read-only.",
+        replaceWith = ReplaceWith("this[keyToDefaultValue.first, keyToDefaultValue.second]"),
+        level = DeprecationLevel.ERROR
+    )
+    operator fun <T : Any?> div(keyToDefaultValue: Pair<String, T>): Nothing = throw UnsupportedOperationException()
+}
+
+/**
+ * Returns an empty new [Kwargs].
+ */
+inline fun kwargsOf(): Kwargs = Kwargs()
+
+
+/**
+ * Returns a new [Kwargs] with the specified contents, given as a list of pairs
+ * where the first component is the key and the second is the value.
+ *
+ * If multiple pairs have the same key, the resulting map will contain the value from the last of those pairs.
+ *
+ * Entries of the map are iterated in the order they were specified.
+ */
+fun kwargsOf(vararg pairs: Pair<String, Any?>): Kwargs =
+    if (!pairs) Kwargs() else Kwargs(mapOf(*pairs))
+
+/**
+ * Returns a new [Kwargs] containing all key-value pairs from the original map.
+ *
+ * The returned map preserves the entry iteration order of the original map.
+ */
+fun Map<String, Any?>.toKwargs(): Kwargs = Kwargs(this)
+
+
+/**
+ * Returns a new [Kwargs] containing all key-value pairs from the original map.
+ * But all keys inside are cast into [String]
+ *
+ * The returned map preserves the entry iteration order of the original map.
+ */
+@JvmName("toKwargsByStrKeys")
+fun <K : Any, V : Any?> Map<K, V>.toKwargs(): Kwargs = Kwargs(this.mapKeys { it.toString() })
 
 /**
  * In python, keyword arguments feature, as known as kwargs, is a very convenient way to store data.
@@ -12,24 +125,12 @@ import kotlin.reflect.KClass
  * It's like a map, but key is always [String]. And value is [Any]`?` because it can save all data you want.
  * All the values are nullable.
  */
-class Kwargs : LinkedHashMap<String, Any?> {
+class MutableKwargs : HashMap<String, Any?> {
 
     constructor(initialCapacity: Int, loadFactor: Float) : super(initialCapacity, loadFactor)
     constructor(initialCapacity: Int) : super(initialCapacity)
     constructor() : super()
     constructor(m: Map<out String, Any?>) : super(m)
-
-    /**
-     * `this.toBool()` equals to `!!this`
-     * @return `true` when the kwargs isn't empty; otherwise `false`.
-     */
-    inline fun toBool(): Boolean = !this.isEmpty()
-
-    /**
-     * When you use `!` operator, it stands for that you hope to make it as a [Boolean].
-     * @return `!this.toBool()`
-     */
-    inline operator fun not(): Boolean = this.isEmpty()
 
     /**
      * For example:
@@ -38,7 +139,7 @@ class Kwargs : LinkedHashMap<String, Any?> {
      * ```
      * Now, we know the value from `"apple"` is 3 which is a [Int].
      * And the value from `"orange"` is 2.5f which is a [Float].
-     * So we can directly cast them into right class when we need to get them.
+     * So we can directly cast them into the right class when we need them.
      * ```
      * val priceOfApple = goodToPrice["apple", Int::class]
      * // It is an integer
@@ -54,24 +155,25 @@ class Kwargs : LinkedHashMap<String, Any?> {
     operator fun <T : Any> get(key: String, type: KClass<T>): T? = this[key] as T?
 
     /**
+     * This function doesn't equal to [getOrDefault]
+     * If the key-value pair is valid but the value is `null, the return is still defaultValue.
+     *
      * For example:
      * ```
-     * val goodToPrice = kwargsOf("apple" to 3, "orange" to 2.5f)
-     * ```
-     * Now, we know the value from `"apple"` is 3 which is a [Int].
-     * And the value from `"orange"` is 2.5f which is a [Float].
-     * So we can directly cast them into the right class when we need to get them.
-     * ```
-     * val goodToPrice = kwargsOf("apple" to 3, "orange" to 2.5f)
+     * val goodToPrice = kwargsOf("apple" to 3, "orange" to 2.5f, "guava" to null)
      * val priceOfApple = goodToPrice["apple", 0]
      * val priceOfBanana = goodToPrice["banana", 0.0]
-     * // It is 0.0 because there is no key named `banana` in goodToPrice.
-     * println("Total price is ${priceOfApple + priceOfBanana}")
+     * // It will be 0.0 because there is no key named "banana" in goodToPrice.
+     * val priceOfGuava = goodToPrice["guava", 0.0]
+     * // It will be 0.0 because the value got by "guava" key in goodToPrice is null.
+     * println("Apple: $priceOfApple, Banana: $priceOfBanana, Guava: $priceOfGuava")
+     * // Result: Apple: 3, Banana: 0.0, Guava: 0.0
+     * // It means that priceOfBanana and priceOfGuava are set to the provided defaultValue and that they're cast into a Double.
+     * println("Total price is ${priceOfApple + priceOfBanana + priceOfGuava}")
      * // Result: Total price is 3.0
-     * // It means that priceOfBanana is set to the defaultValue we provide and that priceOfBanana is cast into a Double.
      * ```
      * @return The value got by key with cast into the class of defaultValue if the value is present and not `null`;
-     * otherwise defaultValue
+     * defaultValue otherwise
      */
     @Suppress("UNCHECKED_CAST")
     operator fun <T : Any?> get(key: String, defaultValue: T): T = (this[key] as T?) ?: defaultValue
@@ -98,65 +200,71 @@ class Kwargs : LinkedHashMap<String, Any?> {
      * In the meantime, key-value pairs got removed if the key is present.
      * The difference between this function and [remove] is that the second parameter in this function is defaultValue.
      * @return The value got by key with cast into the class of defaultValue if the value is present and not `null`;
-     * otherwise defaultValue
+     * defaultValue otherwise
      * @see remove remove(Object key, Object value) (Java)
      */
     @Suppress("UNCHECKED_CAST")
     fun <T : Any?> pop(key: String, defaultValue: T): T = (this.remove(key) as T?) ?: defaultValue
 
     /**
-     * Add a `Pair<String, Any?>` should return [Kwargs] instead of [Map]
+     * Make self a immutable [Kwargs]
+     */
+    fun immutable(): Kwargs = Kwargs(this)
+
+    /**
+     * Add a `Pair<String, Any?>` should return [MutableKwargs] instead of [Map]
      * @see Map.plus Map<out K, V>.plus(pair: Pair<K, V>)
      */
-    operator fun plus(pair: Pair<String, Any?>): Kwargs = Kwargs(this).apply { put(pair.first, pair.second) }
+    operator fun plus(pair: Pair<String, Any?>): MutableKwargs =
+        MutableKwargs(this).apply { put(pair.first, pair.second) }
 
     /**
-     * Add plural `Pair<String, Any?>` should return [Kwargs] instead of [Map]
+     * Add plural `Pair<String, Any?>` should return [MutableKwargs] instead of [Map]
      * @see Map.plus Map<out K, V>.plus(pairs: Iterable<Pair<K, V>>)
      */
-    operator fun plus(pairs: Iterable<Pair<String, Any?>>): Kwargs = Kwargs(this).apply { putAll(pairs) }
+    operator fun plus(pairs: Iterable<Pair<String, Any?>>): MutableKwargs = MutableKwargs(this).apply { putAll(pairs) }
 
     /**
-     * Add plural `Pair<String, Any?>` should return [Kwargs] instead of [Map]
+     * Add plural `Pair<String, Any?>` should return [MutableKwargs] instead of [Map]
      * @see Map.plus Map<out K, V>.plus(pairs: Array<out Pair<K, V>>)
      */
-    operator fun plus(pairs: Array<out Pair<String, Any?>>): Kwargs = Kwargs(this).apply { putAll(pairs) }
+    operator fun plus(pairs: Array<out Pair<String, Any?>>): MutableKwargs = MutableKwargs(this).apply { putAll(pairs) }
 
     /**
-     * Add plural `Pair<String, Any?>` should return [Kwargs] instead of [Map]
+     * Add plural `Pair<String, Any?>` should return [MutableKwargs] instead of [Map]
      * @see Map.plus Map<out K, V>.plus(pairs: Sequence<Pair<K, V>>)
      */
-    operator fun plus(pairs: Sequence<Pair<String, Any?>>): Kwargs = Kwargs(this).apply { putAll(pairs) }
+    operator fun plus(pairs: Sequence<Pair<String, Any?>>): MutableKwargs = MutableKwargs(this).apply { putAll(pairs) }
 
     /**
-     * Add other [Kwargs] or a [Map] in correct format should return [Kwargs] instead of [Map]
+     * Add other [MutableKwargs] or a [Map] in correct format should return [MutableKwargs] instead of [Map]
      * @see Map.plus Map<out K, V>.plus(map: Map<out K, V>)
      */
-    operator fun plus(other: Map<String, Any?>): Kwargs = Kwargs(this).apply { putAll(other) }
+    operator fun plus(other: Map<String, Any?>): MutableKwargs = MutableKwargs(this).apply { putAll(other) }
 
     /**
-     * Remove some entries of the kwargs should return [Kwargs] instead of [Map]
+     * Remove some entries of the kwargs should return [MutableKwargs] instead of [Map]
      * @see Map.minus Map<out K, V>.minus(key: K)
      */
-    operator fun minus(key: String): Kwargs = Kwargs(this).apply { minusAssign(key) }
+    operator fun minus(key: String): MutableKwargs = MutableKwargs(this).apply { minusAssign(key) }
 
     /**
-     * Remove some entries of the kwargs should return [Kwargs] instead of [Map]
+     * Remove some entries of the kwargs should return [MutableKwargs] instead of [Map]
      * @see Map.minus Map<out K, V>.minus(keys: Iterable<K>)
      */
-    operator fun minus(keys: Iterable<String>): Kwargs = Kwargs(this).apply { minusAssign(keys) }
+    operator fun minus(keys: Iterable<String>): MutableKwargs = MutableKwargs(this).apply { minusAssign(keys) }
 
     /**
-     * Remove some entries of the kwargs should return [Kwargs] instead of [Map]
+     * Remove some entries of the kwargs should return [MutableKwargs] instead of [Map]
      * @see Map.minus Map<out K, V>.minus(keys: Array<out K>)
      */
-    operator fun minus(keys: Array<out String>): Kwargs = Kwargs(this).apply { minusAssign(keys) }
+    operator fun minus(keys: Array<out String>): MutableKwargs = MutableKwargs(this).apply { minusAssign(keys) }
 
     /**
-     * Remove some entries of the kwargs should return [Kwargs] instead of [Map]
+     * Remove some entries of the kwargs should return [MutableKwargs] instead of [Map]
      * @see Map.minus Map<out K, V>.minus(keys: Sequence<K>)
      */
-    operator fun minus(keys: Sequence<String>): Kwargs = Kwargs(this).apply { minusAssign(keys) }
+    operator fun minus(keys: Sequence<String>): MutableKwargs = MutableKwargs(this).apply { minusAssign(keys) }
 
     /**
      * Call [pop] function
@@ -210,42 +318,36 @@ class Kwargs : LinkedHashMap<String, Any?> {
 }
 
 /**
- * Returns an empty new [Kwargs].
+ * Returns an empty new [MutableKwargs].
  */
-inline fun kwargsOf(): Kwargs = Kwargs()
+inline fun mutableKwargsOf(): MutableKwargs = MutableKwargs()
 
 
 /**
- * Returns a new [Kwargs] with the specified contents, given as a list of pairs
+ * Returns a new [MutableKwargs] with the specified contents, given as a list of pairs
  * where the first component is the key and the second is the value.
  *
  * If multiple pairs have the same key, the resulting map will contain the value from the last of those pairs.
  *
  * Entries of the map are iterated in the order they were specified.
  */
-fun kwargsOf(vararg pairs: Pair<String, Any?>): Kwargs = Kwargs(mapCapacity(pairs.size)).apply { putAll(pairs) }
+fun mutableKwargsOf(vararg pairs: Pair<String, Any?>): MutableKwargs =
+    pairs.toMap(MutableKwargs(mapCapacity(pairs.size)))
 
 /**
- * Returns a new [Kwargs] containing all key-value pairs from the original map.
+ * Returns a new [MutableKwargs] containing all key-value pairs from the original map.
  *
  * The returned map preserves the entry iteration order of the original map.
  */
-fun Map<String, Any?>.toKwargs(): Kwargs {
-    return Kwargs(this)
-}
+fun Map<String, Any?>.toMutableKwargs(): MutableKwargs = MutableKwargs(this)
 
 
 /**
- * Returns a new [Kwargs] containing all key-value pairs from the original map.
+ * Returns a new [MutableKwargs] containing all key-value pairs from the original map.
  * But all keys inside are cast into [String]
  *
  * The returned map preserves the entry iteration order of the original map.
  */
-@JvmName("toKwargsByStrKeys")
-fun <K : Any, V : Any?> Map<K, V>.toKwargs(): Kwargs {
-    return Kwargs().apply {
-        for ((k, v) in this@toKwargs) {
-            this@apply[k.toString()] = v
-        }
-    }
-}
+@JvmName("toMutableKwargsByStrKeys")
+fun <K : Any, V : Any?> Map<K, V>.toMutableKwargs(): MutableKwargs =
+    MutableKwargs(this.mapKeys { it.toString() })

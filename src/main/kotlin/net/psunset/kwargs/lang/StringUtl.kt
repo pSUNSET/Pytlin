@@ -1,6 +1,6 @@
 package net.psunset.kwargs.lang
 
-import net.psunset.kwargs.collections.Kwargs
+import net.psunset.kwargs.collections.MutableKwargs
 import net.psunset.kwargs.collections.times
 
 /**
@@ -41,7 +41,7 @@ operator fun String.times(n: Int): String {
  * @param kwargs Please ensure both "n" and "separator" are not `null`. Other args are all used by [String.times] function.
  * @see String.times times(n: Int, separator: CharSequence, prefix: CharSequence, postfix: CharSequence, limit: Int, truncated: CharSequence, transform: ((String) -> CharSequence)?)
  */
-operator fun String.times(kwargs: Kwargs): String {
+operator fun String.times(kwargs: MutableKwargs): String {
     val n = kwargs / ("n" to  Int::class)
     val sep = kwargs / ("separator" to (kwargs / ("sep" to CharSequence::class))) // Accept using either "separator" or "sep" simply.
     val prefix = kwargs / ("prefix" to "")
@@ -81,4 +81,11 @@ fun String.times(
 
     val strList = listOf(this) * n
     return strList.joinToString(separator, prefix, postfix, limit, truncated, transform)
+}
+
+/**
+ * @return `true` if the chars inside all are digits; `false` otherwise.
+ */
+fun CharSequence.isDigit(): Boolean {
+    return this.all { it.isDigit() }
 }
