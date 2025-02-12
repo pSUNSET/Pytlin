@@ -9,7 +9,7 @@ import kotlin.math.floor
  *
  * @return `true` if the number has a non-zero fractional part; `false` otherwise.
  */
-fun Number.hasMantissa(): Boolean {
+fun Number.hasFractionalPart(): Boolean {
     return this != floor(this.toDouble())
 }
 
