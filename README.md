@@ -86,7 +86,7 @@ Then import it into your module.
 
 ### Kwargs
 
-When you want to define a function in python, you can use `*args` and `**kwargs` as parameters.  
+When you define a function in python, you may use `*args` and `**kwargs` as parameters.  
 For example, in python:
 
 ```python
