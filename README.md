@@ -210,13 +210,15 @@ if c: print('c is True!')
 Now, let's convert it into kotlin:
 
 ```kotlin
-val a = listOf<Any>()
-val b = ""
-val c = 0
-if (a.toBool()) println("a is true!")
-if (b.toBool()) println("b is true!")
-if (!!c) println("c is true!") // Also, `obj.toBool()` can be replaced to `!!obj`
-// There's no output, either.
+fun main(){
+    val a = listOf<Any>()
+    val b = ""
+    val c = 0
+    if (a.toBool()) println("a is true!")
+    if (b.toBool()) println("b is true!")
+    if (!!c) println("c is true!") // Also, `obj.toBool()` can be replaced to `!!obj`
+    // There's no output, either.
+}
 ```
 
 By the same token, `if not obj: ...` in python is equivalent to `if (!obj) { ... }`.
