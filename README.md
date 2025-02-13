@@ -1,12 +1,12 @@
 # Kwargs for Kotlin
 
-A implementation of some features of python for kotlin.
+A implementation of some python features for kotlin.
 
-# QuickStart:
+# Import:
 
 ### Maven
 
-Add `kwargs-for-kotlin` to your dependencies tag in POM file:
+Add `kwargs-for-kotlin` to your `<dependencies>` tag in POM file:
 
 (pom.xml):
 
@@ -19,7 +19,7 @@ Add `kwargs-for-kotlin` to your dependencies tag in POM file:
 </dependency>
 ```
 
-Then setting `kwargs_for_kotlin.version` in your properties tag in the same file:
+Then setting `kwargs_for_kotlin.version` in your `<properties>` tag in the same file:
 
 (pom.xml):
 
