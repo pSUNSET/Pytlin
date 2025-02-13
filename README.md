@@ -160,8 +160,8 @@ fun f(vararg args: Int, kwargs: MutableKwargs): Int {
     // Now, the key-value pair whose key is called "method" is removed.
     return when (method) {
         "add" -> args.sum()
-        "mul" -> args.prod() // A feature in this library
-        else -> Int.MAX_VALUE // Invalid method
+        "mul" -> args.prod()
+        else -> Int.MAX_VALUE
     }
 }
 ```
