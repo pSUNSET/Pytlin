@@ -192,7 +192,7 @@ fun main() {
 
 ### Turn all objects into boolean
 
-In python, you can directly put a non-boolean value after `if`.
+In python, you can directly put a non-boolean variable after `if`.
 Often, it stands for if self is not empty, non-zero, etc.
 
 For example:
