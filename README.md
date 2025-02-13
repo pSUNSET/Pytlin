@@ -1,6 +1,6 @@
 # Kwargs for Kotlin
 
-A library for implementing the `kwargs` features of python!
+A implementation of some features of python for kotlin.
 
 # QuickStart:
 
