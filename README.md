@@ -223,7 +223,7 @@ By the same token, `if not obj: ...` in python is equivalent to `if (!obj) { ...
 
 ### Value equation of numbers
 
-`==` operator in python only checking the value of two numbers, regardless their type.
+`==` operator in python only checking the value of two numbers, regardless of their type.
 
 For example:
 
