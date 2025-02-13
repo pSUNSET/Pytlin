@@ -236,7 +236,9 @@ print(1.0 == 1) # Result: True
 But the same code in kotlin:
 
 ```kotlin
-println(1.0 == 1) // Error: Operator '==' cannot be applied to 'Double' and 'Int'
+fun main(){
+    println(1.0 == 1) // Error: Operator '==' cannot be applied to 'Double' and 'Int'
+}
 ```
 
 Uh..., it got something wrong.
@@ -245,7 +247,9 @@ Let's make it a `BigDecimal`.
 ```kotlin
 import java.math.BigDecimal
 
-println(BigDecimal.valueOf(1.0) == BigDecimal.valueOf(1)) // Result: false
+fun main(){
+    println(BigDecimal.valueOf(1.0) == BigDecimal.valueOf(1)) // Result: false
+}
 ```
 
 As you see, the result is `false` because the `==` operator in kotlin
@@ -255,8 +259,12 @@ But the function named `valEq` can deal with two problems we met.
 Let's replace `==` operator to `valEq` keyword:
 
 ```kotlin
-println(1.0 valEq 1) // Result: true
-println(BigDecimal.valueOf(1.0) valEq BigDecimal.valueOf(1)) // Result: true
+import java.math.BigDecimal
+
+fun main(){
+    println(1.0 valEq 1) // Result: true
+    println(BigDecimal.valueOf(1.0) valEq BigDecimal.valueOf(1)) // Result: true
+}
 ```
 
 It seems that this function works fine.
