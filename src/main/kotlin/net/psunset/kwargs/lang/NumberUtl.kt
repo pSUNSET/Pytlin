@@ -9,10 +9,8 @@ import java.math.RoundingMode
 import kotlin.math.abs
 import kotlin.math.truncate
 
-/**
- * Move to [Double.isFractionalPartZero] or [Float.isFractionalPartZero]
- */
-@Deprecated("", replaceWith = ReplaceWith("!this.fractionalPartIsZero()"), level = DeprecationLevel.ERROR)
+
+@Deprecated("Please use `!this.isFractionalPartZero()` instead.", replaceWith = ReplaceWith("!this.isFractionalPartZero()"), level = DeprecationLevel.ERROR)
 fun Number.hasFractionalPart(): Boolean = this.toDouble() != truncate(toDouble())
 
 /**
@@ -110,6 +108,7 @@ infix fun Number.valEq(other: Number): Boolean =
     this.toString().toBigDecimal().compareTo(other.toString().toBigDecimal()) == 0
 
 /**
+ * Calls [valEq] function
  * @see Number.valEq
  */
 @JvmName("valueEquals")
