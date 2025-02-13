@@ -81,14 +81,14 @@ fun BigDecimal.truncate(): BigDecimal = this.setScale(0, RoundingMode.DOWN)
  * val a = 123.456f
  * val b = 123.456
  * println(a == b) // Error: Operator '==' cannot be applied to 'Float' and 'Double'
- * println(a valEq b) // Return: true
+ * println(a valEq b) // Result: true
  * ```
  * ```
  * val number1 = BigInteger("12345")
  * val number2 = BigDecimal("12345.00")
- * println(number1 == number2) // Return: false
+ * println(number1 == number2) // Result: false
  * // It is because they are in different types.
- * println(number1 valEq number2) // Return: true
+ * println(number1 valEq number2) // Result: true
  * ```
  *
  * What's more, when we try to compare the value of two [BigDecimal] with `==`, if the precisions of them are different, it returns `false`.
@@ -98,8 +98,8 @@ fun BigDecimal.truncate(): BigDecimal = this.setScale(0, RoundingMode.DOWN)
  * ```
  * val number1 = BigDecimal("12345.0")
  * val number2 = BigDecimal("12345.00")
- * println(number1 == number2) // Return: false
- * println(number1 valEq number2) // Return: true
+ * println(number1 == number2) // Result: false
+ * println(number1 valEq number2) // Result: true
  * ```
  *
  * @return `true` if the numbers have the same value, `false` otherwise.
