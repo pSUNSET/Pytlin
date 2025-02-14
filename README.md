@@ -86,7 +86,7 @@ Then import it into your module.
 
 ### Kwargs
 
-When you want to define a function in python, you can use `*args` and `**kwargs` as parameters.  
+When you define a function in python, you may use `*args` and `**kwargs` as parameters.  
 For example, in python:
 
 ```python
@@ -160,8 +160,8 @@ fun f(vararg args: Int, kwargs: MutableKwargs): Int {
     // Now, the key-value pair whose key is called "method" is removed.
     return when (method) {
         "add" -> args.sum()
-        "mul" -> args.prod() // A feature in this library
-        else -> Int.MAX_VALUE // Invalid method
+        "mul" -> args.prod()
+        else -> Int.MAX_VALUE
     }
 }
 ```
@@ -192,7 +192,7 @@ fun main() {
 
 ### Turn all objects into boolean
 
-In python, you can directly put a non-boolean value after `if`.
+In python, you can directly put a non-boolean variable after `if`.
 Often, it stands for if self is not empty, non-zero, etc.
 
 For example:
@@ -210,20 +210,22 @@ if c: print('c is True!')
 Now, let's convert it into kotlin:
 
 ```kotlin
-val a = listOf<Any>()
-val b = ""
-val c = 0
-if (a.toBool()) println("a is true!")
-if (b.toBool()) println("b is true!")
-if (!!c) println("c is true!") // Also, `obj.toBool()` can be replaced to `!!obj`
-// There's no output, either.
+fun main(){
+    val a = listOf<Any>()
+    val b = ""
+    val c = 0
+    if (a.toBool()) println("a is true!")
+    if (b.toBool()) println("b is true!")
+    if (!!c) println("c is true!") // Also, `obj.toBool()` can be replaced to `!!obj`
+    // There's no output, either.
+}
 ```
 
 By the same token, `if not obj: ...` in python is equivalent to `if (!obj) { ... }`.
 
 ### Value equation of numbers
 
-`==` operator in python only checking the value of two numbers, regardless their type.
+`==` operator in python only checking the value of two numbers, regardless of their type.
 
 For example:
 
@@ -234,7 +236,9 @@ print(1.0 == 1) # Result: True
 But the same code in kotlin:
 
 ```kotlin
-println(1.0 == 1) // Error: Operator '==' cannot be applied to 'Double' and 'Int'
+fun main(){
+    println(1.0 == 1) // Error: Operator '==' cannot be applied to 'Double' and 'Int'
+}
 ```
 
 Uh..., it got something wrong.
@@ -243,7 +247,9 @@ Let's make it a `BigDecimal`.
 ```kotlin
 import java.math.BigDecimal
 
-println(BigDecimal.valueOf(1.0) == BigDecimal.valueOf(1)) // Result: false
+fun main(){
+    println(BigDecimal.valueOf(1.0) == BigDecimal.valueOf(1)) // Result: false
+}
 ```
 
 As you see, the result is `false` because the `==` operator in kotlin
@@ -253,8 +259,12 @@ But the function named `valEq` can deal with two problems we met.
 Let's replace `==` operator to `valEq` keyword:
 
 ```kotlin
-println(1.0 valEq 1) // Result: true
-println(BigDecimal.valueOf(1.0) valEq BigDecimal.valueOf(1)) // Result: true
+import java.math.BigDecimal
+
+fun main(){
+    println(1.0 valEq 1) // Result: true
+    println(BigDecimal.valueOf(1.0) valEq BigDecimal.valueOf(1)) // Result: true
+}
 ```
 
 It seems that this function works fine.
