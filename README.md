@@ -271,6 +271,4 @@ It seems that this function works fine.
 
 # Using in Java
 
-Are you looking for the same one but in java? Check out [here](https://github.com/pSUNSET/PytlinForJava).  
-But, honestly, kotlin one has more features than java one.  
-So please use this one as you can.
+deprecated
