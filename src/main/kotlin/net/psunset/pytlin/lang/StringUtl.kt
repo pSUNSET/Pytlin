@@ -1,7 +1,7 @@
-package net.psunset.lang
+package net.psunset.pytlin.lang
 
-import net.psunset.collections.MutableKwargs
-import net.psunset.collections.times
+import net.psunset.pytlin.collections.MutableKwargs
+import net.psunset.pytlin.collections.times
 
 /**
  * @return A string made with `n` raw string.

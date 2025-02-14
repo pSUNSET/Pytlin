@@ -1,4 +1,4 @@
-package net.psunset.collections
+package net.psunset.pytlin.collections
 
 import java.util.stream.DoubleStream
 import java.util.stream.IntStream

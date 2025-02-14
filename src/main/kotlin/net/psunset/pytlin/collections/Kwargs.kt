@@ -1,8 +1,8 @@
 @file:JvmName("KwargsKt")
 
-package net.psunset.collections
+package net.psunset.pytlin.collections
 
-import net.psunset.lang.not
+import net.psunset.pytlin.lang.not
 import java.util.function.BiFunction
 import kotlin.reflect.KClass
 

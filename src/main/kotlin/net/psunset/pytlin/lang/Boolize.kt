@@ -2,7 +2,7 @@
  * Boolean-ize
  */
 
-package net.psunset.lang
+package net.psunset.pytlin.lang
 
 /**
  * Basic `toBool()` function
