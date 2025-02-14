@@ -332,7 +332,7 @@ inline fun mutableKwargsOf(): MutableKwargs = MutableKwargs()
  * Entries of the map are iterated in the order they were specified.
  */
 fun mutableKwargsOf(vararg pairs: Pair<String, Any?>): MutableKwargs =
-    pairs.toMap(MutableKwargs(mapCapacity(pairs.size)))
+    if (!pairs) MutableKwargs() else pairs.toMap(MutableKwargs(mapCapacity(pairs.size)))
 
 /**
  * Returns a new [MutableKwargs] containing all key-value pairs from the original map.

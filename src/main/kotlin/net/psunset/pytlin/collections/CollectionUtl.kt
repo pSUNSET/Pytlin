@@ -708,3 +708,14 @@ fun mapCapacity(expectedSize: Int): Int = when {
     expectedSize < (1 shl (Int.SIZE_BITS - 2)) -> ((expectedSize / 0.75F) + 1.0F).toInt()
     else -> Int.MAX_VALUE
 }
+
+fun <T> Iterable<*>.deepFlatten(): ArrayList<T> {
+    val result = ArrayList<T>()
+    for (element in this) {
+        when (element) {
+            is Iterable<*> -> result.addAll(element.deepFlatten())
+            else -> @Suppress("UNCHECKED_CAST") result.add(element as T)
+        }
+    }
+    return result
+}
