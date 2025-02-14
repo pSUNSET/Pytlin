@@ -58,7 +58,7 @@ publishing {
             from(components["java"])
 
             pom {
-                name = "Kwargs for Kotlin"
+                name = "Pytlin"
                 description = "A implementation of some features of python for kotlin."
                 url = "https://github.com/pSUNSET/KWArgsForKotlin"
                 licenses {

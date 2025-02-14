@@ -1,4 +1,4 @@
-package net.psunset.kwargs.lang
+package net.psunset.lang
 
 /*
  * Most functions in this file are using `BigDecimal` for better precision.

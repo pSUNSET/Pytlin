@@ -1,4 +1,4 @@
-package net.psunset.kwargs.collections
+package net.psunset.collections
 
 import java.util.stream.DoubleStream
 import java.util.stream.IntStream

@@ -2,7 +2,7 @@
  * Boolean-ize
  */
 
-package net.psunset.kwargs.lang
+package net.psunset.lang
 
 /**
  * Basic `toBool()` function

@@ -1,4 +1,4 @@
-# Kwargs for Kotlin
+# Pytlin
 
 A implementation of some python features for kotlin.
 
@@ -6,7 +6,7 @@ A implementation of some python features for kotlin.
 
 ### Maven
 
-Add `kwargs-for-kotlin` to your `<dependencies>` tag in POM file:
+Add `pytlin` to your `<dependencies>` tag in POM file:
 
 (pom.xml):
 
@@ -14,24 +14,24 @@ Add `kwargs-for-kotlin` to your `<dependencies>` tag in POM file:
 
 <dependency>
     <groupId>io.github.psunset</groupId>
-    <artifactId>kwargs-for-kotlin</artifactId>
-    <version>${kwargs_for_kotlin.version}</version>
+    <artifactId>pytlin</artifactId>
+    <version>${pytlin.version}</version>
 </dependency>
 ```
 
-Then setting `kwargs_for_kotlin.version` in your `<properties>` tag in the same file:
+Then setting `pytlin.version` in your `<properties>` tag in the same file:
 
 (pom.xml):
 
 ```xml
 
 <properties>
-    <kwargs_for_kotlin.version>x.y.z</kwargs_for_kotlin.version>
+    <pytlin.version>x.y.z</pytlin.version>
 </properties>
 ```
 
 Please replace the `x.y.z` to an available version by checking
-out [releases](https://github.com/pSUNSET/KwargsForKotlin/releases).
+out [releases](https://github.com/pSUNSET/Pytlin/releases).
 
 Eventually, install the library:
 
@@ -41,13 +41,13 @@ mvn install
 
 ### Gradle
 
-Add `kwargs-for-kotlin` to your dependencies in build file:
+Add `pytlin` to your dependencies in the build file:
 
 Groovy (build.gradle):
 
 ```groovy
 dependencies {
-    implementation "io.github.psunset:kwargs-for-kotlin:$kwargs_for_kotlin_version"
+    implementation "io.github.psunset:pytlin:$pytlin_version"
 }
 ```
 
@@ -55,20 +55,20 @@ Kotlin (build.gradle.kts):
 
 ```kotlin
 dependencies {
-    implementation("io.github.psunset:kwargs-for-kotlin:$kwargs_for_kotlin_version")
+    implementation("io.github.psunset:pytlin:$pytlin_version")
 }
 ```
 
-Then setting `kwargs_for_kotlin_version` in your properties file:
+Then setting `pytlin_version` in your properties file:
 
 (gradle.properties):
 
 ```properties
-kwargs_for_kotlin_version=x.y.z
+pytlin_version=x.y.z
 ```
 
 Please replace the `x.y.z` to an available version by checking
-out [releases](https://github.com/pSUNSET/KwargsForKotlin/releases).
+out [releases](https://github.com/pSUNSET/Pytlin/releases).
 
 Eventually, build your project:
 
@@ -78,8 +78,8 @@ Eventually, build your project:
 
 ### JAR File
 
-Directly download the kwargs-for-kotlin-x.y.z.jar file
-in [releases](https://github.com/pSUNSET/KwargsForKotlin/releases).
+Directly download the pytlin-x.y.z.jar file
+in [releases](https://github.com/pSUNSET/Pytlin/releases).
 Then import it into your module.
 
 # Features
@@ -261,6 +261,6 @@ It seems that this function works fine.
 
 # Using in Java
 
-Are you looking for the same one but in java? Check out [here](https://github.com/pSUNSET/KwargsForJava).  
+Are you looking for the same one but in java? Check out [here](https://github.com/pSUNSET/PytlinForJava).  
 But, honestly, kotlin one has more features than java one.  
 So please use this one as you can.

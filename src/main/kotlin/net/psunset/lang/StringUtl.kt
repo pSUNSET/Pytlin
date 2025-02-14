@@ -1,7 +1,7 @@
-package net.psunset.kwargs.lang
+package net.psunset.lang
 
-import net.psunset.kwargs.collections.MutableKwargs
-import net.psunset.kwargs.collections.times
+import net.psunset.collections.MutableKwargs
+import net.psunset.collections.times
 
 /**
  * @return A string made with `n` raw string.
