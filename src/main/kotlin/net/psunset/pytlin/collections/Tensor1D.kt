@@ -1,5 +1,7 @@
 package net.psunset.pytlin.collections
 
+import net.psunset.pytlin.lang.toBigDecimal
+import net.psunset.pytlin.lang.toBigInteger
 import java.math.BigDecimal
 import java.math.BigInteger
 
@@ -67,61 +69,65 @@ abstract class Tensor1D<E : Number> private constructor(
     operator fun rem(vector: Tensor1D<E>): Tensor1D<E> = this.apply { this.remAssign(vector) }
 
     operator fun plusAssign(vector: Tensor1D<E>) {
+        requireSameShape(vector)
         for (i in 0..<this.numel) {
             this[i] = doAdd(this[i], vector[i])
         }
     }
 
     operator fun minusAssign(vector: Tensor1D<E>) {
+        requireSameShape(vector)
         for (i in 0..<this.numel) {
             this[i] = doSub(this[i], vector[i])
         }
     }
 
     operator fun timesAssign(vector: Tensor1D<E>) {
+        requireSameShape(vector)
         for (i in 0..<this.numel) {
             this[i] = doMul(this[i], vector[i])
         }
     }
 
     operator fun divAssign(vector: Tensor1D<E>) {
+        requireSameShape(vector)
         for (i in 0..<this.numel) {
             this[i] = doDiv(this[i], vector[i])
         }
     }
 
     operator fun remAssign(vector: Tensor1D<E>) {
+        requireSameShape(vector)
         for (i in 0..<this.numel) {
             this[i] = doMod(this[i], vector[i])
         }
     }
 
-    infix fun dot(vector: Tensor1D<E>): E =
-        this.data.zip(vector.data).map { (a, b) -> doMul(a, b) }.reduce { a, b -> doAdd(a, b) }
+    infix fun dot(vector: Tensor1D<E>): E {
+        requireSameShape(vector)
+        return this.data.zip(vector.data).map { (a, b) -> doMul(a, b) }.reduce { a, b -> doAdd(a, b) }
+    }
 
     infix fun cross(vector: Tensor1D<E>): Tensor1D<E> {
-        val dimension = this.numel
-        when (dimension) {
-            2 -> return another(listOf(doSub(doMul(data[0], vector.data[1]), doMul(data[1], vector.data[0]))))
-            3 -> {
-                val a1 = data[0]
-                val a2 = data[1]
-                val a3 = data[2]
-                val b1 = vector.data[0]
-                val b2 = vector.data[1]
-                val b3 = vector.data[2]
-
-                return another(
-                    listOf(
-                        doSub(doMul(a2, b3), doMul(a3, b2)),
-                        doSub(doMul(a3, b1), doMul(a1, b3)),
-                        doSub(doMul(a1, b2), doMul(a2, b1))
-                    )
-                )
-            }
-
-            else -> throw IllegalArgumentException("Vectors must have dimension 2 or 3 to calculate the cross product.")
+        requireSameShape(vector)
+        if (this.numel != 3) {
+            throw IllegalArgumentException("Vectors must have dimension 3 to calculate the cross product.")
         }
+
+        val a1 = data[0]
+        val a2 = data[1]
+        val a3 = data[2]
+        val b1 = vector.data[0]
+        val b2 = vector.data[1]
+        val b3 = vector.data[2]
+
+        return newOne(
+            listOf(
+                doSub(doMul(a2, b3), doMul(a3, b2)),
+                doSub(doMul(a3, b1), doMul(a1, b3)),
+                doSub(doMul(a1, b2), doMul(a2, b1))
+            )
+        )
     }
 
     protected abstract fun doAdd(a: E, b: E): E
@@ -129,9 +135,17 @@ abstract class Tensor1D<E : Number> private constructor(
     protected abstract fun doMul(a: E, b: E): E
     protected abstract fun doDiv(a: E, b: E): E
     protected abstract fun doMod(a: E, b: E): E
-    protected abstract fun another(l: List<E>): Tensor1D<E>
+    protected abstract fun newOne(l: List<E>): Tensor1D<E>
 
-    override fun toString(): String = "tensor(${this.data.contentToString()})"
+    open fun toIntTensor(): Tensor1D<Int> = IntTensor1D(this.data.map { it.toInt() }.toTypedArray())
+    open fun toLongTensor(): Tensor1D<Long> = LongTensor1D(this.data.map { it.toLong() }.toTypedArray())
+    open fun toFloatTensor(): Tensor1D<Float> = FloatTensor1D(this.data.map { it.toFloat() }.toTypedArray())
+    open fun toDoubleTensor(): Tensor1D<Double> = DoubleTensor1D(this.data.map { it.toDouble() }.toTypedArray())
+    open fun toBigIntegerTensor(): Tensor1D<BigInteger> =
+        BigIntegerTensor1D(this.data.map { it.toBigInteger() }.toTypedArray())
+
+    open fun toBigDecimalTensor(): Tensor1D<BigDecimal> =
+        BigDecimalTensor1D(this.data.map { it.toBigDecimal(10) }.toTypedArray())
 }
 
 inline fun <reified E : Number> tensorOf1D(data: List<E>): Tensor1D<E> =
@@ -145,7 +159,7 @@ inline fun <reified E : Number> tensorOf1D(data: Array<E>): Tensor1D<E> =
  */
 class IntTensor1D(
     data: Array<Int>
-) : Tensor1D<Int>(data) {
+) : Tensor1D<Int>(data), IntAsDtype {
     override fun doAdd(a: Int, b: Int): Int = a + b
 
     override fun doSub(a: Int, b: Int): Int = a - b
@@ -156,8 +170,10 @@ class IntTensor1D(
 
     override fun doMod(a: Int, b: Int): Int = a % b
 
-    override fun another(l: List<Int>): Tensor1D<Int> =
+    override fun newOne(l: List<Int>): Tensor1D<Int> =
         IntTensor1D(l.toTypedArray())
+
+    override fun toIntTensor(): IntTensor1D = IntTensor1D(this.data.clone())
 }
 
 fun intTensorOf1D(data: List<Int>): IntTensor1D = IntTensor1D(data.toTypedArray())
@@ -171,7 +187,7 @@ fun intTensorOf1D(data: IntArray): IntTensor1D = IntTensor1D(data.toTypedArray()
  */
 class LongTensor1D(
     data: Array<Long>
-) : Tensor1D<Long>(data) {
+) : Tensor1D<Long>(data), LongAsDtype {
     override fun doAdd(a: Long, b: Long): Long = a + b
 
     override fun doSub(a: Long, b: Long): Long = a - b
@@ -182,8 +198,10 @@ class LongTensor1D(
 
     override fun doMod(a: Long, b: Long): Long = a % b
 
-    override fun another(l: List<Long>): Tensor1D<Long> =
+    override fun newOne(l: List<Long>): Tensor1D<Long> =
         LongTensor1D(l.toTypedArray())
+
+    override fun toLongTensor(): LongTensor1D = LongTensor1D(this.data.clone())
 }
 
 fun longTensorOf1D(data: List<Long>): LongTensor1D = LongTensor1D(data.toTypedArray())
@@ -197,7 +215,7 @@ fun longTensorOf1D(data: LongArray): LongTensor1D = LongTensor1D(data.toTypedArr
  */
 class FloatTensor1D(
     data: Array<Float>
-) : Tensor1D<Float>(data) {
+) : Tensor1D<Float>(data), FloatAsDtype {
     override fun doAdd(a: Float, b: Float): Float = a + b
 
     override fun doSub(a: Float, b: Float): Float = a - b
@@ -208,8 +226,10 @@ class FloatTensor1D(
 
     override fun doMod(a: Float, b: Float): Float = a % b
 
-    override fun another(l: List<Float>): Tensor1D<Float> =
+    override fun newOne(l: List<Float>): Tensor1D<Float> =
         FloatTensor1D(l.toTypedArray())
+
+    override fun toFloatTensor(): FloatTensor1D = FloatTensor1D(this.data.clone())
 }
 
 fun floatTensorOf1D(data: List<Float>): FloatTensor1D = FloatTensor1D(data.toTypedArray())
@@ -223,7 +243,7 @@ fun floatTensorOf1D(data: FloatArray): FloatTensor1D = FloatTensor1D(data.toType
  */
 class DoubleTensor1D(
     data: Array<Double>
-) : Tensor1D<Double>(data) {
+) : Tensor1D<Double>(data), DoubleAsDtype {
     override fun doAdd(a: Double, b: Double): Double = a + b
 
     override fun doSub(a: Double, b: Double): Double = a - b
@@ -234,8 +254,10 @@ class DoubleTensor1D(
 
     override fun doMod(a: Double, b: Double): Double = a % b
 
-    override fun another(l: List<Double>): Tensor1D<Double> =
+    override fun newOne(l: List<Double>): Tensor1D<Double> =
         DoubleTensor1D(l.toTypedArray())
+
+    override fun toDoubleTensor(): DoubleTensor1D = DoubleTensor1D(this.data.clone())
 }
 
 fun doubleTensorOf1D(data: List<Double>): DoubleTensor1D = DoubleTensor1D(data.toTypedArray())
@@ -249,7 +271,7 @@ fun doubleTensorOf1D(data: DoubleArray): DoubleTensor1D = DoubleTensor1D(data.to
  */
 class BigIntegerTensor1D(
     data: Array<BigInteger>
-) : Tensor1D<BigInteger>(data) {
+) : Tensor1D<BigInteger>(data), BigIntegerAsDtype {
     override fun doAdd(a: BigInteger, b: BigInteger): BigInteger = a + b
 
     override fun doSub(a: BigInteger, b: BigInteger): BigInteger = a - b
@@ -260,8 +282,10 @@ class BigIntegerTensor1D(
 
     override fun doMod(a: BigInteger, b: BigInteger): BigInteger = a % b
 
-    override fun another(l: List<BigInteger>): Tensor1D<BigInteger> =
+    override fun newOne(l: List<BigInteger>): Tensor1D<BigInteger> =
         BigIntegerTensor1D(l.toTypedArray())
+
+    override fun toBigIntegerTensor(): BigIntegerTensor1D = BigIntegerTensor1D(this.data.clone())
 }
 
 fun bigIntegerTensorOf1D(data: List<BigInteger>): BigIntegerTensor1D = BigIntegerTensor1D(data.toTypedArray())
@@ -273,7 +297,7 @@ fun bigIntegerTensorOf1D(data: Array<BigInteger>): BigIntegerTensor1D = BigInteg
  */
 class BigDecimalTensor1D(
     data: Array<BigDecimal>
-) : Tensor1D<BigDecimal>(data) {
+) : Tensor1D<BigDecimal>(data), BigDecimalAsDtype {
     override fun doAdd(a: BigDecimal, b: BigDecimal): BigDecimal = a + b
 
     override fun doSub(a: BigDecimal, b: BigDecimal): BigDecimal = a - b
@@ -284,8 +308,10 @@ class BigDecimalTensor1D(
 
     override fun doMod(a: BigDecimal, b: BigDecimal): BigDecimal = a % b
 
-    override fun another(l: List<BigDecimal>): Tensor1D<BigDecimal> =
+    override fun newOne(l: List<BigDecimal>): Tensor1D<BigDecimal> =
         BigDecimalTensor1D(l.toTypedArray())
+
+    override fun toBigDecimalTensor(): BigDecimalTensor1D = BigDecimalTensor1D(this.data.clone())
 }
 
 fun bigDecimalTensorOf1D(data: List<BigDecimal>): BigDecimalTensor1D = BigDecimalTensor1D(data.toTypedArray())

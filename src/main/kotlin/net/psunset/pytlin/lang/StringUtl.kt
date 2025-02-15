@@ -83,6 +83,17 @@ fun String.times(
     return strList.joinToString(separator, prefix, postfix, limit, truncated, transform)
 }
 
+operator fun Char.times(n: Int): String {
+    if (n <= 0) return ""
+    if (n == 1) return String(charArrayOf(this))
+
+    val newStr = StringBuilder(n)
+    for (i in 1 until n) {
+        newStr.append(this)
+    }
+    return newStr.toString()
+}
+
 /**
  * @return `true` if the chars inside all are digits; `false` otherwise.
  */

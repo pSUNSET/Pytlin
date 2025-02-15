@@ -111,7 +111,9 @@ infix fun Number.valEq(other: Number): Boolean =
 @JvmName("valueEquals")
 fun valEq(a: Number, b: Number): Boolean = a valEq b
 
-inline fun Number.toBigInteger(): BigInteger = this.toString().toBigInteger()
+inline fun Number.toBigInteger(): BigInteger = BigInteger(this.toString())
 
-inline fun Number.toBigDecimal(): BigDecimal = this.toString().toBigDecimal()
+inline fun Number.toBigDecimal(): BigDecimal = BigDecimal(this.toString())
+
+fun Number.toBigDecimal(scale: Int): BigDecimal = BigDecimal(this.toString()).setScale(scale, RoundingMode.HALF_UP)
 
