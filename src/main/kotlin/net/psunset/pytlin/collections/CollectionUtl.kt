@@ -1,5 +1,7 @@
 package net.psunset.pytlin.collections
 
+import java.math.BigDecimal
+import java.math.BigInteger
 import java.util.stream.DoubleStream
 import java.util.stream.IntStream
 import java.util.stream.LongStream
@@ -179,8 +181,82 @@ fun <N : Number> sum(iter: Iterable<N>): Double {
  * @return The sum of the all elements in the collection as [Double].
  */
 @JvmName("sumOfNumberToDouble")
-fun <N : Number> Iterable<N>.sum(): Double {
-    return this.sumOf(Number::toDouble)
+fun <N : Number> Iterable<N>.sum(): Double = this.sumOf(Number::toDouble)
+
+/**
+ * @return The sum of the all elements in the collection.
+ */
+@JvmName("sumOfBigInteger")
+fun Iterable<BigInteger>.sum(): BigInteger {
+    var sum = 0.toBigInteger()
+    for (element in this) {
+        sum += element
+    }
+    return sum
+}
+
+/**
+ * @return The sum of the all elements in the collection.
+ */
+@JvmName("sumOfBigDecimal")
+fun Iterable<BigDecimal>.sum(): BigDecimal {
+    var sum = 0.toBigDecimal()
+    for (element in this) {
+        sum += element
+    }
+    return sum
+}
+
+/**
+ * @return The sum of the all elements in the array.
+ */
+@JvmName("sumOfBigInteger")
+fun Array<out BigInteger>.sum(): BigInteger {
+    var sum = 0.toBigInteger()
+    for (element in this) {
+        sum += element
+    }
+    return sum
+}
+
+/**
+ * @return The sum of the all elements in the array.
+ */
+@JvmName("sumOfBigDecimal")
+fun Array<out BigDecimal>.sum(): BigDecimal {
+    var sum = 0.toBigDecimal()
+    for (element in this) {
+        sum += element
+    }
+    return sum
+}
+
+/**
+ * @return the sum of all values produced by [selector] function applied to each element in the collection.
+ */
+@OptIn(ExperimentalTypeInference::class)
+@OverloadResolutionByLambdaReturnType
+@JvmName("sumOfFloat")
+inline fun <T> Iterable<T>.sumOf(selector: (T) -> Float): Float {
+    var sum = 0.0f
+    for (element in this) {
+        sum += selector(element)
+    }
+    return sum
+}
+
+/**
+ * @return the sum of all values produced by [selector] function applied to each element in the stream.
+ */
+@OptIn(ExperimentalTypeInference::class)
+@OverloadResolutionByLambdaReturnType
+@JvmName("sumOfFloat")
+inline fun <T> Stream<T>.sumOf(selector: (T) -> Float): Float {
+    var sum = 0.0f
+    for (element in this) {
+        sum += selector(element)
+    }
+    return sum
 }
 
 /**
@@ -274,6 +350,20 @@ fun <N : Number> prod(iter: Iterable<N>): Double {
 @JvmName("prodOfNumberToDouble")
 fun <N : Number> Iterable<N>.prod(): Double {
     return this.prodOf { it.toDouble() }
+}
+
+/**
+ * @return the prod of all values produced by [selector] function applied to each element in the collection.
+ */
+@OptIn(ExperimentalTypeInference::class)
+@OverloadResolutionByLambdaReturnType
+@JvmName("prodOfDouble")
+inline fun <T> Iterable<T>.prodOf(selector: (T) -> Float): Float {
+    var prod = 1.0f
+    for (element in this) {
+        prod *= selector(element)
+    }
+    return prod
 }
 
 /**
@@ -420,6 +510,29 @@ fun Iterable<Double>.prod(): Double {
     return prod
 }
 
+/**
+ * @return the prod of all elements in the collection.
+ */
+@JvmName("prodOfBigInteger")
+fun Iterable<BigInteger>.prod(): BigInteger {
+    var prod = 1.toBigInteger()
+    for (element in this) {
+        prod *= element
+    }
+    return prod
+}
+
+/**
+ * @return the prod of all elements in the collection.
+ */
+@JvmName("prodOfBigDecimal")
+fun Iterable<BigDecimal>.prod(): BigDecimal {
+    var prod = 1.toBigDecimal()
+    for (element in this) {
+        prod *= element
+    }
+    return prod
+}
 
 /**
  * @return the prod of all elements in the array.
@@ -487,6 +600,30 @@ fun Array<out Float>.prod(): Float {
 @JvmName("prodOfDouble")
 fun Array<out Double>.prod(): Double {
     var prod = 1.0
+    for (element in this) {
+        prod *= element
+    }
+    return prod
+}
+
+/**
+ * @return the prod of all elements in the array.
+ */
+@JvmName("prodOfBigInteger")
+fun Array<out BigInteger>.prod(): BigInteger {
+    var prod = 1.toBigInteger()
+    for (element in this) {
+        prod *= element
+    }
+    return prod
+}
+
+/**
+ * @return the prod of all elements in the array.
+ */
+@JvmName("prodOfBigDecimal")
+fun Array<out BigDecimal>.prod(): BigDecimal {
+    var prod = 1.toBigDecimal()
     for (element in this) {
         prod *= element
     }
@@ -622,6 +759,20 @@ fun DoubleStream.prod(): Double {
     var prod = 1.0
     for (element in this) {
         prod *= element
+    }
+    return prod
+}
+
+/**
+ * @return the prod of all values produced by [selector] function applied to each element in the stream.
+ */
+@OptIn(ExperimentalTypeInference::class)
+@OverloadResolutionByLambdaReturnType
+@JvmName("prodOfFloat")
+inline fun <T> Stream<T>.prodOf(selector: (T) -> Float): Float {
+    var prod = 1.0f
+    for (element in this) {
+        prod *= selector(element)
     }
     return prod
 }

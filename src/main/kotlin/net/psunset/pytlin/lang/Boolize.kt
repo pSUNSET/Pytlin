@@ -88,6 +88,12 @@ inline fun ULong.toBool(): Boolean = this != 0.toULong()
 inline operator fun ULong.not(): Boolean = this == 0.toULong()
 
 /**
+ * @return `true` when the number isn't zero; `false` otherwise.
+ */
+inline fun Number.toBool(): Boolean = !(this valEq 0)
+inline operator fun Number.not(): Boolean = this valEq 0
+
+/**
  * @return `true` when the collection isn't empty; `false` otherwise.
  */
 inline fun <T> Collection<T>.toBool(): Boolean = this.isNotEmpty()

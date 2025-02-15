@@ -5,13 +5,10 @@ package net.psunset.pytlin.lang
  */
 
 import java.math.BigDecimal
+import java.math.BigInteger
 import java.math.RoundingMode
 import kotlin.math.abs
 import kotlin.math.truncate
-
-
-@Deprecated("Please use `!this.isFractionalPartZero()` instead.", replaceWith = ReplaceWith("!this.isFractionalPartZero()"), level = DeprecationLevel.ERROR)
-fun Number.hasFractionalPart(): Boolean = this.toDouble() != truncate(toDouble())
 
 /**
  * Determines if the number has a zero fractional part.
@@ -113,4 +110,8 @@ infix fun Number.valEq(other: Number): Boolean =
  */
 @JvmName("valueEquals")
 fun valEq(a: Number, b: Number): Boolean = a valEq b
+
+inline fun Number.toBigInteger(): BigInteger = this.toString().toBigInteger()
+
+inline fun Number.toBigDecimal(): BigDecimal = this.toString().toBigDecimal()
 
