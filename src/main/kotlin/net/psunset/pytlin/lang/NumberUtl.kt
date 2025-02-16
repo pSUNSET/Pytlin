@@ -115,5 +115,10 @@ inline fun Number.toBigInteger(): BigInteger = BigInteger(this.toString())
 
 inline fun Number.toBigDecimal(): BigDecimal = BigDecimal(this.toString())
 
-fun Number.toBigDecimal(scale: Int): BigDecimal = BigDecimal(this.toString()).setScale(scale, RoundingMode.HALF_UP)
+/**
+ * When [BigDecimal] must have larger scale to save data, use this function instead.
+ * @param minScale The expected min scale of this decimal.
+ */
+fun Number.toBigDecimal(minScale: Int): BigDecimal =
+    BigDecimal(this.toString()).let { if (it.scale() < minScale) it.setScale(minScale) else it }
 

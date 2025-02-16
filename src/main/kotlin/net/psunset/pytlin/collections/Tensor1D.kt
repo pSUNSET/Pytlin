@@ -11,19 +11,24 @@ abstract class Tensor1D<E : Number> private constructor(
 
     @Suppress("UNCHECKED_CAST")
     override val data = super.data as Array<E>
+    inline val size: Int get() = this.numel
 
     constructor(data: Array<E>) : this(data, Tensors.space(data.size))
 
-    operator fun get(index: Int): E = this.data[index]
-    override fun get(index: TensorIndex): E {
-        require(isValidIndex(index)) { "The index is invalid in this tensor." }
-        return this[index[0]]
+    init {
+        require(data.size == this.numel) { "The data is invalid because of its wrong size." }
     }
 
-    operator fun set(index: Int, value: E) = this.data.set(index, value)
+    operator fun get(index: Int): E = this[Tensors.index(index)]
+    override fun get(index: TensorIndex): E {
+        require(isValidIndex(index)) { "The index is invalid in this tensor." }
+        return this.data[index[0]]
+    }
+
+    operator fun set(index: Int, value: E) = this.set(Tensors.index(index), value)
     override fun set(index: TensorIndex, value: E) {
         require(isValidIndex(index)) { "The index is invalid in this tensor." }
-        this[index[0]] = value
+        this.data[index[0]] = value
     }
 
     operator fun plus(scalar: E): Tensor1D<E> = this.apply { this.plusAssign(scalar) }
@@ -69,47 +74,47 @@ abstract class Tensor1D<E : Number> private constructor(
     operator fun rem(vector: Tensor1D<E>): Tensor1D<E> = this.apply { this.remAssign(vector) }
 
     operator fun plusAssign(vector: Tensor1D<E>) {
-        requireSameShape(vector)
+        requireSameFirstDimSize(vector)
         for (i in 0..<this.numel) {
             this[i] = doAdd(this[i], vector[i])
         }
     }
 
     operator fun minusAssign(vector: Tensor1D<E>) {
-        requireSameShape(vector)
+        requireSameFirstDimSize(vector)
         for (i in 0..<this.numel) {
             this[i] = doSub(this[i], vector[i])
         }
     }
 
     operator fun timesAssign(vector: Tensor1D<E>) {
-        requireSameShape(vector)
+        requireSameFirstDimSize(vector)
         for (i in 0..<this.numel) {
             this[i] = doMul(this[i], vector[i])
         }
     }
 
     operator fun divAssign(vector: Tensor1D<E>) {
-        requireSameShape(vector)
+        requireSameFirstDimSize(vector)
         for (i in 0..<this.numel) {
             this[i] = doDiv(this[i], vector[i])
         }
     }
 
     operator fun remAssign(vector: Tensor1D<E>) {
-        requireSameShape(vector)
+        requireSameFirstDimSize(vector)
         for (i in 0..<this.numel) {
             this[i] = doMod(this[i], vector[i])
         }
     }
 
     infix fun dot(vector: Tensor1D<E>): E {
-        requireSameShape(vector)
+        requireSameFirstDimSize(vector)
         return this.data.zip(vector.data).map { (a, b) -> doMul(a, b) }.reduce { a, b -> doAdd(a, b) }
     }
 
     infix fun cross(vector: Tensor1D<E>): Tensor1D<E> {
-        requireSameShape(vector)
+        requireSameFirstDimSize(vector)
         if (this.numel != 3) {
             throw IllegalArgumentException("Vectors must have dimension 3 to calculate the cross product.")
         }
@@ -130,6 +135,12 @@ abstract class Tensor1D<E : Number> private constructor(
         )
     }
 
+    /**
+     * Alias for [cross] function.
+     * Because `a x b` looks really like a cross b.
+     */
+    inline infix fun x(vector: Tensor1D<E>): Tensor1D<E> = cross(vector)
+
     protected abstract fun doAdd(a: E, b: E): E
     protected abstract fun doSub(a: E, b: E): E
     protected abstract fun doMul(a: E, b: E): E
@@ -141,18 +152,46 @@ abstract class Tensor1D<E : Number> private constructor(
     open fun toLongTensor(): Tensor1D<Long> = LongTensor1D(this.data.map { it.toLong() }.toTypedArray())
     open fun toFloatTensor(): Tensor1D<Float> = FloatTensor1D(this.data.map { it.toFloat() }.toTypedArray())
     open fun toDoubleTensor(): Tensor1D<Double> = DoubleTensor1D(this.data.map { it.toDouble() }.toTypedArray())
+
     open fun toBigIntegerTensor(): Tensor1D<BigInteger> =
         BigIntegerTensor1D(this.data.map { it.toBigInteger() }.toTypedArray())
 
+    /**
+     * After testing, this function may return the decimal with a bad scale.
+     * If you want to limit the min scale.
+     * Please use the overloading function with `factory` parameter instead.
+     * For example:
+     * ```
+     * val tensorWithDouble = tensorOf1D(arrayOf(53.9, 854.3, 264.7, 964.4))
+     * // val tensorWithBigDecimal = tensorWithDouble.toBigDecimalTensor() // With bad scale
+     * val tensorWithBigDecimal = tensorWithDouble.toBigDecimalTensor { it.toBigDecimal(?) }
+     * // Add this line and replace `?` to expected min scale
+     * ```
+     * @see toBigDecimalTensor toBigDecimalTensor(factory: (E) -> BigDecimal)
+     */
     open fun toBigDecimalTensor(): Tensor1D<BigDecimal> =
-        BigDecimalTensor1D(this.data.map { it.toBigDecimal(10) }.toTypedArray())
+        BigDecimalTensor1D(this.data.map { it.toBigDecimal() }.toTypedArray())
+
+    fun toIntTensor(factory: (E) -> Int): Tensor1D<Int> = IntTensor1D(this.data.map(factory).toTypedArray())
+    fun toLongTensor(factory: (E) -> Long): Tensor1D<Long> = LongTensor1D(this.data.map(factory).toTypedArray())
+    fun toFloatTensor(factory: (E) -> Float): Tensor1D<Float> = FloatTensor1D(this.data.map(factory).toTypedArray())
+    fun toDoubleTensor(factory: (E) -> Double): Tensor1D<Double> = DoubleTensor1D(this.data.map(factory).toTypedArray())
+
+    fun toBigIntegerTensor(factory: (E) -> BigInteger): Tensor1D<BigInteger> =
+        BigIntegerTensor1D(this.data.map(factory).toTypedArray())
+
+    fun toBigDecimalTensor(factory: (E) -> BigDecimal): Tensor1D<BigDecimal> =
+        BigDecimalTensor1D(this.data.map(factory).toTypedArray())
+
+    override fun iterator(): Iterator<E> = this.data.iterator()
+
+    override fun contentDeepToString(highestDim: Int): String =
+        StringBuilder()
+            .append('[')
+            .append(this.data.joinToString(limit = 100))
+            .append(']')
+            .toString()
 }
-
-inline fun <reified E : Number> tensorOf1D(data: List<E>): Tensor1D<E> =
-    Tensors.of1D(data)
-
-inline fun <reified E : Number> tensorOf1D(data: Array<E>): Tensor1D<E> =
-    Tensors.of1D(data)
 
 /**
  * Only access 1D [Int] data.
@@ -176,12 +215,6 @@ class IntTensor1D(
     override fun toIntTensor(): IntTensor1D = IntTensor1D(this.data.clone())
 }
 
-fun intTensorOf1D(data: List<Int>): IntTensor1D = IntTensor1D(data.toTypedArray())
-
-fun intTensorOf1D(data: Array<Int>): IntTensor1D = IntTensor1D(data)
-
-fun intTensorOf1D(data: IntArray): IntTensor1D = IntTensor1D(data.toTypedArray())
-
 /**
  * Only access 1D [Long] data.
  */
@@ -203,12 +236,6 @@ class LongTensor1D(
 
     override fun toLongTensor(): LongTensor1D = LongTensor1D(this.data.clone())
 }
-
-fun longTensorOf1D(data: List<Long>): LongTensor1D = LongTensor1D(data.toTypedArray())
-
-fun longTensorOf1D(data: Array<Long>): LongTensor1D = LongTensor1D(data)
-
-fun longTensorOf1D(data: LongArray): LongTensor1D = LongTensor1D(data.toTypedArray())
 
 /**
  * Only access 1D [Float] data.
@@ -232,12 +259,6 @@ class FloatTensor1D(
     override fun toFloatTensor(): FloatTensor1D = FloatTensor1D(this.data.clone())
 }
 
-fun floatTensorOf1D(data: List<Float>): FloatTensor1D = FloatTensor1D(data.toTypedArray())
-
-fun floatTensorOf1D(data: Array<Float>): FloatTensor1D = FloatTensor1D(data)
-
-fun floatTensorOf1D(data: FloatArray): FloatTensor1D = FloatTensor1D(data.toTypedArray())
-
 /**
  * Only access 1D [Double] data.
  */
@@ -259,12 +280,6 @@ class DoubleTensor1D(
 
     override fun toDoubleTensor(): DoubleTensor1D = DoubleTensor1D(this.data.clone())
 }
-
-fun doubleTensorOf1D(data: List<Double>): DoubleTensor1D = DoubleTensor1D(data.toTypedArray())
-
-fun doubleTensorOf1D(data: Array<Double>): DoubleTensor1D = DoubleTensor1D(data)
-
-fun doubleTensorOf1D(data: DoubleArray): DoubleTensor1D = DoubleTensor1D(data.toTypedArray())
 
 /**
  * Only access 1D [BigInteger] data.
@@ -288,10 +303,6 @@ class BigIntegerTensor1D(
     override fun toBigIntegerTensor(): BigIntegerTensor1D = BigIntegerTensor1D(this.data.clone())
 }
 
-fun bigIntegerTensorOf1D(data: List<BigInteger>): BigIntegerTensor1D = BigIntegerTensor1D(data.toTypedArray())
-
-fun bigIntegerTensorOf1D(data: Array<BigInteger>): BigIntegerTensor1D = BigIntegerTensor1D(data)
-
 /**
  * Only access 1D [BigDecimal] data.
  */
@@ -314,6 +325,17 @@ class BigDecimalTensor1D(
     override fun toBigDecimalTensor(): BigDecimalTensor1D = BigDecimalTensor1D(this.data.clone())
 }
 
-fun bigDecimalTensorOf1D(data: List<BigDecimal>): BigDecimalTensor1D = BigDecimalTensor1D(data.toTypedArray())
+inline fun <reified E : Number> tensorOf1D(data: List<E>): Tensor1D<E> =
+    Tensors.of1D(data)
 
-fun bigDecimalTensorOf1D(data: Array<BigDecimal>): BigDecimalTensor1D = BigDecimalTensor1D(data)
+inline fun <reified E : Number> tensorOf1D(vararg data: E): Tensor1D<E> =
+    Tensors.of1D(data)
+
+fun intTensorOf1D(data: ByteArray): IntTensor1D = IntTensor1D(data.map { it.toInt() }.toTypedArray())
+fun intTensorOf1D(data: ShortArray): IntTensor1D = IntTensor1D(data.map { it.toInt() }.toTypedArray())
+fun intTensorOf1D(data: IntArray): IntTensor1D = IntTensor1D(data.toTypedArray())
+fun longTensorOf1D(data: LongArray): LongTensor1D = LongTensor1D(data.toTypedArray())
+fun floatTensorOf1D(data: FloatArray): FloatTensor1D = FloatTensor1D(data.toTypedArray())
+fun doubleTensorOf1D(data: DoubleArray): DoubleTensor1D = DoubleTensor1D(data.toTypedArray())
+
+

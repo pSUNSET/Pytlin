@@ -1,21 +1,16 @@
 package net.psunset.pytlin.collections
 
-import net.psunset.pytlin.lang.times
 import java.math.BigDecimal
 import java.math.BigInteger
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.*
-
 
 object Tensors {
 
     inline fun <reified E : Number> of1D(data: List<E>): Tensor1D<E> {
-        return tensorOf1D(data.toTypedArray())
+        return of1D(data.toTypedArray())
     }
 
     @Suppress("UNCHECKED_CAST")
-    inline fun <reified E : Number> of1D(data: Array<E>): Tensor1D<E> {
+    inline fun <reified E : Number> of1D(data: Array<out E>): Tensor1D<E> {
         return when (E::class) {
             Byte::class -> { // Byte precision is invalid here, using Int instead
                 val newData = mutableListOf<Int>()
@@ -49,6 +44,45 @@ object Tensors {
         }
     }
 
+    inline fun <reified E : Number> of2D(data: List<Tensor1D<E>>): Tensor2D<E> {
+        return of2D(data.toTypedArray())
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    inline fun <reified E : Number> of2D(data: Array<out Tensor1D<E>>): Tensor2D<E> {
+        return when (E::class) {
+            Byte::class -> { // Byte precision is invalid here, using Int instead
+                val newData = mutableListOf<Tensor1D<Int>>()
+                for (element in data) {
+                    newData.add(element.toIntTensor())
+                }
+                return IntTensor2D(newData.toTypedArray()) as Tensor2D<E>
+            }
+
+            Short::class -> { // Short precision is invalid here, using Int instead
+                val newData = mutableListOf<Tensor1D<Int>>()
+                for (element in data) {
+                    newData.add(element.toIntTensor())
+                }
+                return IntTensor2D(newData.toTypedArray()) as Tensor2D<E>
+            }
+
+            Int::class -> IntTensor2D(data as Array<Tensor1D<Int>>) as Tensor2D<E>
+            Long::class -> LongTensor2D(data as Array<Tensor1D<Long>>) as Tensor2D<E>
+            Float::class -> FloatTensor2D(data as Array<Tensor1D<Float>>) as Tensor2D<E>
+            Double::class -> DoubleTensor2D(data as Array<Tensor1D<Double>>) as Tensor2D<E>
+            BigInteger::class -> BigIntegerTensor2D(data as Array<Tensor1D<BigInteger>>) as Tensor2D<E>
+            BigDecimal::class -> BigDecimalTensor2D(data as Array<Tensor1D<BigDecimal>>) as Tensor2D<E>
+            else -> { // Default to use Double
+                val newData = mutableListOf<Tensor1D<Double>>()
+                for (element in data) {
+                    newData.add(element.toDoubleTensor())
+                }
+                return DoubleTensor2D(newData.toTypedArray()) as Tensor2D<E>
+            }
+        }
+    }
+
     fun space(vararg shape: Int) = TensorSpace(shape)
     fun space(shape: Array<out Int>) = TensorSpace(shape.toIntArray())
     fun space(shape: List<Int>) = TensorSpace(shape.toIntArray())
@@ -73,13 +107,9 @@ abstract class Tensor<E : Number>(
 ) : WithDtype {
 
     open val data = data
+    val shape = this.space.shape
     val ndim = this.space.ndim
     val numel = this.space.numel
-    val nelement = this.space.nelement
-
-    init {
-        require(data.size == this.numel) { "The data is invalid because of its wrong size." }
-    }
 
     abstract operator fun get(index: TensorIndex): E
     abstract operator fun set(index: TensorIndex, value: E)
@@ -88,6 +118,9 @@ abstract class Tensor<E : Number>(
     protected fun requireSameShape(other: Tensor<*>) =
         require(this shapeEq other) { "The tensors must have same shape" }
 
+    protected fun requireSameFirstDimSize(other: Tensor<*>) =
+        require(this.shape[0] == other.shape[0]) { "The tensors must have same shape" }
+
     fun isValidIndex(index: TensorIndex): Boolean = index in this.space
 
     fun to1DTensor(): Tensor1D<E> {
@@ -95,60 +128,23 @@ abstract class Tensor<E : Number>(
         return this as Tensor1D<E>
     }
 
-    override fun toString(): String {
-        val sb = StringBuilder()
-        sb.append("tensor(")
-        sb.append(this.data.formattedToString())
-        sb.append(", dtype=").append(this.dtype.qualifiedName)
-        sb.append(')')
-        return sb.toString()
+    fun to2DTensor(): Tensor2D<E> {
+        require(this.ndim == 2) { "Only use this function when the ndim equals to 1." }
+        return this as Tensor2D<E>
     }
 
-    @OptIn(ExperimentalUnsignedTypes::class)
-    private fun Array<*>.formattedToString(spaceCounter: Int = 6): String {
-        val result = StringBuilder()
+    abstract operator fun iterator(): Iterator<*>
 
-        // Not first
-        if (spaceCounter > 6) {
-            result.append(',').append('\n').append(' ' * spaceCounter)
-        }
+    final override fun toString(): String =
+        StringBuilder()
+            .append("tensor(")
+            .append(this.contentDeepToString(this.ndim))
+            .append(", dtype=")
+            .append(this.dtype.qualifiedName)
+            .append(')')
+            .toString()
 
-        result.append('[')
-        var isFirst: Boolean = true
-        for (element in this) {
-            if (!isFirst) {
-                result.append(',').append(' ')
-            }
-            isFirst = false
-
-            when (element) {
-                is Array<*> -> result.append(element.formattedToString(spaceCounter + 1))
-                is ByteArray -> result.append(element.toTypedArray().formattedToString(spaceCounter + 1))
-                is ShortArray -> result.append(element.toTypedArray().formattedToString(spaceCounter + 1))
-                is IntArray -> result.append(element.toTypedArray().formattedToString(spaceCounter + 1))
-                is LongArray -> result.append(element.toTypedArray().formattedToString(spaceCounter + 1))
-                is FloatArray -> result.append(element.toTypedArray().formattedToString(spaceCounter + 1))
-                is DoubleArray -> result.append(element.toTypedArray().formattedToString(spaceCounter + 1))
-                is CharArray -> result.append(element.toTypedArray().formattedToString(spaceCounter + 1))
-                is BooleanArray -> result.append(element.toTypedArray().formattedToString(spaceCounter + 1))
-
-                is UByteArray -> result.append(element.toTypedArray().formattedToString(spaceCounter + 1))
-                is UShortArray -> result.append(element.toTypedArray().formattedToString(spaceCounter + 1))
-                is UIntArray -> result.append(element.toTypedArray().formattedToString(spaceCounter + 1))
-                is ULongArray -> result.append(element.toTypedArray().formattedToString(spaceCounter + 1))
-
-                else -> {
-                    val formatter = DecimalFormat("0.0000E0")
-                    formatter.minimumFractionDigits = 4
-                    formatter.maximumFractionDigits = 4
-                    val formatted = formatter.format(element).replace("E-", "e-").replace("E", "e+")
-                    result.append(formatted)
-                }
-            }
-        }
-        result.append(']')
-        return result.toString()
-    }
+    abstract fun contentDeepToString(highestDim: Int): String
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
@@ -176,11 +172,6 @@ class TensorSpace(
      */
     val numel = this.shape.prod()
 
-    /**
-     * alias for [numel]
-     */
-    val nelement = this.numel
-
     operator fun get(dim: Int): Int = this.shape[dim]
 
     operator fun set(dim: Int, value: Int) {
@@ -205,6 +196,13 @@ class TensorSpace(
         return true
     }
 
+    operator fun contains(inner: TensorSpace): Boolean {
+        val thisSize = this.shape.size
+        val innerSize = inner.shape.size
+        val truncated = this.shape.sliceArray((thisSize - innerSize)..<thisSize)
+        return truncated.contentEquals(inner.shape)
+    }
+
     override fun hashCode(): Int {
         return javaClass.hashCode()
     }
@@ -215,7 +213,7 @@ class TensorIndex(
 ) {
 
     init {
-        require(dims.any { it > 0 }) { "The index of any dimension should not be negative." }
+        require(dims.any { it >= 0 }) { "The index of any dimension should not be negative." }
     }
 
     val ndim = this.dims.size
