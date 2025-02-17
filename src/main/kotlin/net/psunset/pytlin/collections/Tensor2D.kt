@@ -193,7 +193,7 @@ abstract class Tensor2D<E : Number> private constructor(
      * Please use the overloading function with `factory` parameter instead.
      * For example:
      * ```
-     * val tensorWithDouble = tensorOf1D(arrayOf(53.9, 854.3, 264.7, 964.4))
+     * val tensorWithDouble = tensorOf(arrayOf(53.9, 854.3, 264.7, 964.4))
      * // val tensorWithBigDecimal = tensorWithDouble.toBigDecimalTensor() // With bad scale
      * val tensorWithBigDecimal = tensorWithDouble.toBigDecimalTensor { it.toBigDecimal(?) }
      * // Add this line and replace `?` to expected min scale
@@ -225,6 +225,7 @@ abstract class Tensor2D<E : Number> private constructor(
             else result.append(',').append('\n').append(' ' * (7 + highestDim))
             result.append(element.contentDeepToString(highestDim))
         }
+        result.append(']')
         return result.toString()
     }
 }
@@ -233,48 +234,70 @@ class IntTensor2D(
     data: Array<Tensor1D<Int>>
 ) : Tensor2D<Int>(data), IntAsDtype {
     override fun newOne(l: List<List<Int>>): Tensor2D<Int> =
-        IntTensor2D(l.map { tensorOf1D(it) }.toTypedArray())
+        IntTensor2D(l.map { tensorOf(it) }.toTypedArray())
 }
 
 class LongTensor2D(
     data: Array<Tensor1D<Long>>
 ) : Tensor2D<Long>(data), LongAsDtype {
     override fun newOne(l: List<List<Long>>): Tensor2D<Long> =
-        LongTensor2D(l.map { tensorOf1D(it) }.toTypedArray())
+        LongTensor2D(l.map { tensorOf(it) }.toTypedArray())
 }
 
 class FloatTensor2D(
     data: Array<Tensor1D<Float>>
 ) : Tensor2D<Float>(data), FloatAsDtype {
     override fun newOne(l: List<List<Float>>): Tensor2D<Float> =
-        FloatTensor2D(l.map { tensorOf1D(it) }.toTypedArray())
+        FloatTensor2D(l.map { tensorOf(it) }.toTypedArray())
 }
 
 class DoubleTensor2D(
     data: Array<Tensor1D<Double>>
 ) : Tensor2D<Double>(data), DoubleAsDtype {
     override fun newOne(l: List<List<Double>>): Tensor2D<Double> =
-        DoubleTensor2D(l.map { tensorOf1D(it) }.toTypedArray())
+        DoubleTensor2D(l.map { tensorOf(it) }.toTypedArray())
 }
 
 class BigIntegerTensor2D(
     data: Array<Tensor1D<BigInteger>>
 ) : Tensor2D<BigInteger>(data), BigIntegerAsDtype {
     override fun newOne(l: List<List<BigInteger>>): Tensor2D<BigInteger> =
-        BigIntegerTensor2D(l.map { tensorOf1D(it) }.toTypedArray())
+        BigIntegerTensor2D(l.map { tensorOf(it) }.toTypedArray())
 }
 
 class BigDecimalTensor2D(
     data: Array<Tensor1D<BigDecimal>>
 ) : Tensor2D<BigDecimal>(data), BigDecimalAsDtype {
     override fun newOne(l: List<List<BigDecimal>>): Tensor2D<BigDecimal> =
-        BigDecimalTensor2D(l.map { tensorOf1D(it) }.toTypedArray())
+        BigDecimalTensor2D(l.map { tensorOf(it) }.toTypedArray())
 }
 
-inline fun <reified E : Number> tensorOf2D(data: List<Tensor1D<E>>): Tensor2D<E> = Tensors.of2D(data.toTypedArray())
-inline fun <reified E : Number> tensorOf2D(data: Array<out Tensor1D<E>>): Tensor2D<E> = Tensors.of2D(data)
-@JvmName("tensorOf2DVararg")
-inline fun <reified E : Number> tensorOf2D(vararg data: Tensor1D<E>): Tensor2D<E> = Tensors.of2D(data)
+@JvmName("tensorOf2DList_Tensor")
+inline fun <reified E : Number> tensorOf(data: List<Tensor1D<out E>>): Tensor2D<E> = data.toTensor()
+@JvmName("tensorOf2DList_List")
+inline fun <reified E : Number> tensorOf(data: List<List<E>>): Tensor2D<E> = data.toTensor()
+@JvmName("tensorOf2DList_Array")
+inline fun <reified E : Number> tensorOf(data: List<Array<out E>>): Tensor2D<E> = data.toTensor()
+@JvmName("tensorOf2DArray_Tensor")
+inline fun <reified E : Number> tensorOf(data: Array<out Tensor1D<out E>>): Tensor2D<E> = data.toTensor()
+@JvmName("tensorOf2DArray_List")
+inline fun <reified E : Number> tensorOf(data: Array<out List<E>>): Tensor2D<E> = data.toTensor()
+@JvmName("tensorOf2DArray_Array")
+inline fun <reified E : Number> tensorOf(data: Array<out Array<out E>>): Tensor2D<E> = data.toTensor()
+@JvmName("tensorOf2DVararg_Tensor")
+inline fun <reified E : Number> tensorOf(vararg data: Tensor1D<out E>): Tensor2D<E> = data.toTensor()
+@JvmName("tensorOf2DVararg_List")
+inline fun <reified E : Number> tensorOf(vararg data: List<E>): Tensor2D<E> = data.toTensor()
+@JvmName("tensorOf2DVararg_Array")
+inline fun <reified E : Number> tensorOf(vararg data: Array<out E>): Tensor2D<E> = data.toTensor()
 
-inline fun <reified E : Number> Array<out Tensor1D<E>>.toTensor(): Tensor2D<E> = Tensors.of2D(this)
-inline fun <reified E : Number> List<Tensor1D<E>>.toTensor(): Tensor2D<E> = Tensors.of2D(this.toTypedArray())
+@JvmName("list_tensorToTensor")
+inline fun <reified E : Number> List<Tensor1D<out E>>.toTensor(): Tensor2D<E> = Tensors.of2D(this.toTypedArray())
+@JvmName("list_listToTensor")
+inline fun <reified E : Number> List<List<E>>.toTensor(): Tensor2D<E> = tensorOf(this.map { it.toTensor() })
+@JvmName("list_arrayToTensor")
+inline fun <reified E : Number> List<Array<out E>>.toTensor(): Tensor2D<E> = tensorOf(this.map { it.toTensor() })
+
+inline fun <reified E : Number> Array<out Tensor1D<out E>>.toTensor(): Tensor2D<E> =  Tensors.of2D(this)
+inline fun <reified E : Number> Array<out List<E>>.toTensor(): Tensor2D<E> = tensorOf(this.map { it.toTensor() })
+inline fun <reified E : Number> Array<out Array<out E>>.toTensor(): Tensor2D<E> = tensorOf(this.map { it.toTensor() })
