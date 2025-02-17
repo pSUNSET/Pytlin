@@ -1,14 +1,12 @@
 package net.psunset.pytlin.collections
 
 import net.psunset.pytlin.lang.times
-import net.psunset.pytlin.lang.toBigDecimal
-import net.psunset.pytlin.lang.toBigInteger
 import java.math.BigDecimal
 import java.math.BigInteger
 
 abstract class Tensor2D<E : Number> private constructor(
     data: Array<Tensor1D<E>>, space: TensorSpace
-) : Tensor<E>(data, space) {
+) : Tensor_D<E>(data, space) {
 
     @Suppress("UNCHECKED_CAST")
     override val data = super.data as Array<Tensor1D<E>>
@@ -18,8 +16,7 @@ abstract class Tensor2D<E : Number> private constructor(
     constructor(data: Array<Tensor1D<E>>) : this(data, Tensors.space(data.size, data[0].numel))
 
     init {
-        val c = space[1]
-        require(data.all { it.numel == c }) { "All 1d tensors must have same size to convert into 2d tensor." }
+        require(data.all { it.numel == space[1] }) { "All 1d tensors must have same size to convert into 2d tensor." }
     }
 
     operator fun get(i: Int, ii: Int): E = this[Tensors.index(i, ii)]
@@ -236,46 +233,48 @@ class IntTensor2D(
     data: Array<Tensor1D<Int>>
 ) : Tensor2D<Int>(data), IntAsDtype {
     override fun newOne(l: List<List<Int>>): Tensor2D<Int> =
-        IntTensor2D(l.map { Tensors.of1D(it) }.toTypedArray())
+        IntTensor2D(l.map { tensorOf1D(it) }.toTypedArray())
 }
 
 class LongTensor2D(
     data: Array<Tensor1D<Long>>
 ) : Tensor2D<Long>(data), LongAsDtype {
     override fun newOne(l: List<List<Long>>): Tensor2D<Long> =
-        LongTensor2D(l.map { Tensors.of1D(it) }.toTypedArray())
+        LongTensor2D(l.map { tensorOf1D(it) }.toTypedArray())
 }
 
 class FloatTensor2D(
     data: Array<Tensor1D<Float>>
 ) : Tensor2D<Float>(data), FloatAsDtype {
     override fun newOne(l: List<List<Float>>): Tensor2D<Float> =
-        FloatTensor2D(l.map { Tensors.of1D(it) }.toTypedArray())
+        FloatTensor2D(l.map { tensorOf1D(it) }.toTypedArray())
 }
 
 class DoubleTensor2D(
     data: Array<Tensor1D<Double>>
 ) : Tensor2D<Double>(data), DoubleAsDtype {
     override fun newOne(l: List<List<Double>>): Tensor2D<Double> =
-        DoubleTensor2D(l.map { Tensors.of1D(it) }.toTypedArray())
+        DoubleTensor2D(l.map { tensorOf1D(it) }.toTypedArray())
 }
 
 class BigIntegerTensor2D(
     data: Array<Tensor1D<BigInteger>>
 ) : Tensor2D<BigInteger>(data), BigIntegerAsDtype {
     override fun newOne(l: List<List<BigInteger>>): Tensor2D<BigInteger> =
-        BigIntegerTensor2D(l.map { Tensors.of1D(it) }.toTypedArray())
+        BigIntegerTensor2D(l.map { tensorOf1D(it) }.toTypedArray())
 }
 
 class BigDecimalTensor2D(
     data: Array<Tensor1D<BigDecimal>>
 ) : Tensor2D<BigDecimal>(data), BigDecimalAsDtype {
     override fun newOne(l: List<List<BigDecimal>>): Tensor2D<BigDecimal> =
-        BigDecimalTensor2D(l.map { Tensors.of1D(it) }.toTypedArray())
+        BigDecimalTensor2D(l.map { tensorOf1D(it) }.toTypedArray())
 }
 
-inline fun <reified E : Number> tensorOf2D(data: List<Tensor1D<E>>): Tensor2D<E> =
-    Tensors.of2D(data)
+inline fun <reified E : Number> tensorOf2D(data: List<Tensor1D<E>>): Tensor2D<E> = Tensors.of2D(data.toTypedArray())
+inline fun <reified E : Number> tensorOf2D(data: Array<out Tensor1D<E>>): Tensor2D<E> = Tensors.of2D(data)
+@JvmName("tensorOf2DVararg")
+inline fun <reified E : Number> tensorOf2D(vararg data: Tensor1D<E>): Tensor2D<E> = Tensors.of2D(data)
 
-inline fun <reified E : Number> tensorOf2D(vararg data: Tensor1D<E>): Tensor2D<E> =
-    Tensors.of2D(data)
+inline fun <reified E : Number> Array<out Tensor1D<E>>.toTensor(): Tensor2D<E> = Tensors.of2D(this)
+inline fun <reified E : Number> List<Tensor1D<E>>.toTensor(): Tensor2D<E> = Tensors.of2D(this.toTypedArray())

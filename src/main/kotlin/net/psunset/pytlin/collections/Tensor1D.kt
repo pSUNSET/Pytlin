@@ -7,7 +7,7 @@ import java.math.BigInteger
 
 abstract class Tensor1D<E : Number> private constructor(
     data: Array<E>, space: TensorSpace
-) : Tensor<E>(data, space) {
+) : Tensor_D<E>(data, space) {
 
     @Suppress("UNCHECKED_CAST")
     override val data = super.data as Array<E>
@@ -188,7 +188,7 @@ abstract class Tensor1D<E : Number> private constructor(
     override fun contentDeepToString(highestDim: Int): String =
         StringBuilder()
             .append('[')
-            .append(this.data.joinToString(limit = 100))
+            .append(this.data.joinToString())
             .append(']')
             .toString()
 }
@@ -325,11 +325,13 @@ class BigDecimalTensor1D(
     override fun toBigDecimalTensor(): BigDecimalTensor1D = BigDecimalTensor1D(this.data.clone())
 }
 
-inline fun <reified E : Number> tensorOf1D(data: List<E>): Tensor1D<E> =
-    Tensors.of1D(data)
+inline fun <reified E : Number> tensorOf1D(data: List<E>): Tensor1D<E> = Tensors.of1D(data.toTypedArray())
+inline fun <reified E : Number> tensorOf1D(data: Array<E>): Tensor1D<E> = Tensors.of1D(data)
+@JvmName("tensorOf1DVararg")
+inline fun <reified E : Number> tensorOf1D(vararg data: E): Tensor1D<E> = Tensors.of1D(data)
 
-inline fun <reified E : Number> tensorOf1D(vararg data: E): Tensor1D<E> =
-    Tensors.of1D(data)
+inline fun <reified E : Number> List<E>.toTensor(): Tensor1D<E> = Tensors.of1D(this.toTypedArray())
+inline fun <reified E : Number> Array<E>.toTensor(): Tensor1D<E> = Tensors.of1D(this)
 
 fun intTensorOf1D(data: ByteArray): IntTensor1D = IntTensor1D(data.map { it.toInt() }.toTypedArray())
 fun intTensorOf1D(data: ShortArray): IntTensor1D = IntTensor1D(data.map { it.toInt() }.toTypedArray())
@@ -337,5 +339,12 @@ fun intTensorOf1D(data: IntArray): IntTensor1D = IntTensor1D(data.toTypedArray()
 fun longTensorOf1D(data: LongArray): LongTensor1D = LongTensor1D(data.toTypedArray())
 fun floatTensorOf1D(data: FloatArray): FloatTensor1D = FloatTensor1D(data.toTypedArray())
 fun doubleTensorOf1D(data: DoubleArray): DoubleTensor1D = DoubleTensor1D(data.toTypedArray())
+
+fun ByteArray.toTensor(): IntTensor1D = IntTensor1D(this.map { it.toInt() }.toTypedArray())
+fun ShortArray.toTensor(): IntTensor1D = IntTensor1D(this.map { it.toInt() }.toTypedArray())
+fun IntArray.toTensor(): IntTensor1D = IntTensor1D(this.toTypedArray())
+fun LongArray.toTensor(): LongTensor1D = LongTensor1D(this.toTypedArray())
+fun FloatArray.toTensor(): FloatTensor1D = FloatTensor1D(this.toTypedArray())
+fun DoubleArray.toTensor(): DoubleTensor1D = DoubleTensor1D(this.toTypedArray())
 
 

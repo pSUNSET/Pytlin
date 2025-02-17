@@ -5,81 +5,39 @@ import java.math.BigInteger
 
 object Tensors {
 
-    inline fun <reified E : Number> of1D(data: List<E>): Tensor1D<E> {
-        return of1D(data.toTypedArray())
-    }
-
     @Suppress("UNCHECKED_CAST")
     inline fun <reified E : Number> of1D(data: Array<out E>): Tensor1D<E> {
         return when (E::class) {
-            Byte::class -> { // Byte precision is invalid here, using Int instead
-                val newData = mutableListOf<Int>()
-                for (element in data) {
-                    newData.add(element.toInt())
-                }
-                return IntTensor1D(newData.toTypedArray()) as Tensor1D<E>
-            }
-
-            Short::class -> { // Short precision is invalid here, using Int instead
-                val newData = mutableListOf<Int>()
-                for (element in data) {
-                    newData.add(element.toInt())
-                }
-                return IntTensor1D(newData.toTypedArray()) as Tensor1D<E>
-            }
-
+            // Byte precision is invalid here, using Int instead
+            Byte::class -> IntTensor1D(data.map(Number::toInt).toTypedArray()) as Tensor1D<E>
+            // Short precision is invalid here, using Int instead
+            Short::class -> IntTensor1D(data.map(Number::toInt).toTypedArray()) as Tensor1D<E>
             Int::class -> IntTensor1D(data as Array<Int>) as Tensor1D<E>
             Long::class -> LongTensor1D(data as Array<Long>) as Tensor1D<E>
             Float::class -> FloatTensor1D(data as Array<Float>) as Tensor1D<E>
             Double::class -> DoubleTensor1D(data as Array<Double>) as Tensor1D<E>
             BigInteger::class -> BigIntegerTensor1D(data as Array<BigInteger>) as Tensor1D<E>
             BigDecimal::class -> BigDecimalTensor1D(data as Array<BigDecimal>) as Tensor1D<E>
-            else -> { // Default to use Double
-                val newData = mutableListOf<Double>()
-                for (element in data) {
-                    newData.add(element.toDouble())
-                }
-                return DoubleTensor1D(newData.toTypedArray()) as Tensor1D<E>
-            }
+            // Default to use Double
+            else -> DoubleTensor1D(data.map(Number::toDouble).toTypedArray()) as Tensor1D<E>
         }
-    }
-
-    inline fun <reified E : Number> of2D(data: List<Tensor1D<E>>): Tensor2D<E> {
-        return of2D(data.toTypedArray())
     }
 
     @Suppress("UNCHECKED_CAST")
     inline fun <reified E : Number> of2D(data: Array<out Tensor1D<E>>): Tensor2D<E> {
         return when (E::class) {
-            Byte::class -> { // Byte precision is invalid here, using Int instead
-                val newData = mutableListOf<Tensor1D<Int>>()
-                for (element in data) {
-                    newData.add(element.toIntTensor())
-                }
-                return IntTensor2D(newData.toTypedArray()) as Tensor2D<E>
-            }
-
-            Short::class -> { // Short precision is invalid here, using Int instead
-                val newData = mutableListOf<Tensor1D<Int>>()
-                for (element in data) {
-                    newData.add(element.toIntTensor())
-                }
-                return IntTensor2D(newData.toTypedArray()) as Tensor2D<E>
-            }
-
+            // Byte precision is invalid here, using Int instead
+            Byte::class -> IntTensor2D(data.map(Tensor1D<E>::toIntTensor).toTypedArray()) as Tensor2D<E>
+            // Short precision is invalid here, using Int instead
+            Short::class -> IntTensor2D(data.map(Tensor1D<E>::toIntTensor).toTypedArray()) as Tensor2D<E>
             Int::class -> IntTensor2D(data as Array<Tensor1D<Int>>) as Tensor2D<E>
             Long::class -> LongTensor2D(data as Array<Tensor1D<Long>>) as Tensor2D<E>
             Float::class -> FloatTensor2D(data as Array<Tensor1D<Float>>) as Tensor2D<E>
             Double::class -> DoubleTensor2D(data as Array<Tensor1D<Double>>) as Tensor2D<E>
             BigInteger::class -> BigIntegerTensor2D(data as Array<Tensor1D<BigInteger>>) as Tensor2D<E>
             BigDecimal::class -> BigDecimalTensor2D(data as Array<Tensor1D<BigDecimal>>) as Tensor2D<E>
-            else -> { // Default to use Double
-                val newData = mutableListOf<Tensor1D<Double>>()
-                for (element in data) {
-                    newData.add(element.toDoubleTensor())
-                }
-                return DoubleTensor2D(newData.toTypedArray()) as Tensor2D<E>
-            }
+            // Default to use Double
+            else -> DoubleTensor2D(data.map(Tensor1D<E>::toDoubleTensor).toTypedArray()) as Tensor2D<E>
         }
     }
 
@@ -101,35 +59,35 @@ object Tensors {
     fun index(dims: List<Int>) = TensorIndex(dims.toIntArray())
 }
 
-abstract class Tensor<E : Number>(
+abstract class Tensor_D<E : Number>(
     data: Array<*>,
     val space: TensorSpace
 ) : WithDtype {
 
     open val data = data
-    val shape = this.space.shape
-    val ndim = this.space.ndim
-    val numel = this.space.numel
+    inline val shape: IntArray get() = this.space.shape
+    inline val ndim: Int get() = this.space.ndim
+    inline val numel: Int get() = this.space.numel
 
     abstract operator fun get(index: TensorIndex): E
     abstract operator fun set(index: TensorIndex, value: E)
 
-    infix fun shapeEq(other: Tensor<*>): Boolean = this.space == other.space
-    protected fun requireSameShape(other: Tensor<*>) =
+    infix fun shapeEq(other: Tensor_D<*>): Boolean = this.space == other.space
+    protected fun requireSameShape(other: Tensor_D<*>) =
         require(this shapeEq other) { "The tensors must have same shape" }
 
-    protected fun requireSameFirstDimSize(other: Tensor<*>) =
+    protected fun requireSameFirstDimSize(other: Tensor_D<*>) =
         require(this.shape[0] == other.shape[0]) { "The tensors must have same shape" }
 
     fun isValidIndex(index: TensorIndex): Boolean = index in this.space
 
-    fun to1DTensor(): Tensor1D<E> {
-        require(this.ndim == 1) { "Only use this function when the ndim equals to 1." }
+    fun as1DTensor(): Tensor1D<E> {
+        require(this.ndim == 1) { "Incorrect number of dimension!." }
         return this as Tensor1D<E>
     }
 
-    fun to2DTensor(): Tensor2D<E> {
-        require(this.ndim == 2) { "Only use this function when the ndim equals to 1." }
+    fun as2DTensor(): Tensor2D<E> {
+        require(this.ndim == 2) { "Incorrect number of dimension!." }
         return this as Tensor2D<E>
     }
 
@@ -148,7 +106,7 @@ abstract class Tensor<E : Number>(
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
-        if (other !is Tensor<*>) return false
+        if (other !is Tensor_D<*>) return false
         return this.data.contentDeepEquals(other.data)
     }
 
@@ -157,6 +115,9 @@ abstract class Tensor<E : Number>(
     }
 }
 
+/**
+ * To save the shape of a tensor.
+ */
 class TensorSpace(
     val shape: IntArray
 ) {
