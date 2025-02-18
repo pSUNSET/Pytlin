@@ -5,18 +5,16 @@ import net.psunset.pytlin.lang.toBigInteger
 import java.math.BigDecimal
 import java.math.BigInteger
 
-abstract class Tensor1D<E : Number> private constructor(
-    data: Array<E>, space: TensorSpace
-) : Tensor_D<E>(data, space) {
+abstract class Tensor1D<E : Number> (
+    data: Array<out E>
+) : Tensor_D<E>(data, Tensors.space(data.size)) {
 
     @Suppress("UNCHECKED_CAST")
     override val data = super.data as Array<E>
     inline val size: Int get() = this.numel
 
-    constructor(data: Array<E>) : this(data, Tensors.space(data.size))
-
     init {
-        require(data.size == this.numel) { "The data is invalid because of its wrong size." }
+        require(data.size == this.numel) { "The array of data is invalid because of its wrong size." }
     }
 
     operator fun get(index: Int): E = this[Tensors.index(index)]
@@ -162,7 +160,7 @@ abstract class Tensor1D<E : Number> private constructor(
      * Please use the overloading function with `factory` parameter instead.
      * For example:
      * ```
-     * val tensorWithDouble = tensorOf1D(arrayOf(53.9, 854.3, 264.7, 964.4))
+     * val tensorWithDouble = tensorOf(53.9, 854.3, 264.7, 964.4)
      * // val tensorWithBigDecimal = tensorWithDouble.toBigDecimalTensor() // With bad scale
      * val tensorWithBigDecimal = tensorWithDouble.toBigDecimalTensor { it.toBigDecimal(?) }
      * // Add this line and replace `?` to expected min scale
@@ -197,7 +195,7 @@ abstract class Tensor1D<E : Number> private constructor(
  * Only access 1D [Int] data.
  */
 class IntTensor1D(
-    data: Array<Int>
+    data: Array<out Int>
 ) : Tensor1D<Int>(data), IntAsDtype {
     override fun doAdd(a: Int, b: Int): Int = a + b
 
@@ -219,7 +217,7 @@ class IntTensor1D(
  * Only access 1D [Long] data.
  */
 class LongTensor1D(
-    data: Array<Long>
+    data: Array<out Long>
 ) : Tensor1D<Long>(data), LongAsDtype {
     override fun doAdd(a: Long, b: Long): Long = a + b
 
@@ -241,7 +239,7 @@ class LongTensor1D(
  * Only access 1D [Float] data.
  */
 class FloatTensor1D(
-    data: Array<Float>
+    data: Array<out Float>
 ) : Tensor1D<Float>(data), FloatAsDtype {
     override fun doAdd(a: Float, b: Float): Float = a + b
 
@@ -263,7 +261,7 @@ class FloatTensor1D(
  * Only access 1D [Double] data.
  */
 class DoubleTensor1D(
-    data: Array<Double>
+    data: Array<out Double>
 ) : Tensor1D<Double>(data), DoubleAsDtype {
     override fun doAdd(a: Double, b: Double): Double = a + b
 
@@ -285,7 +283,7 @@ class DoubleTensor1D(
  * Only access 1D [BigInteger] data.
  */
 class BigIntegerTensor1D(
-    data: Array<BigInteger>
+    data: Array<out BigInteger>
 ) : Tensor1D<BigInteger>(data), BigIntegerAsDtype {
     override fun doAdd(a: BigInteger, b: BigInteger): BigInteger = a + b
 
@@ -307,7 +305,7 @@ class BigIntegerTensor1D(
  * Only access 1D [BigDecimal] data.
  */
 class BigDecimalTensor1D(
-    data: Array<BigDecimal>
+    data: Array<out BigDecimal>
 ) : Tensor1D<BigDecimal>(data), BigDecimalAsDtype {
     override fun doAdd(a: BigDecimal, b: BigDecimal): BigDecimal = a + b
 
@@ -325,9 +323,9 @@ class BigDecimalTensor1D(
     override fun toBigDecimalTensor(): BigDecimalTensor1D = BigDecimalTensor1D(this.data.clone())
 }
 
-@JvmName("tensorOf1DList")
+@JvmName("tensor1DOfList")
 inline fun <reified E : Number> tensorOf(data: List<E>): Tensor1D<E> = data.toTensor()
-@JvmName("tensorOf1DArray")
+@JvmName("tensor1DOfArray")
 inline fun <reified E : Number> tensorOf(data: Array<out E>): Tensor1D<E> = data.toTensor()
 @JvmName("tensor1DOfVararg")
 inline fun <reified E : Number> tensorOf(vararg data: E): Tensor1D<E> = data.toTensor()
@@ -335,17 +333,17 @@ inline fun <reified E : Number> tensorOf(vararg data: E): Tensor1D<E> = data.toT
 inline fun <reified E : Number> List<E>.toTensor(): Tensor1D<E> = Tensors.of1D(this.toTypedArray())
 inline fun <reified E : Number> Array<out E>.toTensor(): Tensor1D<E> = Tensors.of1D(this)
 
-@JvmName("tensorOf1DByteArray")
+@JvmName("tensor1DOfByteArray")
 fun tensorOf(data: ByteArray): IntTensor1D = data.toTensor()
-@JvmName("tensorOf1DShortArray")
+@JvmName("tensor1DOfShortArray")
 fun tensorOf(data: ShortArray): IntTensor1D = data.toTensor()
-@JvmName("tensorOf1DIntArray")
+@JvmName("tensor1DOfIntArray")
 fun tensorOf(data: IntArray): IntTensor1D = data.toTensor()
-@JvmName("tensorOf1DLongArray")
+@JvmName("tensor1DOfLongArray")
 fun tensorOf(data: LongArray): LongTensor1D = data.toTensor()
-@JvmName("tensorOf1DFloatArray")
+@JvmName("tensor1DOfFloatArray")
 fun tensorOf(data: FloatArray): FloatTensor1D = data.toTensor()
-@JvmName("tensorOf1DDoubleArray")
+@JvmName("tensor1DOfDoubleArray")
 fun tensorOf(data: DoubleArray): DoubleTensor1D = data.toTensor()
 
 fun ByteArray.toTensor(): IntTensor1D = IntTensor1D(this.map { it.toInt() }.toTypedArray())

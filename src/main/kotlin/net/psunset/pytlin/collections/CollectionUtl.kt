@@ -25,7 +25,7 @@ operator fun <T> List<T>.times(n: Int): List<T> {
     if (n == 1) return this.toList()
 
     val newList = this.toMutableList()
-    for (i in 1 until n) {
+    for (i in 1..<n) {
         newList += this
     }
     return newList
@@ -40,7 +40,7 @@ inline operator fun <reified T> Array<T>.times(n: Int): Array<T> {
     if (n == 1) return this.clone()
 
     val newList = this.toMutableList()
-    for (i in 1 until n) {
+    for (i in 1..<n) {
         newList += this
     }
     return newList.toTypedArray()
@@ -157,7 +157,7 @@ operator fun <T> MutableList<T>.timesAssign(n: Int) {
     if (n == 1) return
 
     val elements = this.toList()
-    for (i in 1 until n) {
+    for (i in 1..<n) {
         this.addAll(elements)
     }
 }

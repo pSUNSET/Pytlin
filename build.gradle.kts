@@ -63,8 +63,8 @@ publishing {
                 url = "https://github.com/pSUNSET/KWArgsForKotlin"
                 licenses {
                     license {
-                        name = "The Apache License, Version 2.0"
-                        url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                        name = "The MIT License (MIT)"
+                        url = "https://mit-license.org/"
                     }
                 }
                 developers {
@@ -81,12 +81,6 @@ publishing {
             }
         }
     }
-
-//    repositories {
-//        maven {
-//            url = uri(layout.buildDirectory.dir("repo"))
-//        }
-//    }
 }
 
 nmcp {
@@ -94,10 +88,8 @@ nmcp {
     publish("mavenKt") {
         username = properties["mavenCentralUsername"] as String
         password = properties["mavenCentralPassword"] as String
-        // publish manually from the portal
-        //publicationType = "USER_MANAGED"
-        // or if you want to publish automatically
-        publicationType = "AUTOMATIC"
+        publicationType = "USER_MANAGED"
+//        publicationType = "AUTOMATIC"
     }
 }
 
