@@ -59,7 +59,7 @@ publishing {
 
             pom {
                 name = "Pytlin"
-                description = "A implementation of some features of python for kotlin."
+                description = "A library for implementing some features of python in kotlin."
                 url = "https://github.com/pSUNSET/KWArgsForKotlin"
                 licenses {
                     license {
