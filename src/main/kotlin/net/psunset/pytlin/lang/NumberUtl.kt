@@ -1,3 +1,5 @@
+@file:JvmName("NumberUtil")
+
 package net.psunset.pytlin.lang
 
 /*

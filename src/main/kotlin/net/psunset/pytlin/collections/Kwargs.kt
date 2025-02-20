@@ -1,4 +1,4 @@
-@file:JvmName("KwargsKt")
+@file:JvmName("KwargsUtil")
 
 package net.psunset.pytlin.collections
 

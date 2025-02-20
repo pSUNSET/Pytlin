@@ -4,7 +4,9 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import kotlin.reflect.KClass
 
-
+/**
+ * A class for indicating what type of data a tensor storaging.
+ */
 interface WithDtype {
     val dtype: KClass<out Number>
 }

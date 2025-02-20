@@ -8,12 +8,32 @@ class Test {
      */
     @org.junit.jupiter.api.Test
     fun test() {
-        val t2 = tensorOf(tensorOf(1, 2, 3), tensorOf(2.5, 3.5, 4.5))
-        println(t2)
+        val t = tensorOf(
+            tensorOf(
+                tensorOf(1, 2),
+                tensorOf(3, 4)
+            ),
+            tensorOf(
+                tensorOf(5, 6),
+                tensorOf(7, 8)
+            )
+        )
+        val u = tensorOf(
+            tensorOf(1, 2),
+            tensorOf(3, 4)
+        )
 
-        val a1 = arrayOf(arrayOf(1, 2, 3), arrayOf(4, 5, 6))
-        val a2 = a1.flatten()
-        println(a1.contentDeepToString())
-        println(a2)
+        println(t + u)
+        println(t - u)
+        println(t * u)
+        println(t / u)
+        println(t % u)
+        println(t pow u)
+
+        val a = tensorOf(1, 2, 3)
+        val b = tensorOf(4, 5, 6)
+
+        println(a dot b)
+        println(a cross b)
     }
 }

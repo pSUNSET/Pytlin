@@ -1,10 +1,12 @@
+@file:JvmName("StringUtil")
+
 package net.psunset.pytlin.lang
 
-import net.psunset.pytlin.collections.MutableKwargs
+import net.psunset.pytlin.collections.Kwargs
 import net.psunset.pytlin.collections.times
 
 /**
- * @return A string made with `n` raw string.
+ * @return A string made with `n` repeat raw string.
  */
 operator fun String.times(n: Int): String {
     if (n <= 0) return ""
@@ -41,18 +43,21 @@ operator fun String.times(n: Int): String {
  * @param kwargs Please ensure both "n" and "separator" are not `null`. Other args are all used by [String.times] function.
  * @see String.times times(n: Int, separator: CharSequence, prefix: CharSequence, postfix: CharSequence, limit: Int, truncated: CharSequence, transform: ((String) -> CharSequence)?)
  */
-operator fun String.times(kwargs: MutableKwargs): String {
-    val n = kwargs / ("n" to  Int::class)
-    val sep = kwargs / ("separator" to (kwargs / ("sep" to CharSequence::class))) // Accept using either "separator" or "sep" simply.
-    val prefix = kwargs / ("prefix" to "")
-    val postfix = kwargs / ("postfix" to "")
-    val limit = kwargs / ("limit" to -1)
-    val truncated = kwargs / ("truncated" to "...")
-    @Suppress("UNCHECKED_CAST")
-    val transform = (kwargs / ("transform" to Function1::class)) as ((String) -> CharSequence)? // Can't mark what the class transform should be, so use `as` to cast it here.
+operator fun String.times(kwargs: Kwargs): String {
+    val n = kwargs["n", Int::class]
+    val sep =
+        kwargs["separator", kwargs["sep", ""]] // Accept using either "separator" or "sep" simply.
+    val prefix = kwargs["prefix", ""]
+    val postfix = kwargs ["postfix", ""]
+    val limit = kwargs["limit", -1]
+    val truncated = kwargs["truncated", "..."]
 
-    if (n == null || sep == null) {
-        throw IllegalArgumentException("The \"n\" key and \"sep\" key should exist in kwargs. And the values got by them should be present and non-null.")
+    @Suppress("UNCHECKED_CAST")
+    val transform =
+        (kwargs["transform", Function1::class]) as ((String) -> CharSequence)? // Can't mark what the class transform should be, so use `as` to cast it here.
+
+    if (n == null) {
+        throw IllegalArgumentException("The \"n\" key should exist in kwargs. And the the value got by it should be present and non-null.")
     }
 
     return this.times(n, sep, prefix, postfix, limit, truncated, transform)
@@ -69,7 +74,7 @@ operator fun String.times(kwargs: MutableKwargs): String {
  */
 fun String.times(
     n: Int,
-    separator: CharSequence,
+    separator: CharSequence = "",
     prefix: CharSequence = "",
     postfix: CharSequence = "",
     limit: Int = -1,

@@ -96,6 +96,12 @@ inline operator fun Number.not(): Boolean = this valEq 0
 /**
  * @return `true` when the collection isn't empty; `false` otherwise.
  */
+inline fun <T> Iterable<T>.toBool(): Boolean = this.count() != 0
+inline operator fun <T> Iterable<T>.not(): Boolean = this.count() == 0
+
+/**
+ * @return `true` when the collection isn't empty; `false` otherwise.
+ */
 inline fun <T> Collection<T>.toBool(): Boolean = this.isNotEmpty()
 inline operator fun <T> Collection<T>.not(): Boolean = this.isEmpty()
 
