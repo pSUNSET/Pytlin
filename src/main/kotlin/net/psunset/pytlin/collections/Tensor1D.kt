@@ -4,6 +4,7 @@ import net.psunset.pytlin.lang.toBigDecimal
 import net.psunset.pytlin.lang.toBigInteger
 import java.math.BigDecimal
 import java.math.BigInteger
+import kotlin.math.pow
 
 abstract class Tensor1D<E : Number> (
     data: Array<out E>
@@ -29,11 +30,11 @@ abstract class Tensor1D<E : Number> (
         this.data[index[0]] = value
     }
 
-    operator fun plus(scalar: E): Tensor1D<E> = this.apply { this.plusAssign(scalar) }
-    operator fun minus(scalar: E): Tensor1D<E> = this.apply { this.minusAssign(scalar) }
-    operator fun times(scalar: E): Tensor1D<E> = this.apply { this.timesAssign(scalar) }
-    operator fun div(scalar: E): Tensor1D<E> = this.apply { this.divAssign(scalar) }
-    operator fun rem(scalar: E): Tensor1D<E> = this.apply { this.remAssign(scalar) }
+    operator fun plus(scalar: E): Tensor1D<E> = this.clone().apply { this.plusAssign(scalar) }
+    operator fun minus(scalar: E): Tensor1D<E> = this.clone().apply { this.minusAssign(scalar) }
+    operator fun times(scalar: E): Tensor1D<E> = this.clone().apply { this.timesAssign(scalar) }
+    operator fun div(scalar: E): Tensor1D<E> = this.clone().apply { this.divAssign(scalar) }
+    operator fun rem(scalar: E): Tensor1D<E> = this.clone().apply { this.remAssign(scalar) }
 
     operator fun plusAssign(scalar: E) {
         for (i in 0..<this.numel) {
@@ -65,54 +66,54 @@ abstract class Tensor1D<E : Number> (
         }
     }
 
-    operator fun plus(vector: Tensor1D<E>): Tensor1D<E> = this.apply { this.plusAssign(vector) }
-    operator fun minus(vector: Tensor1D<E>): Tensor1D<E> = this.apply { this.minusAssign(vector) }
-    operator fun times(vector: Tensor1D<E>): Tensor1D<E> = this.apply { this.timesAssign(vector) }
-    operator fun div(vector: Tensor1D<E>): Tensor1D<E> = this.apply { this.divAssign(vector) }
-    operator fun rem(vector: Tensor1D<E>): Tensor1D<E> = this.apply { this.remAssign(vector) }
+    operator fun plus(vector: Tensor1D<E>): Tensor1D<E> = this.clone().apply { this.plusAssign(vector) }
+    operator fun minus(vector: Tensor1D<E>): Tensor1D<E> = this.clone().apply { this.minusAssign(vector) }
+    operator fun times(vector: Tensor1D<E>): Tensor1D<E> = this.clone().apply { this.timesAssign(vector) }
+    operator fun div(vector: Tensor1D<E>): Tensor1D<E> = this.clone().apply { this.divAssign(vector) }
+    operator fun rem(vector: Tensor1D<E>): Tensor1D<E> = this.clone().apply { this.remAssign(vector) }
 
     operator fun plusAssign(vector: Tensor1D<E>) {
-        requireSameFirstDimSize(vector)
+        requireSameDim1Size(vector)
         for (i in 0..<this.numel) {
             this[i] = doAdd(this[i], vector[i])
         }
     }
 
     operator fun minusAssign(vector: Tensor1D<E>) {
-        requireSameFirstDimSize(vector)
+        requireSameDim1Size(vector)
         for (i in 0..<this.numel) {
             this[i] = doSub(this[i], vector[i])
         }
     }
 
     operator fun timesAssign(vector: Tensor1D<E>) {
-        requireSameFirstDimSize(vector)
+        requireSameDim1Size(vector)
         for (i in 0..<this.numel) {
             this[i] = doMul(this[i], vector[i])
         }
     }
 
     operator fun divAssign(vector: Tensor1D<E>) {
-        requireSameFirstDimSize(vector)
+        requireSameDim1Size(vector)
         for (i in 0..<this.numel) {
             this[i] = doDiv(this[i], vector[i])
         }
     }
 
     operator fun remAssign(vector: Tensor1D<E>) {
-        requireSameFirstDimSize(vector)
+        requireSameDim1Size(vector)
         for (i in 0..<this.numel) {
             this[i] = doMod(this[i], vector[i])
         }
     }
 
     infix fun dot(vector: Tensor1D<E>): E {
-        requireSameFirstDimSize(vector)
+        requireSameDim1Size(vector)
         return this.data.zip(vector.data).map { (a, b) -> doMul(a, b) }.reduce { a, b -> doAdd(a, b) }
     }
 
     infix fun cross(vector: Tensor1D<E>): Tensor1D<E> {
-        requireSameFirstDimSize(vector)
+        requireSameDim1Size(vector)
         if (this.numel != 3) {
             throw IllegalArgumentException("Vectors must have dimension 3 to calculate the cross product.")
         }
@@ -133,6 +134,40 @@ abstract class Tensor1D<E : Number> (
         )
     }
 
+    @JvmName("powOfInt")
+    infix fun pow(scalar: Int): Tensor1D<E> = this.clone().apply { this.pow_(scalar) }
+    infix fun <N: Number> pow(scalar: N): Tensor1D<E> = this.clone().apply { this.pow_(scalar) }
+    @JvmName("powOfInt")
+    infix fun pow(vector: Tensor1D<Int>): Tensor1D<E> = this.clone().apply { this.pow_(vector) }
+    infix fun <N: Number> pow(vector: Tensor1D<N>): Tensor1D<E> = this.clone().apply { this.pow_(vector) }
+
+    @JvmName("pow_OfInt")
+    fun pow_(scalar: Int) {
+        for (i in 0..<this.numel) {
+            this[i] = doPow(this[i], scalar)
+        }
+    }
+
+    fun <N: Number> pow_(scalar: N) {
+        for (i in 0..<this.numel) {
+            this[i] = doPow(this[i], scalar)
+        }
+    }
+
+    @JvmName("pow_OfInt")
+    fun pow_(vector: Tensor1D<Int>) {
+        for (i in 0..<this.numel) {
+            this[i] = doPow(this[i], vector[i])
+        }
+    }
+
+    fun <N: Number> pow_(vector: Tensor1D<N>) {
+        requireSameDim1Size(vector)
+        for (i in 0..<this.numel) {
+            this[i] = doPow(this[i], vector[i])
+        }
+    }
+
     /**
      * Alias for [cross] function.
      * Because `a x b` looks really like a cross b.
@@ -144,6 +179,8 @@ abstract class Tensor1D<E : Number> (
     protected abstract fun doMul(a: E, b: E): E
     protected abstract fun doDiv(a: E, b: E): E
     protected abstract fun doMod(a: E, b: E): E
+    protected abstract fun doPow(a: E, b: Int): E // Call the official pow function with Int exponent for better performance
+    protected abstract fun <N: Number> doPow(a: E, b: N): E
     protected abstract fun newOne(l: List<E>): Tensor1D<E>
 
     open fun toIntTensor(): Tensor1D<Int> = IntTensor1D(this.data.map { it.toInt() }.toTypedArray())
@@ -180,6 +217,8 @@ abstract class Tensor1D<E : Number> (
 
     fun toBigDecimalTensor(factory: (E) -> BigDecimal): Tensor1D<BigDecimal> =
         BigDecimalTensor1D(this.data.map(factory).toTypedArray())
+    
+    abstract override fun clone(): Tensor1D<E>
 
     override fun iterator(): Iterator<E> = this.data.iterator()
 
@@ -207,10 +246,21 @@ class IntTensor1D(
 
     override fun doMod(a: Int, b: Int): Int = a % b
 
+    /**
+     * @param b will cast into [Double]
+     */
+    override fun <N : Number> doPow(a: Int, b: N): Int =
+        a.toDouble().pow(b.toDouble()).toInt()
+
+    override fun doPow(a: Int, b: Int): Int =
+        a.toDouble().pow(b).toInt()
+
     override fun newOne(l: List<Int>): Tensor1D<Int> =
         IntTensor1D(l.toTypedArray())
 
     override fun toIntTensor(): IntTensor1D = IntTensor1D(this.data.clone())
+
+    override fun clone(): Tensor1D<Int> = this.toIntTensor()
 }
 
 /**
@@ -229,10 +279,21 @@ class LongTensor1D(
 
     override fun doMod(a: Long, b: Long): Long = a % b
 
+    /**
+     * @param b will cast into [Double]
+     */
+    override fun <N : Number> doPow(a: Long, b: N): Long =
+        a.toDouble().pow(b.toDouble()).toLong()
+
+    override fun doPow(a: Long, b: Int): Long =
+        a.toDouble().pow(b).toLong()
+
     override fun newOne(l: List<Long>): Tensor1D<Long> =
         LongTensor1D(l.toTypedArray())
 
     override fun toLongTensor(): LongTensor1D = LongTensor1D(this.data.clone())
+
+    override fun clone(): Tensor1D<Long> = this.toLongTensor()
 }
 
 /**
@@ -251,10 +312,21 @@ class FloatTensor1D(
 
     override fun doMod(a: Float, b: Float): Float = a % b
 
+    /**
+     * @param b will cast into [Float]
+     */
+    override fun <N : Number> doPow(a: Float, b: N): Float =
+        a.pow(b.toFloat())
+
+    override fun doPow(a: Float, b: Int): Float =
+        a.pow(b)
+
     override fun newOne(l: List<Float>): Tensor1D<Float> =
         FloatTensor1D(l.toTypedArray())
 
     override fun toFloatTensor(): FloatTensor1D = FloatTensor1D(this.data.clone())
+
+    override fun clone(): Tensor1D<Float> = this.toFloatTensor()
 }
 
 /**
@@ -273,10 +345,21 @@ class DoubleTensor1D(
 
     override fun doMod(a: Double, b: Double): Double = a % b
 
+    /**
+     * @param b will cast into [Double]
+     */
+    override fun <N : Number> doPow(a: Double, b: N): Double =
+        a.pow(b.toDouble())
+
+    override fun doPow(a: Double, b: Int): Double =
+        a.pow(b)
+
     override fun newOne(l: List<Double>): Tensor1D<Double> =
         DoubleTensor1D(l.toTypedArray())
 
     override fun toDoubleTensor(): DoubleTensor1D = DoubleTensor1D(this.data.clone())
+    
+    override fun clone(): Tensor1D<Double> = this.toDoubleTensor()
 }
 
 /**
@@ -295,10 +378,21 @@ class BigIntegerTensor1D(
 
     override fun doMod(a: BigInteger, b: BigInteger): BigInteger = a % b
 
+    /**
+     * @param b will cast into [Int]
+     */
+    override fun <N : Number> doPow(a: BigInteger, b: N): BigInteger =
+        a.pow(b.toInt()) // Only access Int
+
+    override fun doPow(a: BigInteger, b: Int): BigInteger =
+        a.pow(b)
+
     override fun newOne(l: List<BigInteger>): Tensor1D<BigInteger> =
         BigIntegerTensor1D(l.toTypedArray())
 
     override fun toBigIntegerTensor(): BigIntegerTensor1D = BigIntegerTensor1D(this.data.clone())
+
+    override fun clone(): Tensor1D<BigInteger> = this.toBigIntegerTensor()
 }
 
 /**
@@ -317,10 +411,21 @@ class BigDecimalTensor1D(
 
     override fun doMod(a: BigDecimal, b: BigDecimal): BigDecimal = a % b
 
+    /**
+     * @param b will cast into [Int]
+     */
+    override fun <N : Number> doPow(a: BigDecimal, b: N): BigDecimal =
+        a.pow(b.toInt()) // Only access Int
+
+    override fun doPow(a: BigDecimal, b: Int): BigDecimal =
+        a.pow(b)
+
     override fun newOne(l: List<BigDecimal>): Tensor1D<BigDecimal> =
         BigDecimalTensor1D(l.toTypedArray())
 
     override fun toBigDecimalTensor(): BigDecimalTensor1D = BigDecimalTensor1D(this.data.clone())
+
+    override fun clone(): Tensor1D<BigDecimal> = this.toBigDecimalTensor()
 }
 
 @JvmName("tensor1DOfList")

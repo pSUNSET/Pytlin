@@ -29,11 +29,11 @@ abstract class Tensor2D<E : Number> (
         this.data[index[0]].data[index[1]] = value
     }
 
-    operator fun plus(scalar: E): Tensor2D<E> = this.apply { this.plusAssign(scalar) }
-    operator fun minus(scalar: E): Tensor2D<E> = this.apply { this.minusAssign(scalar) }
-    operator fun times(scalar: E): Tensor2D<E> = this.apply { this.timesAssign(scalar) }
-    operator fun div(scalar: E): Tensor2D<E> = this.apply { this.divAssign(scalar) }
-    operator fun rem(scalar: E): Tensor2D<E> = this.apply { this.remAssign(scalar) }
+    operator fun plus(scalar: E): Tensor2D<E> = this.clone().apply { this.plusAssign(scalar) }
+    operator fun minus(scalar: E): Tensor2D<E> = this.clone().apply { this.minusAssign(scalar) }
+    operator fun times(scalar: E): Tensor2D<E> = this.clone().apply { this.timesAssign(scalar) }
+    operator fun div(scalar: E): Tensor2D<E> = this.clone().apply { this.divAssign(scalar) }
+    operator fun rem(scalar: E): Tensor2D<E> = this.clone().apply { this.remAssign(scalar) }
 
     operator fun plusAssign(scalar: E) {
         for (i in 0..<this.rows) {
@@ -65,11 +65,11 @@ abstract class Tensor2D<E : Number> (
         }
     }
 
-    operator fun plus(vector: Tensor1D<E>): Tensor2D<E> = this.apply { this.plusAssign(vector) }
-    operator fun minus(vector: Tensor1D<E>): Tensor2D<E> = this.apply { this.minusAssign(vector) }
-    operator fun times(vector: Tensor1D<E>): Tensor2D<E> = this.apply { this.timesAssign(vector) }
-    operator fun div(vector: Tensor1D<E>): Tensor2D<E> = this.apply { this.divAssign(vector) }
-    operator fun rem(vector: Tensor1D<E>): Tensor2D<E> = this.apply { this.remAssign(vector) }
+    operator fun plus(vector: Tensor1D<E>): Tensor2D<E> = this.clone().apply { this.plusAssign(vector) }
+    operator fun minus(vector: Tensor1D<E>): Tensor2D<E> = this.clone().apply { this.minusAssign(vector) }
+    operator fun times(vector: Tensor1D<E>): Tensor2D<E> = this.clone().apply { this.timesAssign(vector) }
+    operator fun div(vector: Tensor1D<E>): Tensor2D<E> = this.clone().apply { this.divAssign(vector) }
+    operator fun rem(vector: Tensor1D<E>): Tensor2D<E> = this.clone().apply { this.remAssign(vector) }
 
     operator fun plusAssign(vector: Tensor1D<E>) {
         for (i in 0..<this.rows) {
@@ -101,42 +101,42 @@ abstract class Tensor2D<E : Number> (
         }
     }
 
-    operator fun plus(matrix: Tensor2D<E>): Tensor2D<E> = this.apply { this.plusAssign(matrix) }
-    operator fun minus(matrix: Tensor2D<E>): Tensor2D<E> = this.apply { this.minusAssign(matrix) }
-    operator fun times(matrix: Tensor2D<E>): Tensor2D<E> = this.apply { this.timesAssign(matrix) }
-    operator fun div(matrix: Tensor2D<E>): Tensor2D<E> = this.apply { this.divAssign(matrix) }
-    operator fun rem(matrix: Tensor2D<E>): Tensor2D<E> = this.apply { this.remAssign(matrix) }
+    operator fun plus(matrix: Tensor2D<E>): Tensor2D<E> = this.clone().apply { this.plusAssign(matrix) }
+    operator fun minus(matrix: Tensor2D<E>): Tensor2D<E> = this.clone().apply { this.minusAssign(matrix) }
+    operator fun times(matrix: Tensor2D<E>): Tensor2D<E> = this.clone().apply { this.timesAssign(matrix) }
+    operator fun div(matrix: Tensor2D<E>): Tensor2D<E> = this.clone().apply { this.divAssign(matrix) }
+    operator fun rem(matrix: Tensor2D<E>): Tensor2D<E> = this.clone().apply { this.remAssign(matrix) }
 
     operator fun plusAssign(matrix: Tensor2D<E>) {
-        requireSameFirstDimSize(matrix)
+        requireSameDim1Size(matrix)
         for (i in 0..<this.rows) {
             this.data[i].plusAssign(matrix.data[i])
         }
     }
 
     operator fun minusAssign(matrix: Tensor2D<E>) {
-        requireSameFirstDimSize(matrix)
+        requireSameDim1Size(matrix)
         for (i in 0..<this.rows) {
             this.data[i].minusAssign(matrix.data[i])
         }
     }
 
     operator fun timesAssign(matrix: Tensor2D<E>) {
-        requireSameFirstDimSize(matrix)
+        requireSameDim1Size(matrix)
         for (i in 0..<this.rows) {
             this.data[i].timesAssign(matrix.data[i])
         }
     }
 
     operator fun divAssign(matrix: Tensor2D<E>) {
-        requireSameFirstDimSize(matrix)
+        requireSameDim1Size(matrix)
         for (i in 0..<this.rows) {
             this.data[i].divAssign(matrix.data[i])
         }
     }
 
     operator fun remAssign(matrix: Tensor2D<E>) {
-        requireSameFirstDimSize(matrix)
+        requireSameDim1Size(matrix)
         for (i in 0..<this.rows) {
             this.data[i].remAssign(matrix.data[i])
         }
@@ -175,6 +175,58 @@ abstract class Tensor2D<E : Number> (
         return newOne(thisT)
     }
 
+    @JvmName("powOfInt")
+    infix fun pow(scalar: Int): Tensor2D<E> = this.clone().apply { this.pow_(scalar) }
+    infix fun <N: Number> pow(scalar: N): Tensor2D<E> = this.clone().apply { this.pow_(scalar) }
+    @JvmName("powOfInt")
+    infix fun pow(vector: Tensor1D<Int>): Tensor2D<E> = this.clone().apply { this.pow_(vector) }
+    infix fun <N: Number> pow(vector: Tensor1D<N>): Tensor2D<E> = this.clone().apply { this.pow_(vector) }
+    @JvmName("powOfInt")
+    infix fun pow(matrix: Tensor2D<Int>): Tensor2D<E> = this.clone().apply { this.pow_(matrix) }
+    infix fun <N: Number> pow(matrix: Tensor2D<N>): Tensor2D<E> = this.clone().apply { this.pow_(matrix) }
+
+    @JvmName("pow_OfInt")
+    fun pow_(scalar: Int) {
+        for (i in 0..<this.rows) {
+            this.data[i].pow_(scalar)
+        }
+    }
+
+    fun <N: Number> pow_(scalar: N) {
+        for (i in 0..<this.rows) {
+            this.data[i].pow_(scalar)
+        }
+    }
+
+    @JvmName("pow_OfInt")
+    fun pow_(vector: Tensor1D<Int>) {
+        for (i in 0..<this.rows) {
+            this.data[i].pow_(vector)
+        }
+    }
+
+    fun <N: Number> pow_(vector: Tensor1D<N>) {
+        for (i in 0..<this.rows) {
+            this.data[i].pow_(vector)
+        }
+    }
+
+    @JvmName("pow_OfInt")
+    fun pow_(matrix: Tensor2D<Int>) {
+        requireSameDim1Size(matrix)
+        for (i in 0..<this.rows) {
+            this.data[i].pow_(matrix.data[i])
+        }
+    }
+
+    fun <N: Number> pow_(matrix: Tensor2D<N>) {
+        requireSameDim1Size(matrix)
+        for (i in 0..<this.rows) {
+            this.data[i].pow_(matrix.data[i])
+        }
+    }
+
+
     protected abstract fun newOne(l: List<List<E>>): Tensor2D<E>
 
     open fun toIntTensor(): Tensor2D<Int> = IntTensor2D(this.data.map { it.toIntTensor() }.toTypedArray())
@@ -212,6 +264,8 @@ abstract class Tensor2D<E : Number> (
     fun toBigDecimalTensor(factory: (E) -> BigDecimal): Tensor2D<BigDecimal> =
         BigDecimalTensor2D(this.data.map { it.toBigDecimalTensor(factory) }.toTypedArray())
 
+    abstract override fun clone(): Tensor2D<E>
+
     override fun iterator(): Iterator<Tensor1D<E>> = this.data.iterator()
 
     override fun contentDeepToString(highestDim: Int): String {
@@ -233,6 +287,8 @@ class IntTensor2D(
 ) : Tensor2D<Int>(data), IntAsDtype {
     override fun newOne(l: List<List<Int>>): Tensor2D<Int> =
         IntTensor2D(l.map { tensorOf(it) }.toTypedArray())
+
+    override fun clone(): Tensor2D<Int> = this.toIntTensor()
 }
 
 class LongTensor2D(
@@ -240,6 +296,8 @@ class LongTensor2D(
 ) : Tensor2D<Long>(data), LongAsDtype {
     override fun newOne(l: List<List<Long>>): Tensor2D<Long> =
         LongTensor2D(l.map { tensorOf(it) }.toTypedArray())
+
+    override fun clone(): Tensor2D<Long> = this.toLongTensor()
 }
 
 class FloatTensor2D(
@@ -247,6 +305,8 @@ class FloatTensor2D(
 ) : Tensor2D<Float>(data), FloatAsDtype {
     override fun newOne(l: List<List<Float>>): Tensor2D<Float> =
         FloatTensor2D(l.map { tensorOf(it) }.toTypedArray())
+
+    override fun clone(): Tensor2D<Float> = this.toFloatTensor()
 }
 
 class DoubleTensor2D(
@@ -254,6 +314,8 @@ class DoubleTensor2D(
 ) : Tensor2D<Double>(data), DoubleAsDtype {
     override fun newOne(l: List<List<Double>>): Tensor2D<Double> =
         DoubleTensor2D(l.map { tensorOf(it) }.toTypedArray())
+
+    override fun clone(): Tensor2D<Double> = this.toDoubleTensor()
 }
 
 class BigIntegerTensor2D(
@@ -261,6 +323,8 @@ class BigIntegerTensor2D(
 ) : Tensor2D<BigInteger>(data), BigIntegerAsDtype {
     override fun newOne(l: List<List<BigInteger>>): Tensor2D<BigInteger> =
         BigIntegerTensor2D(l.map { tensorOf(it) }.toTypedArray())
+
+    override fun clone(): Tensor2D<BigInteger> = this.toBigIntegerTensor()
 }
 
 class BigDecimalTensor2D(
@@ -268,6 +332,8 @@ class BigDecimalTensor2D(
 ) : Tensor2D<BigDecimal>(data), BigDecimalAsDtype {
     override fun newOne(l: List<List<BigDecimal>>): Tensor2D<BigDecimal> =
         BigDecimalTensor2D(l.map { tensorOf(it) }.toTypedArray())
+
+    override fun clone(): Tensor2D<BigDecimal> = this.toBigDecimalTensor()
 }
 
 @JvmName("tensor2DOfList_Tensor1D")
