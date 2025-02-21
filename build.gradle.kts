@@ -60,7 +60,7 @@ publishing {
             pom {
                 name = "Pytlin"
                 description = "A library for implementing some features of python in kotlin."
-                url = "https://github.com/pSUNSET/KWArgsForKotlin"
+                url = "https://github.com/pSUNSET/Pytlin"
                 licenses {
                     license {
                         name = "The MIT License (MIT)"
@@ -74,9 +74,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = "scm:git:git://github.com/pSUNSET/KWArgsForKotlin.git"
-                    developerConnection = "scm:git:ssh://github.com/pSUNSET/KWArgsForKotlin.git"
-                    url = "https://github.com/pSUNSET/KWArgsForKotlin"
+                    connection = "scm:git:git://github.com/pSUNSET/Pytlin.git"
+                    developerConnection = "scm:git:ssh://github.com/pSUNSET/Pytlin.git"
+                    url = "https://github.com/pSUNSET/Pytlin"
                 }
             }
         }
