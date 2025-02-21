@@ -1,8 +1,10 @@
-/**
+/*
  * Boolean-ize
  */
 
 package net.psunset.pytlin.lang
+
+import net.psunset.pytlin.collections.Tensor_D
 
 /**
  * Basic `toBool()` function
@@ -182,4 +184,16 @@ inline operator fun BooleanArray.not(): Boolean = this.isEmpty()
  */
 @OptIn(ExperimentalUnsignedTypes::class) inline fun ULongArray.toBool(): Boolean = this.isNotEmpty()
 @OptIn(ExperimentalUnsignedTypes::class) inline operator fun ULongArray.not(): Boolean = this.isEmpty()
+
+/**
+ * @return `true` when the map isn't empty; `false` otherwise.
+ */
+inline fun <K, T> Map<K, T>.toBool(): Boolean = this.isNotEmpty()
+inline operator fun <K, T> Map<K, T>.not(): Boolean = this.isEmpty()
+
+/**
+ * @return `true` when the tensor isn't empty; `false` otherwise.
+ */
+inline fun <T : Number> Tensor_D<T>.toBool(): Boolean = this.data.isNotEmpty()
+inline operator fun <T : Number> Tensor_D<T>.not(): Boolean = this.data.isEmpty()
 

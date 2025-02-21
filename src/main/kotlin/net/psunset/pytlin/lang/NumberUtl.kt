@@ -1,10 +1,10 @@
 @file:JvmName("NumberUtil")
 
-package net.psunset.pytlin.lang
-
 /*
  * Most functions in this file are using `BigDecimal` for better precision.
  */
+
+package net.psunset.pytlin.lang
 
 import java.math.BigDecimal
 import java.math.BigInteger

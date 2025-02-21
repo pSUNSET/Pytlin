@@ -6,18 +6,11 @@ import net.psunset.pytlin.collections.Kwargs
 import net.psunset.pytlin.collections.times
 
 /**
+ * Call [String.repeat]
  * @return A string made with `n` repeat raw string.
+ * @see String.repeat
  */
-operator fun String.times(n: Int): String {
-    if (n <= 0) return ""
-    if (n == 1) return this
-
-    val newStr = StringBuilder(this.length * n)
-    for (i in 1 until n) {
-        newStr.append(this)
-    }
-    return newStr.toString()
-}
+operator fun String.times(n: Int): String = this.repeat(n)
 
 /**
  * Call [String.times] function which is below this function.
@@ -83,6 +76,7 @@ fun String.times(
 ): String {
     if (n <= 0) return ""
     if (n == 1) return this
+    if (this.isEmpty()) return ""
 
     val strList = listOf(this) * n
     return strList.joinToString(separator, prefix, postfix, limit, truncated, transform)
@@ -90,13 +84,13 @@ fun String.times(
 
 operator fun Char.times(n: Int): String {
     if (n <= 0) return ""
-    if (n == 1) return String(charArrayOf(this))
+    if (n == 1) return String(CharArray(n) {this} )
 
-    val newStr = StringBuilder(n)
+    val result = StringBuilder(n)
     for (i in 1 until n) {
-        newStr.append(this)
+        result.append(this)
     }
-    return newStr.toString()
+    return result.toString()
 }
 
 /**
