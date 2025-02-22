@@ -84,6 +84,11 @@ Then import it into your module.
 
 # Features
 
+All the kotlin examples below are tested in a kotlin script (`.kts`) file.
+So there is no `main` function in the code.
+If you want to directly use the example code in a kotlin (`.kt`) file,
+please remember to build a main function as an entry.
+
 ### Kwargs
 
 When you define a function in python, you may use `*args` and `**kwargs` as parameters.  
@@ -122,23 +127,22 @@ fun f(vararg args: Int, kwargs: Kwargs): Int {
         else -> Int.MAX_VALUE // Invalid method
     }
 }
-fun main() {
-    val sum_result = f(
-        *(1..<10).toList().toTypedArray().toIntArray(), 15, 20,
-        kwargs = kwargsOf(
-            "method" to "add"
-        )
-    )
-    println(sum_result) // Result: 80
 
-    val prod_result = f(
-        *(1..<5).toList().toTypedArray().toIntArray(),
-        kwargs = kwargsOf(
-            "method" to "mul"
-        )
+val sum_result = f(
+    *(1..<10).toList().toTypedArray().toIntArray(), 15, 20,
+    kwargs = kwargsOf(
+        "method" to "add"
     )
-    println(prod_result) // Result: 24
-}
+)
+println(sum_result) // Result: 80
+
+val prod_result = f(
+    *(1..<5).toList().toTypedArray().toIntArray(),
+    kwargs = kwargsOf(
+        "method" to "mul"
+    )
+)
+println(prod_result) // Result: 24
 ```
 
 ### MutableKwargs
@@ -169,25 +173,27 @@ fun f(vararg args: Int, kwargs: MutableKwargs): Int {
 The removing isn't necessary here.
 I only want to show you guys where you can use `MutableKwargs` instead of `Kwargs`.
 
-### Array with duplicated elements
+### Repeat all elements in a list
 
-When we want to create a list with so many duplicated elements.
-We simply make a list multiply by an integer.
+When we want to create a list by repeating another list.
+We simply make a list multiplied by an integer.
 
 For example:
 
 ```python
 l = [1] * 10
 print(l) # Result: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+ll = [1, 2] * 5
+print(ll) # Result: [1, 2, 1, 2, 1, 2, 1, 2, 1, 2]
 ```
 
 Now we can simply implement that in kotlin by:
 
 ```kotlin
-fun main() {
-    val l = listOf(1) * 10
-    println(l) // Result: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-}
+val l = listOf(1) * 10
+println(l) // Result: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+val ll = listOf(1, 2) * 5
+println(ll) // Result: [1, 2, 1, 2, 1, 2, 1, 2, 1, 2]
 ```
 
 ### Turn all objects into boolean
@@ -210,15 +216,13 @@ if c: print('c is True!')
 Now, let's convert it into kotlin:
 
 ```kotlin
-fun main(){
-    val a = listOf<Any>()
-    val b = ""
-    val c = 0
-    if (a.toBool()) println("a is true!")
-    if (b.toBool()) println("b is true!")
-    if (!!c) println("c is true!") // Also, `obj.toBool()` can be replaced to `!!obj`
-    // There's no output, either.
-}
+val a = listOf<Any>()
+val b = ""
+val c = 0
+if (a.toBool()) println("a is true!")
+if (b.toBool()) println("b is true!")
+if (!!c) println("c is true!") // Also, `obj.toBool()` can be replaced to `!!obj`
+// There's no output, either.
 ```
 
 By the same token, `if not obj: ...` in python is equivalent to `if (!obj) { ... }`.
@@ -236,9 +240,7 @@ print(1.0 == 1) # Result: True
 But the same code in kotlin:
 
 ```kotlin
-fun main(){
-    println(1.0 == 1) // Error: Operator '==' cannot be applied to 'Double' and 'Int'
-}
+println(1.0 == 1) // Error: Operator '==' cannot be applied to 'Double' and 'Int'
 ```
 
 Uh..., it got something wrong.
@@ -247,9 +249,7 @@ Let's make it a `BigDecimal`.
 ```kotlin
 import java.math.BigDecimal
 
-fun main(){
-    println(BigDecimal.valueOf(1.0) == BigDecimal.valueOf(1)) // Result: false
-}
+println(BigDecimal.valueOf(1.0) == BigDecimal.valueOf(1)) // Result: false
 ```
 
 As you see, the result is `false` because the `==` operator in kotlin
@@ -261,13 +261,47 @@ Let's replace `==` operator to `valEq` keyword:
 ```kotlin
 import java.math.BigDecimal
 
-fun main(){
-    println(1.0 valEq 1) // Result: true
-    println(BigDecimal.valueOf(1.0) valEq BigDecimal.valueOf(1)) // Result: true
-}
+println(1.0 valEq 1) // Result: true
+println(BigDecimal.valueOf(1.0) valEq BigDecimal.valueOf(1)) // Result: true
 ```
 
 It seems that this function works fine.
+
+### Tensors
+
+This feature is unavailable in raw python.
+That is enabled only when you install [numpy](https://github.com/numpy/numpy) or [pytorch](https://github.com/pytorch/pytorch) library.
+
+A tensor can storage a multi-dimension array.
+And the features of that are matrix multiplication, dot product and cross product of vectors, operation for all elements, etc.
+
+But, in fact, the tensors in this library are incomplete and deprecated.
+So if you want a more useful library for more features and better performance.
+Please check out [mulkit](https://github.com/Kotlin/multik), which is a kotlin official library.
+
+For more details, please check out the document in
+[Tensors](./src/main/kotlin/net/psunset/pytlin/collections/Tensors.kt) source.
+
+### Slices
+
+In python, slices of a list can be simply implemented by:
+
+```python
+a = [1,2,3,4,5,6,7,8,9,10]
+print(a[:5]) # Result: [1, 2, 3, 4, 5]
+print(a[:]) # Result: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+print(a[::-1]) # Result: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+```
+
+Now you can do the same thing in kotlin by making the slices in python surrounded by `"` to make it a string.
+For example:
+
+```kotlin
+val a = arrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+println(a[":5"]) // Result: [1, 2, 3, 4, 5]
+println(a[":"]) // Result: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+println(a["::-1"]) // Result: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+```
 
 # Using in Java
 

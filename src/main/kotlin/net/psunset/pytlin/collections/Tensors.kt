@@ -20,7 +20,7 @@ import java.math.BigInteger
  * We decide to update the features for tensors no longer.
  * Because we lack of confidence in making this field well.
  * If you are looking for a better library for ndarray or tensor.
- * We recommend [multik-core](https://github.com/Kotlin/multik),
+ * We recommend [multik](https://github.com/Kotlin/multik),
  * which provides more useful features and better performance.
  *
  * Of course, the functions with `COMING_SOON` call are still going to be implemented.
