@@ -160,7 +160,7 @@ operator fun <T> List<T>.get(pattern: String): List<T> {
     val pSplit = p.split(":")
     require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
 
-    // Define a function make the negative index to expected one
+    // Define a function make the negative index the expected one
     fun String.toIndex() = this.toInt().let { if (it >= 0) it else this@get.size + it }
 
     if (':' !in p) return listOf(this[p.toIndex()]) // pattern is a normal int
