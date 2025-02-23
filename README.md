@@ -85,7 +85,7 @@ Then import it into your module.
 # Features
 
 All the kotlin examples below are tested in a kotlin script (`.kts`) file.
-So there is no `main` function in the code.
+So there's no `main` function in the code.
 If you want to directly use the example code in a kotlin (`.kt`) file,
 please remember to build a main function as an entry.
 
@@ -116,6 +116,10 @@ print(prod_result) # Result: 24
 Now you do the same thing in kotlin by:
 
 ```kotlin
+import net.psunset.pytlin.collections.Kwargs
+import net.psunset.pytlin.collections.kwargsOf
+import net.psunset.pytlin.collections.prod
+
 fun f(vararg args: Int, kwargs: Kwargs): Int {
     val method = kwargs["method", "add"]
     // "method" is key, "add" is defaultValue
@@ -148,30 +152,22 @@ println(prod_result) // Result: 24
 ### MutableKwargs
 
 Sometimes, we would like to use a kwargs-like map or dict without a parameter.
-What we want to do is just using a more convenient map or dict with string keys and values.
-But the element in Kwargs is immutable, we can't use it smoothly.
+What we want to do is use a more convenient map or dict with string keys and values.
+But the element in `Kwargs` is immutable, we can't use it smoothly.
 Now, we need `MutableKwargs`.
 
-At the example of `Kwargs`, we can't pop the element in kwargs.
-But we can do that with `MutableKwargs`.
-Let's modify that function:
-
 ```kotlin
-// Set type of arg 'kwargs' to `MutableKwargs`
-fun f(vararg args: Int, kwargs: MutableKwargs): Int {
-    val method = kwargs / ("method" to "add")
-    // "method" is key, "add" is defaultValue
-    // Now, the key-value pair whose key is called "method" is removed.
-    return when (method) {
-        "add" -> args.sum()
-        "mul" -> args.prod()
-        else -> Int.MAX_VALUE
-    }
-}
-```
+import net.psunset.pytlin.collections.mutableKwargsOf
 
-The removing isn't necessary here.
-I only want to show you guys where you can use `MutableKwargs` instead of `Kwargs`.
+val goodToPrice = mutableKwargsOf("apple" to 3, "orange" to 2, "banana" to 3)
+val priceOfApple = goodToPrice / ("apple" to 0)
+// "apple" is key, `0` is defaultValue
+// using `/` operator to pop an element
+val priceOfOrange = goodToPrice / ("orange" to 0)
+println("Total price is ${priceOfApple + priceOfOrange}") // Result: Total price is 5.5
+println(goodToPrice) // Result: {banana=3}
+// That stands for that apple and orange has already got removed.
+```
 
 ### Repeat all elements in a list
 
@@ -190,6 +186,8 @@ print(ll) # Result: [1, 2, 1, 2, 1, 2, 1, 2, 1, 2]
 Now we can simply implement that in kotlin by:
 
 ```kotlin
+import net.psunset.pytlin.collections.times
+
 val l = listOf(1) * 10
 println(l) // Result: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 val ll = listOf(1, 2) * 5
@@ -199,7 +197,7 @@ println(ll) // Result: [1, 2, 1, 2, 1, 2, 1, 2, 1, 2]
 ### Turn all objects into boolean
 
 In python, you can directly put a non-boolean variable after `if`.
-Often, it stands for if self is not empty, non-zero, etc.
+Often, it stands for if self isn't empty, non-zero, etc.
 
 For example:
 
@@ -216,6 +214,9 @@ if c: print('c is True!')
 Now, let's convert it into kotlin:
 
 ```kotlin
+import net.psunset.pytlin.lang.not
+import net.psunset.pytlin.lang.toBool
+
 val a = listOf<Any>()
 val b = ""
 val c = 0
@@ -259,6 +260,7 @@ But the function named `valEq` can deal with two problems we met.
 Let's replace `==` operator to `valEq` keyword:
 
 ```kotlin
+import net.psunset.pytlin.lang.valEq
 import java.math.BigDecimal
 
 println(1.0 valEq 1) // Result: true
@@ -297,6 +299,8 @@ Now you can do the same thing in kotlin by making the slices in python surrounde
 For example:
 
 ```kotlin
+import net.psunset.pytlin.collections.get
+
 val a = arrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 println(a[":5"]) // Result: [1, 2, 3, 4, 5]
 println(a[":"]) // Result: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
