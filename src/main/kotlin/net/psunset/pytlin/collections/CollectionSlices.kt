@@ -151,7 +151,7 @@ operator fun BooleanArray.get(indies: Iterable<Int>): List<Boolean> =
  * ```
  *
  * @param pattern The string which contains slices whose format is similar as python one.
- * @return The slices of list if the slice pattern is valid; otherwise an empty list
+ * @return The slices of list if the slice pattern is valid, an empty list otherwise.
  */
 operator fun <T> List<T>.get(pattern: String): List<T> {
     require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
@@ -192,7 +192,7 @@ operator fun <T> List<T>.get(pattern: String): List<T> {
 
 /**
  * @param pattern The string which contains slices whose format is similar as python one.
- * @return The slices of array if the slice pattern is valid; otherwise an empty list
+ * @return The slices of array if the slice pattern is valid, an empty list otherwise.
  * @see List.get get(pattern: String) which is preceding this function
  */
 operator fun <T> Array<out T>.get(pattern: String): List<T> {
@@ -234,7 +234,7 @@ operator fun <T> Array<out T>.get(pattern: String): List<T> {
 
 /**
  * @param pattern The string which contains slices whose format is similar as python one.
- * @return The slices of array if the slice pattern is valid; otherwise an empty list
+ * @return The slices of array if the slice pattern is valid, an empty list otherwise.
  * @see Array.get get(pattern: String)
  */
 operator fun ByteArray.get(pattern: String): List<Byte> {
@@ -264,7 +264,7 @@ operator fun ByteArray.get(pattern: String): List<Byte> {
 
 /**
  * @param pattern The string which contains slices whose format is similar as python one.
- * @return The slices of array if the slice pattern is valid; otherwise an empty list
+ * @return The slices of array if the slice pattern is valid, an empty list otherwise.
  * @see Array.get get(pattern: String)
  */
 operator fun CharArray.get(pattern: String): List<Char> {
@@ -296,7 +296,7 @@ operator fun CharArray.get(pattern: String): List<Char> {
 
 /**
  * @param pattern The string which contains slices whose format is similar as python one.
- * @return The slices of array if the slice pattern is valid; otherwise an empty list
+ * @return The slices of array if the slice pattern is valid, an empty list otherwise.
  * @see Array.get get(pattern: String)
  */
 operator fun ShortArray.get(pattern: String): List<Short> {
@@ -326,7 +326,7 @@ operator fun ShortArray.get(pattern: String): List<Short> {
 
 /**
  * @param pattern The string which contains slices whose format is similar as python one.
- * @return The slices of array if the slice pattern is valid; otherwise an empty list
+ * @return The slices of array if the slice pattern is valid, an empty list otherwise.
  * @see Array.get get(pattern: String)
  */
 operator fun IntArray.get(pattern: String): List<Int> {
@@ -356,7 +356,7 @@ operator fun IntArray.get(pattern: String): List<Int> {
 
 /**
  * @param pattern The string which contains slices whose format is similar as python one.
- * @return The slices of array if the slice pattern is valid; otherwise an empty list
+ * @return The slices of array if the slice pattern is valid, an empty list otherwise.
  * @see Array.get get(pattern: String)
  */
 operator fun LongArray.get(pattern: String): List<Long> {
@@ -386,7 +386,7 @@ operator fun LongArray.get(pattern: String): List<Long> {
 
 /**
  * @param pattern The string which contains slices whose format is similar as python one.
- * @return The slices of array if the slice pattern is valid; otherwise an empty list
+ * @return The slices of array if the slice pattern is valid, an empty list otherwise.
  * @see Array.get get(pattern: String)
  */
 operator fun FloatArray.get(pattern: String): List<Float> {
@@ -416,7 +416,7 @@ operator fun FloatArray.get(pattern: String): List<Float> {
 
 /**
  * @param pattern The string which contains slices whose format is similar as python one.
- * @return The slices of array if the slice pattern is valid; otherwise an empty list
+ * @return The slices of array if the slice pattern is valid, an empty list otherwise.
  * @see Array.get get(pattern: String)
  */
 operator fun DoubleArray.get(pattern: String): List<Double> {
@@ -446,7 +446,7 @@ operator fun DoubleArray.get(pattern: String): List<Double> {
 
 /**
  * @param pattern The string which contains slices whose format is similar as python one.
- * @return The slices of array if the slice pattern is valid; otherwise an empty list
+ * @return The slices of array if the slice pattern is valid, an empty list otherwise.
  * @see Array.get get(pattern: String)
  */
 operator fun BooleanArray.get(pattern: String): List<Boolean> {

@@ -95,7 +95,7 @@ operator fun Char.times(n: Int): String {
 }
 
 /**
- * @return `true` if the chars inside all are digits; `false` otherwise.
+ * @return `true` if the chars inside all are digits, `false` otherwise.
  */
 fun CharSequence.isDigit(): Boolean = this.all { it.isDigit() }
 
@@ -120,7 +120,7 @@ operator fun String.get(indies: IntRange): String = this.slice(indies)
 operator fun String.get(indies: Iterable<Int>): String = this.slice(indies)
 
 /**
- *
+ * Parses the slice pattern and calls [CharSequence.slice]
  */
 operator fun CharSequence.get(pattern: String): CharSequence{
     require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
@@ -160,7 +160,7 @@ operator fun CharSequence.get(pattern: String): CharSequence{
 }
 
 /**
- *
+ * Parses the slice pattern and calls [String.slice]
  */
 operator fun String.get(pattern: String): String{
     require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }

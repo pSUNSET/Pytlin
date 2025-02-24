@@ -116,11 +116,11 @@ import java.math.BigInteger
  * ```
  */
 abstract class Tensor_D<E : Number>(
-    data: Array<*>,
+    open val data: Array<*>,
     val space: TensorSpace
 ) : WithDtype {
 
-    open val data = data
+    val indies: IntRange get() = data.indices
     inline val shape: IntArray get() = this.space.shape
     inline val ndim: Int get() = this.space.ndim
     inline val numel: Int get() = this.space.numel
@@ -169,7 +169,7 @@ abstract class Tensor_D<E : Number>(
     }
 
     override fun hashCode(): Int {
-        return javaClass.hashCode()
+        return this.data.hashCode()
     }
 }
 
@@ -223,7 +223,7 @@ class TensorSpace(
     }
 
     override fun hashCode(): Int {
-        return javaClass.hashCode()
+        return this.shape.hashCode()
     }
 }
 
@@ -254,7 +254,7 @@ class TensorIndex(
     }
 
     override fun hashCode(): Int {
-        return javaClass.hashCode()
+        return this.dims.hashCode()
     }
 }
 

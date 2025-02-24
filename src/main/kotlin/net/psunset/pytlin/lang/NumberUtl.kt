@@ -17,7 +17,7 @@ import kotlin.math.truncate
  * In other words, it checks if the number is a whole number or if it has a decimal component
  * that isn't equal to zero.
  *
- * @return `true` if the number has a zero fractional part; `false` otherwise.
+ * @return `true` if the number has a zero fractional part, `false` otherwise.
  */
 fun Float.isFractionalPartZero(): Boolean = this.toBigDecimal() valEq this.toBigDecimal().truncate()
 
@@ -26,7 +26,7 @@ fun Float.isFractionalPartZero(): Boolean = this.toBigDecimal() valEq this.toBig
  * In other words, it checks if the number is a whole number or if it has a decimal component
  * that isn't equal to zero.
  *
- * @return `true` if the number has a zero fractional part; `false` otherwise.
+ * @return `true` if the number has a zero fractional part, `false` otherwise.
  */
 fun Double.isFractionalPartZero(): Boolean = this.toBigDecimal() valEq this.toBigDecimal().truncate()
 
@@ -35,7 +35,7 @@ fun Double.isFractionalPartZero(): Boolean = this.toBigDecimal() valEq this.toBi
  * In other words, it checks if the number is a whole number or if it has a decimal component
  * that isn't equal to zero.
  *
- * @return `true` if the number has a zero fractional part; `false` otherwise.
+ * @return `true` if the number has a zero fractional part, `false` otherwise.
  */
 fun BigDecimal.isFractionalPartZero(): Boolean = this valEq this.truncate()
 

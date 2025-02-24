@@ -11,7 +11,7 @@ package net.psunset.pytlin.collections
  * ```
  * 
  * @return The value got by key if the key is present;
- * otherwise returns the defaultValue and set the key to defaultValue in the map.
+ * otherwise, returns the defaultValue and set the key to defaultValue in the map.
  */
 fun <K, V> MutableMap<K, V>.setDefault(key: K, defaultValue: V): V =
     if (key in this) (this[key] as V) else defaultValue.also { this[key] = defaultValue }
