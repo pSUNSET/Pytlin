@@ -2,7 +2,7 @@
 
 A implementation of some python features for kotlin.
 
-# Import:
+# Import
 
 ### Maven
 
