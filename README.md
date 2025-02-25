@@ -19,7 +19,7 @@ Add `pytlin` to your `<dependencies>` tag in POM file:
 </dependency>
 ```
 
-Then setting `pytlin.version` in your `<properties>` tag in the same file:
+Then set `pytlin.version` in your `<properties>` tag in the same file:
 
 (pom.xml):
 
@@ -30,7 +30,7 @@ Then setting `pytlin.version` in your `<properties>` tag in the same file:
 </properties>
 ```
 
-Please replace the `x.y.z` to an available version by checking
+Please replace the `x.y.z` with an available version by checking
 out [releases](https://github.com/pSUNSET/Pytlin/releases).
 
 Eventually, install the library:
@@ -41,7 +41,7 @@ mvn install
 
 ### Gradle
 
-Add `pytlin` to your dependencies in the build file:
+Add `pytlin` to your `dependencies` in the build file:
 
 Groovy (build.gradle):
 
@@ -59,7 +59,7 @@ dependencies {
 }
 ```
 
-Then setting `pytlin_version` in your properties file:
+Then set `pytlin_version` in your properties file:
 
 (gradle.properties):
 
@@ -67,7 +67,7 @@ Then setting `pytlin_version` in your properties file:
 pytlin_version=x.y.z
 ```
 
-Please replace the `x.y.z` to an available version by checking
+Please replace the `x.y.z` with an available version by checking
 out [releases](https://github.com/pSUNSET/Pytlin/releases).
 
 Eventually, build your project:
@@ -92,7 +92,7 @@ please remember to build a main function as an entry.
 ### Kwargs
 
 When you define a function in python, you may use `*args` and `**kwargs` as parameters.  
-For example, in python:
+For example:
 
 ```python
 from functools import reduce
@@ -113,7 +113,7 @@ prod_result = f(*range(1, 5), method='mul')
 print(prod_result) # Result: 24
 ```
 
-Now you do the same thing in kotlin by:
+Now you can achieve the same purpose in kotlin with the following code.
 
 ```kotlin
 import net.psunset.pytlin.collections.Kwargs
@@ -151,10 +151,12 @@ println(prod_result) // Result: 24
 
 ### MutableKwargs
 
-Sometimes, we would like to use a kwargs-like map or dict without a parameter.
-What we want to do is use a more convenient map or dict with string keys and values.
-But the element in `Kwargs` is immutable, we can't use it smoothly.
-Now, we need `MutableKwargs`.
+Sometimes, we would like to use a kwargs-like map or dict 
+which is a more convenient map or dict with string keys and values.
+But the elements in `Kwargs` are all immutable,
+we need `MutableKwargs` instead.
+
+For example:
 
 ```kotlin
 import net.psunset.pytlin.collections.mutableKwargsOf
@@ -171,8 +173,8 @@ println(goodToPrice) // Result: {banana=3}
 
 ### Repeat all elements in a list
 
-When we want to create a list by repeating another list.
-We simply make a list multiplied by an integer.
+When we want to create a list by repeating another list,
+we simply make a list multiplied by an integer.
 
 For example:
 
@@ -183,7 +185,7 @@ ll = [1, 2] * 5
 print(ll) # Result: [1, 2, 1, 2, 1, 2, 1, 2, 1, 2]
 ```
 
-Now we can simply implement that in kotlin by:
+Now we can simply implement that in kotlin with the following code.
 
 ```kotlin
 import net.psunset.pytlin.collections.times
@@ -197,7 +199,7 @@ println(ll) // Result: [1, 2, 1, 2, 1, 2, 1, 2, 1, 2]
 ### Turn all objects into boolean
 
 In python, you can directly put a non-boolean variable after `if`.
-Often, it stands for if self isn't empty, non-zero, etc.
+Often, it implies if itself isn't empty, non-zero, etc.
 
 For example:
 
@@ -211,7 +213,7 @@ if c: print('c is True!')
 # There is no output because a, b and c all stands for false.
 ```
 
-Now, let's convert it into kotlin:
+Now, let's convert it into kotlin.
 
 ```kotlin
 import net.psunset.pytlin.lang.not
@@ -230,7 +232,7 @@ By the same token, `if not obj: ...` in python is equivalent to `if (!obj) { ...
 
 ### Value equation of numbers
 
-`==` operator in python only checking the value of two numbers, regardless of their type.
+`==` operator in python only checks the value of two numbers, regardless of their type.
 
 For example:
 
@@ -238,14 +240,14 @@ For example:
 print(1.0 == 1) # Result: True
 ```
 
-But the same code in kotlin:
+But after converting the prociding code into kotlin.
 
 ```kotlin
 println(1.0 == 1) // Error: Operator '==' cannot be applied to 'Double' and 'Int'
 ```
 
-Uh..., it got something wrong.
-Let's make it a `BigDecimal`.
+Uh..., there is an error with the preceding code.
+Let's transform that into a `BigDecimal`.
 
 ```kotlin
 import java.math.BigDecimal
@@ -254,10 +256,10 @@ println(BigDecimal.valueOf(1.0) == BigDecimal.valueOf(1)) // Result: false
 ```
 
 As you see, the result is `false` because the `==` operator in kotlin
-not only compares the value of the numbers but also checks out the type of them.
+not only compares the value of the numbers but also checks whether they are in same type.
 
 But the function named `valEq` can deal with two problems we met.
-Let's replace `==` operator to `valEq` keyword:
+Let's replace `==` operators with `valEq` infix functions.
 
 ```kotlin
 import net.psunset.pytlin.lang.valEq
@@ -267,7 +269,7 @@ println(1.0 valEq 1) // Result: true
 println(BigDecimal.valueOf(1.0) valEq BigDecimal.valueOf(1)) // Result: true
 ```
 
-It seems that this function works fine.
+It seems that the problems are solved.
 
 ### Tensors
 
