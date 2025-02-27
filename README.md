@@ -1,12 +1,12 @@
 # Pytlin
 
-A implementation of some python features for kotlin.
+An implementation of some `python` features for `kotlin`.
 
 # Import
 
 ### Maven
 
-Add `pytlin` to your `<dependencies>` tag in POM file:
+Add `pytlin` to your `<dependencies>` tag in your POM file:
 
 (pom.xml):
 
@@ -30,10 +30,10 @@ Then set `pytlin.version` in your `<properties>` tag in the same file:
 </properties>
 ```
 
-Please replace the `x.y.z` with an available version by checking
-out [releases](https://github.com/pSUNSET/Pytlin/releases).
+Please replace `x.y.z` with an available version by checking
+out the [releases](https://github.com/pSUNSET/Pytlin/releases).
 
-Eventually, install the library:
+Finally, install the library:
 
 ```
 mvn install
@@ -67,10 +67,10 @@ Then set `pytlin_version` in your properties file:
 pytlin_version=x.y.z
 ```
 
-Please replace the `x.y.z` with an available version by checking
-out [releases](https://github.com/pSUNSET/Pytlin/releases).
+Please replace `x.y.z` with an available version by checking
+out the [releases](https://github.com/pSUNSET/Pytlin/releases).
 
-Eventually, build your project:
+Finally, build your project:
 
 ```
 ./gradlew build
@@ -78,16 +78,16 @@ Eventually, build your project:
 
 ### JAR File
 
-Directly download the pytlin-x.y.z.jar file
-in [releases](https://github.com/pSUNSET/Pytlin/releases).
+Directly download the `pytlin-x.y.z.jar` file
+from the [releases](https://github.com/pSUNSET/Pytlin/releases) page.
 Then import it into your module.
 
 # Features
 
-All the kotlin examples below are tested in a kotlin script (`.kts`) file.
-So there's no `main` function in the code.
+All kotlin examples below are tested in a kotlin script (`.kts`) file.
+Therefore, there's no `main` function in the code.
 If you want to directly use the example code in a kotlin (`.kt`) file,
-please remember to build a main function as an entry.
+please remember to create a `main` function as an entry point.
 
 ### Kwargs
 
@@ -113,7 +113,7 @@ prod_result = f(*range(1, 5), method='mul')
 print(prod_result) # Result: 24
 ```
 
-Now you can achieve the same purpose in kotlin with the following code.
+Now, you can achieve the same purpose in kotlin with the following code.
 
 ```kotlin
 import net.psunset.pytlin.collections.Kwargs
@@ -153,7 +153,7 @@ println(prod_result) // Result: 24
 
 Sometimes, we would like to use a kwargs-like map or dict 
 which is a more convenient map or dict with string keys and values.
-But the elements in `Kwargs` are all immutable,
+Since the elements in `Kwargs` are all immutable,
 we need `MutableKwargs` instead.
 
 For example:
@@ -166,9 +166,9 @@ val priceOfApple = goodToPrice / ("apple" to 0)
 // "apple" is key, `0` is defaultValue
 // using `/` operator to pop an element
 val priceOfOrange = goodToPrice / ("orange" to 0)
-println("Total price is ${priceOfApple + priceOfOrange}") // Result: Total price is 5.5
+println("Total price is ${priceOfApple + priceOfOrange}") // Result: Total price is 5
 println(goodToPrice) // Result: {banana=3}
-// That stands for that apple and orange has already got removed.
+// This shows that apple and orange have already been removed.
 ```
 
 ### Repeat all elements in a list
@@ -185,7 +185,7 @@ ll = [1, 2] * 5
 print(ll) # Result: [1, 2, 1, 2, 1, 2, 1, 2, 1, 2]
 ```
 
-Now we can simply implement that in kotlin with the following code.
+Now, we can simply implement that in kotlin with the following code.
 
 ```kotlin
 import net.psunset.pytlin.collections.times
@@ -240,7 +240,7 @@ For example:
 print(1.0 == 1) # Result: True
 ```
 
-But after converting the prociding code into kotlin.
+But after converting the preceding code into kotlin.
 
 ```kotlin
 println(1.0 == 1) // Error: Operator '==' cannot be applied to 'Double' and 'Int'
@@ -256,10 +256,10 @@ println(BigDecimal.valueOf(1.0) == BigDecimal.valueOf(1)) // Result: false
 ```
 
 As you see, the result is `false` because the `==` operator in kotlin
-not only compares the value of the numbers but also checks whether they are in same type.
+not only compares the value of the numbers but also checks whether they are of the same type.
 
-But the function named `valEq` can deal with two problems we met.
-Let's replace `==` operators with `valEq` infix functions.
+But the function named `valEq` can address two problems we encounter.
+Let's replace the `==` operators with `valEq` infix functions.
 
 ```kotlin
 import net.psunset.pytlin.lang.valEq
@@ -274,13 +274,13 @@ It seems that the problems are solved.
 ### Tensors
 
 This feature is unavailable in raw python.
-That is enabled only when you install [numpy](https://github.com/numpy/numpy) or [pytorch](https://github.com/pytorch/pytorch) library.
+It is enabled only when you install [numpy](https://github.com/numpy/numpy) or [pytorch](https://github.com/pytorch/pytorch) library.
 
-A tensor can storage a multi-dimension array.
-And the features of that are matrix multiplication, dot product and cross product of vectors, operation for all elements, etc.
+A tensor can store a multi-dimensional array.
+Its features include matrix multiplication, dot product and cross product of vectors, operation for all elements, etc.
 
 But, in fact, the tensors in this library are incomplete and deprecated.
-So if you want a more useful library for more features and better performance.
+For a more useful library with more features and better performance.
 Please check out [mulkit](https://github.com/Kotlin/multik), which is a kotlin official library.
 
 For more details, please check out the document in
@@ -297,7 +297,7 @@ print(a[:]) # Result: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 print(a[::-1]) # Result: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
 ```
 
-Now you can do the same thing in kotlin by making the slices in python surrounded by `"` to make it a string.
+Now you can do the same thing in kotlin by making the slices in python surrounded by `"` to make them a string.
 For example:
 
 ```kotlin
