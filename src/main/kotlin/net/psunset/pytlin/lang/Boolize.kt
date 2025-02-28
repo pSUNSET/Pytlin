@@ -9,7 +9,7 @@ import java.util.Optional
 
 /**
  * Basic `toBool()` function
- * All `this.toBool()` can be replaced to `!!this`.
+ * All `this.toBool()` can be replaced with `!!this`.
  */
 inline fun Any?.toBool(): Boolean = this != null
 

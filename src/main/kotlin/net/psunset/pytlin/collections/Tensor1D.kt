@@ -200,7 +200,7 @@ abstract class Tensor1D<E : Number> (
      * val tensorWithDouble = tensorOf(53.9, 854.3, 264.7, 964.4)
      * // val tensorWithBigDecimal = tensorWithDouble.toBigDecimalTensor() // With bad scale
      * val tensorWithBigDecimal = tensorWithDouble.toBigDecimalTensor { it.toBigDecimal(?) }
-     * // Add this line and replace `?` to expected min scale
+     * // Add this line and replace `?` with expected min scale
      * ```
      * @see toBigDecimalTensor toBigDecimalTensor(factory: (E) -> BigDecimal)
      */
