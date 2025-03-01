@@ -123,7 +123,7 @@ import net.psunset.pytlin.collections.prod
 fun f(vararg args: Int, kwargs: Kwargs): Int {
     val method = kwargs["method", "add"]
     // "method" is key, "add" is defaultValue
-    // Only get the value here, not pop the element.
+    // Only getting the value here, not popping the element.
     // Because the key-value pairs in Kwargs are immutable.
     return when (method) {
         "add" -> args.sum()
@@ -133,7 +133,7 @@ fun f(vararg args: Int, kwargs: Kwargs): Int {
 }
 
 val sum_result = f(
-    *(1..<10).toList().toTypedArray().toIntArray(), 15, 20,
+    *(1..<10).toList().toIntArray(), 15, 20,
     kwargs = kwargsOf(
         "method" to "add"
     )
@@ -141,7 +141,7 @@ val sum_result = f(
 println(sum_result) // Result: 80
 
 val prod_result = f(
-    *(1..<5).toList().toTypedArray().toIntArray(),
+    *(1..<5).toList().toIntArray(),
     kwargs = kwargsOf(
         "method" to "mul"
     )
