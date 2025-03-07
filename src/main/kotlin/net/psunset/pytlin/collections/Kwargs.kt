@@ -25,6 +25,9 @@ class Kwargs : HashMap<String, Any?> {
     @Suppress("UNCHECKED_CAST")
     operator fun <T : Any?> get(key: String, defaultValue: T): T = (this[key] as T?) ?: defaultValue
 
+    @Suppress("UNCHECKED_CAST")
+    operator fun <T : Any, D : T> get(key: String, defaultValue: D, type: KClass<T>): T = (this[key] as T?) ?: defaultValue
+
     /**
      * Make self a [MutableKwargs]
      */
@@ -156,7 +159,7 @@ class MutableKwargs : HashMap<String, Any?> {
 
     /**
      * This function doesn't equal to [getOrDefault]
-     * If the key-value pair is valid but the value is `null, the return is still defaultValue.
+     * If the key-value pair is valid but the value is `null`, the return is still defaultValue.
      *
      * For example:
      * ```
@@ -179,15 +182,41 @@ class MutableKwargs : HashMap<String, Any?> {
     operator fun <T : Any?> get(key: String, defaultValue: T): T = (this[key] as T?) ?: defaultValue
 
     /**
+     * The overload function preceding this function converts the value in the map into the type of the defaultValue.
+     * It's usually convenient.
+     * But when the type of defaultValue is different from that of map value.
+     * Using this function is necessary.
+     *
+     * For example:
+     * ```
+     * val goodToPrice = kwargsOf("apple" to 3, "orange" to 2.5f, "guava" to null)
+     * val priceOfApple = goodToPrice["apple", 0.0] // The type of defaultValue is Double instead of Int
+     * println(priceOfApple) // Result: 3.0
+     * // Even not using the defaultValue, it is converted into Double
+     * ```
+     *
+     * But when using this function instead.
+     * ```
+     * val goodToPrice = kwargsOf("apple" to 3, "orange" to 2.5f, "guava" to null)
+     * val priceOfApple = goodToPrice["apple", 0.0, Number::class] // The type which both the map value and defaultValue belong to
+     * println(priceOfApple) // Result: 3
+     * // It's still an Int
+     * ```
+     */
+    @Suppress("UNCHECKED_CAST")
+    operator fun <T : Any, D : T> get(key: String, defaultValue: D, type: KClass<T>): T =
+        (this[key] as T?) ?: defaultValue
+
+    /**
      * In fact, this function is same as [remove].
      * @see remove remove(Object key) (Java)
      */
     fun pop(key: String): Any? = this.remove(key)
 
     /**
-     * Get the value with the key.
+     * Gets the value with the key.
      * In the meantime, key-value pairs got removed.
-     * The difference between this function and [remove] is that the second parameter in target type will be returned.
+     * The difference between this function and [remove] is that the second parameter is the target type to be returned.
      * @param type The class which return value should belong to. Please ensure that the cast will be successful.
      * @return The value got by key with cast into the correct class.
      * @see remove remove(Object key, Object value) (Java)
@@ -196,7 +225,7 @@ class MutableKwargs : HashMap<String, Any?> {
     fun <T : Any> pop(key: String, type: KClass<T>): T? = this.pop(key) as T?
 
     /**
-     * Get the value with the key.
+     * Gets the value with the key.
      * In the meantime, key-value pairs got removed if the key is present.
      * The difference between this function and [remove] is that the second parameter in this function is defaultValue.
      * @return The value got by key with cast into the class of defaultValue if the value is present and not `null`;
@@ -207,7 +236,19 @@ class MutableKwargs : HashMap<String, Any?> {
     fun <T : Any?> pop(key: String, defaultValue: T): T = (this.remove(key) as T?) ?: defaultValue
 
     /**
-     * Make self a immutable [Kwargs]
+     * Gets the value with the key.
+     * In the meantime, key-value pairs got removed if the key is present.
+     * The difference between this function and [remove] is that the second parameter in this function is defaultValue
+     * and that the third parameter is the target type to be returned.
+     * @return The value got by key with cast into the class of defaultValue if the value is present and not `null`;
+     * defaultValue otherwise
+     * @see remove remove(Object key, Object value) (Java)
+     */
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Any, D : T> pop(key: String, defaultValue: D, type: KClass<T>): T = (this.remove(key) as T?) ?: defaultValue
+
+    /**
+     * Makes self a immutable [Kwargs]
      */
     fun immutable(): Kwargs = Kwargs(this)
 
@@ -243,54 +284,62 @@ class MutableKwargs : HashMap<String, Any?> {
     operator fun plus(other: Map<String, Any?>): MutableKwargs = MutableKwargs(this).apply { putAll(other) }
 
     /**
-     * Remove some entries of the kwargs should return [MutableKwargs] instead of [Map]
+     * Removes some entries of the kwargs should return [MutableKwargs] instead of [Map]
      * @see Map.minus Map<out K, V>.minus(key: K)
      */
     operator fun minus(key: String): MutableKwargs = MutableKwargs(this).apply { minusAssign(key) }
 
     /**
-     * Remove some entries of the kwargs should return [MutableKwargs] instead of [Map]
+     * Removes some entries of the kwargs should return [MutableKwargs] instead of [Map]
      * @see Map.minus Map<out K, V>.minus(keys: Iterable<K>)
      */
     operator fun minus(keys: Iterable<String>): MutableKwargs = MutableKwargs(this).apply { minusAssign(keys) }
 
     /**
-     * Remove some entries of the kwargs should return [MutableKwargs] instead of [Map]
+     * Removes some entries of the kwargs should return [MutableKwargs] instead of [Map]
      * @see Map.minus Map<out K, V>.minus(keys: Array<out K>)
      */
     operator fun minus(keys: Array<out String>): MutableKwargs = MutableKwargs(this).apply { minusAssign(keys) }
 
     /**
-     * Remove some entries of the kwargs should return [MutableKwargs] instead of [Map]
+     * Removes some entries of the kwargs should return [MutableKwargs] instead of [Map]
      * @see Map.minus Map<out K, V>.minus(keys: Sequence<K>)
      */
     operator fun minus(keys: Sequence<String>): MutableKwargs = MutableKwargs(this).apply { minusAssign(keys) }
 
     /**
-     * Call [pop] function
+     * Calls [pop] function
      * @see pop pop(key: String)
      */
     operator fun div(key: String): Any? = this.pop(key)
 
     /**
-     * Call [pop] function
-     * @param keyToType Should be in correct format: `key to type` or `Pair(key, type)`
+     * Calls [pop] function
+     * @param keyToType Should be in a correct format: `key to type` or `Pair(key, type)`
      * @see pop pop(key: String, type: KClass<T>)
      */
     @JvmName("div2PopAs")
     operator fun <T : Any> div(keyToType: Pair<String, KClass<T>>): T? = this.pop(keyToType.first, keyToType.second)
 
     /**
-     * Call [pop] function.
-     * @param keyToDefaultValue Should be in correct format: `key to defaultValue` or `Pair(key, defaultValue)`
+     * Calls [pop] function.
+     * @param keyToDefaultValue Should be in a correct format: `key to defaultValue` or `Pair(key, defaultValue)`
      * @see pop pop(key: String, defaultValue: Any?)
      */
     operator fun <T : Any?> div(keyToDefaultValue: Pair<String, T>): T =
         this.pop(keyToDefaultValue.first, keyToDefaultValue.second)
 
+    /**
+     * Calls [pop] function.
+     * @param key_defaultValue_type Should be in a correct format: `Triple(key, defaultValue, type)`
+     * @see pop pop(key: String, defaultValue: D, type: KClass<T>)
+     */
+    operator fun <T : Any, D : T> div(key_defaultValue_type: Triple<String, D, KClass<T>>): T =
+        this.pop(key_defaultValue_type.first, key_defaultValue_type.second, key_defaultValue_type.third)
+
 
     /**
-     * Call [remove] function
+     * Calls [remove] function
      * @see remove remove(Object key) (Java)
      */
     operator fun divAssign(key: String) {
@@ -298,22 +347,34 @@ class MutableKwargs : HashMap<String, Any?> {
     }
 
     /**
-     * Call [pop] function
-     * @param keyToType Should be in correct format: `key to type` or `Pair(key, type)`
+     * Calls [pop] function
+     * @param keyToType Should be in a correct format: `key to type` or `Pair(key, type)`
      * @see pop pop(key: String, type: KClass<T>)
      */
-    @JvmName("divAssign2PopAs")
+    @Deprecated("If you don't need the value returned, you may can simply call the function without the type.")
+    @JvmName("divAssignWithType")
     operator fun <T : Any> divAssign(keyToType: Pair<String, KClass<T>>) {
         this.pop(keyToType.first, keyToType.second)
     }
 
     /**
-     * Call [pop] function.
-     * @param keyToDefaultValue Should be in correct format: `key to defaultValue` or `Pair(key, defaultValue)`
+     * Calls [pop] function.
+     * @param keyToDefaultValue Should be in a correct format: `key to defaultValue` or `Pair(key, defaultValue)`
      * @see pop pop(key: String, defaultValue: Any?)
      */
+    @Deprecated("If you don't need the value returned, you may can simply call the function without the defaultValue.")
     operator fun <T : Any?> divAssign(keyToDefaultValue: Pair<String, T>) {
         this.pop(keyToDefaultValue.first, keyToDefaultValue.second)
+    }
+
+    /**
+     * Calls [pop] function.
+     * @param key_defaultValue_type Should be in a correct format: `key to defaultValue` or `Pair(key, defaultValue)`
+     * @see pop pop(key: String, defaultValue: Any?)
+     */
+    @Deprecated("If you don't need the value returned, you may can simply call the function without the defaultValue and the type.")
+    operator fun <T : Any, D : T> divAssign(key_defaultValue_type: Triple<String, D, KClass<T>>) {
+        this.pop(key_defaultValue_type.first, key_defaultValue_type.second, key_defaultValue_type.third)
     }
 }
 
