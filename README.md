@@ -297,7 +297,8 @@ print(a[:]) # Result: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 print(a[::-1]) # Result: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
 ```
 
-Now you can do the same thing in kotlin by making the slices in python surrounded by `"` to make them a string.
+Now, with this library,
+you can achieve the same effect in kotlin by making the slice in python surrounded by `"` to make it a string.
 For example:
 
 ```kotlin
@@ -308,6 +309,8 @@ println(a[":5"]) // Result: [1, 2, 3, 4, 5]
 println(a[":"]) // Result: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 println(a["::-1"]) // Result: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
 ```
+
+Also, setting elements with python-like slice is also available.
 
 # Using in Java
 
