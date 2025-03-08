@@ -274,7 +274,7 @@ It seems that the problems are solved.
 ### Tensors
 
 This feature is unavailable in raw python.
-It is enabled only when you install [numpy](https://github.com/numpy/numpy) or [pytorch](https://github.com/pytorch/pytorch) library.
+It is enabled only when you install [numpy](https://github.com/numpy/numpy), [pytorch](https://github.com/pytorch/pytorch) or other libraries like them.
 
 A tensor can store a multi-dimensional array.
 Its features include matrix multiplication, dot product and cross product of vectors, operation for all elements, etc.
@@ -283,12 +283,12 @@ But, in fact, the tensors in this library are incomplete and deprecated.
 For a more useful library with more features and better performance.
 Please check out [mulkit](https://github.com/Kotlin/multik), which is a kotlin official library.
 
-For more details, please check out the document in
-[Tensors](./src/main/kotlin/net/psunset/pytlin/collections/Tensors.kt) source.
+For more details, 
+please check out the document in [Tensors](./src/main/kotlin/net/psunset/pytlin/collections/Tensors.kt) source.
 
 ### Slices
 
-In python, slices of a list can be simply implemented by:
+In python, slices of a list can be simply implemented by the following code.
 
 ```python
 a = [1,2,3,4,5,6,7,8,9,10]
@@ -311,6 +311,38 @@ println(a["::-1"]) // Result: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
 ```
 
 Also, setting elements with python-like slice is also available.
+
+### Range functions
+
+In python, the most common `for` loop is the following code.
+```python
+for i in range(10):
+    print(i, end='')
+# Result: 0123456789
+```
+
+This library implements that range function in kotlin.
+The following code can be run correctly.
+
+```kotlin
+import net.psunset.pytlin.Py
+
+for (i in Py.range(10)) {
+    print(i)
+}
+// Result: 0123456789
+```
+
+But, to be honest, the recommended way is to use raw kotlin function.
+Just like the following code.
+
+```kotlin
+for (i in 0..9) {
+    print(i)
+}
+// Result: 0123456789
+// '0..9' and '0..<10' are similar to each other. 
+```
 
 # Using in Java
 
