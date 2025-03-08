@@ -1,5 +1,7 @@
 package net.psunset.pytlin.collections
 
+import net.psunset.pytlin.ranges.PySlices
+
 /**
  * Calls [List.slice]
  */
@@ -176,8 +178,6 @@ operator fun ULongArray.get(indices: IntRange): List<ULong> =
 operator fun ULongArray.get(indices: Iterable<Int>): List<ULong> =
     this.slice(indices)
 
-fun String.toIndex(size: Int) = this.toInt().let { if (it >= 0) it else size + it }
-
 /**
  * It's too convenient to use slice in a python array.
  * Though Kotlin provide [slice] function, too.
@@ -212,37 +212,12 @@ fun String.toIndex(size: Int) = this.toInt().let { if (it >= 0) it else size + i
  * @return The slices of list if the slice pattern is valid, an empty list otherwise.
  */
 operator fun <T> List<T>.get(pattern: String): List<T> {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-
-    val p = pattern.replace(" ", "") // Remove all whitespace
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-
-    if (':' !in p) return listOf(this[p.toIndex(this.size)]) // pattern is a normal int
-    if (p.all { it == ':' }) return this.toList() // returns a clone if pattern equals ":" or "::"
-
-    // Define the default value for slice
-    var start: Int = 0
-    var end: Int = this.size // exclusive
-    var step: Int = 1
-
-    // Edit the slice properties if user provides
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            // The Default value is different when the step is negative.
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-
-    end += if (step >= 0) -1 else 1 // Make the end an inclusive index
-
-    if (step == 1) return this[start..end] // Directly returns an IntRange
-
-    return this[IntProgression.fromClosedRange(start, end, step)]
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) return listOf(this[ps.asNumber()])
+    if (ps.isClone) return this.toList()
+    if (ps.isReverse) return this.reversed()
+    if (ps.isRange) return this[ps.asRange()]
+    return this[ps.asProgression()]
 }
 
 /**
@@ -251,27 +226,12 @@ operator fun <T> List<T>.get(pattern: String): List<T> {
  * @see List.get get(pattern: String) which is preceding this function
  */
 operator fun <T> Array<out T>.get(pattern: String): List<T> {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) return listOf(this[p.toIndex(this.size)])
-    if (p.all { it == ':' }) return this.toList()
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) return this[start..end]
-    return this[IntProgression.fromClosedRange(start, end, step)]
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) return listOf(this[ps.asNumber()])
+    if (ps.isClone) return this.toList()
+    if (ps.isReverse) return this.reversed()
+    if (ps.isRange) return this[ps.asRange()]
+    return this[ps.asProgression()]
 }
 
 /**
@@ -280,27 +240,12 @@ operator fun <T> Array<out T>.get(pattern: String): List<T> {
  * @see Array.get get(pattern: String)
  */
 operator fun ByteArray.get(pattern: String): List<Byte> {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) return listOf(this[p.toIndex(this.size)])
-    if (p.all { it == ':' }) return this.toList()
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) return this[start..end]
-    return this[IntProgression.fromClosedRange(start, end, step)]
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) return listOf(this[ps.asNumber()])
+    if (ps.isClone) return this.toList()
+    if (ps.isReverse) return this.reversed()
+    if (ps.isRange) return this[ps.asRange()]
+    return this[ps.asProgression()]
 }
 
 /**
@@ -309,27 +254,12 @@ operator fun ByteArray.get(pattern: String): List<Byte> {
  * @see Array.get get(pattern: String)
  */
 operator fun CharArray.get(pattern: String): List<Char> {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) return listOf(this[p.toIndex(this.size)])
-    if (p.all { it == ':' }) return this.toList()
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) return this[start..end]
-    return this[IntProgression.fromClosedRange(start, end, step)]
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) return listOf(this[ps.asNumber()])
+    if (ps.isClone) return this.toList()
+    if (ps.isReverse) return this.reversed()
+    if (ps.isRange) return this[ps.asRange()]
+    return this[ps.asProgression()]
 }
 
 
@@ -339,27 +269,12 @@ operator fun CharArray.get(pattern: String): List<Char> {
  * @see Array.get get(pattern: String)
  */
 operator fun ShortArray.get(pattern: String): List<Short> {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) return listOf(this[p.toIndex(this.size)])
-    if (p.all { it == ':' }) return this.toList()
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) return this[start..end]
-    return this[IntProgression.fromClosedRange(start, end, step)]
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) return listOf(this[ps.asNumber()])
+    if (ps.isClone) return this.toList()
+    if (ps.isReverse) return this.reversed()
+    if (ps.isRange) return this[ps.asRange()]
+    return this[ps.asProgression()]
 }
 
 /**
@@ -368,27 +283,12 @@ operator fun ShortArray.get(pattern: String): List<Short> {
  * @see Array.get get(pattern: String)
  */
 operator fun IntArray.get(pattern: String): List<Int> {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) return listOf(this[p.toIndex(this.size)])
-    if (p.all { it == ':' }) return this.toList()
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) return this[start..end]
-    return this[IntProgression.fromClosedRange(start, end, step)]
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) return listOf(this[ps.asNumber()])
+    if (ps.isClone) return this.toList()
+    if (ps.isReverse) return this.reversed()
+    if (ps.isRange) return this[ps.asRange()]
+    return this[ps.asProgression()]
 }
 
 /**
@@ -397,27 +297,12 @@ operator fun IntArray.get(pattern: String): List<Int> {
  * @see Array.get get(pattern: String)
  */
 operator fun LongArray.get(pattern: String): List<Long> {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) return listOf(this[p.toIndex(this.size)])
-    if (p.all { it == ':' }) return this.toList()
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) return this[start..end]
-    return this[IntProgression.fromClosedRange(start, end, step)]
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) return listOf(this[ps.asNumber()])
+    if (ps.isClone) return this.toList()
+    if (ps.isReverse) return this.reversed()
+    if (ps.isRange) return this[ps.asRange()]
+    return this[ps.asProgression()]
 }
 
 /**
@@ -426,27 +311,12 @@ operator fun LongArray.get(pattern: String): List<Long> {
  * @see Array.get get(pattern: String)
  */
 operator fun FloatArray.get(pattern: String): List<Float> {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) return listOf(this[p.toIndex(this.size)])
-    if (p.all { it == ':' }) return this.toList()
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) return this[start..end]
-    return this[IntProgression.fromClosedRange(start, end, step)]
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) return listOf(this[ps.asNumber()])
+    if (ps.isClone) return this.toList()
+    if (ps.isReverse) return this.reversed()
+    if (ps.isRange) return this[ps.asRange()]
+    return this[ps.asProgression()]
 }
 
 /**
@@ -455,27 +325,12 @@ operator fun FloatArray.get(pattern: String): List<Float> {
  * @see Array.get get(pattern: String)
  */
 operator fun DoubleArray.get(pattern: String): List<Double> {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) return listOf(this[p.toIndex(this.size)])
-    if (p.all { it == ':' }) return this.toList()
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) return this[start..end]
-    return this[IntProgression.fromClosedRange(start, end, step)]
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) return listOf(this[ps.asNumber()])
+    if (ps.isClone) return this.toList()
+    if (ps.isReverse) return this.reversed()
+    if (ps.isRange) return this[ps.asRange()]
+    return this[ps.asProgression()]
 }
 
 /**
@@ -485,27 +340,12 @@ operator fun DoubleArray.get(pattern: String): List<Double> {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UByteArray.get(pattern: String): List<UByte> {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) return listOf(this[p.toIndex(this.size)])
-    if (p.all { it == ':' }) return this.toList()
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) return this[start..end]
-    return this[IntProgression.fromClosedRange(start, end, step)]
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) return listOf(this[ps.asNumber()])
+    if (ps.isClone) return this.toList()
+    if (ps.isReverse) return this.reversed()
+    if (ps.isRange) return this[ps.asRange()]
+    return this[ps.asProgression()]
 }
 
 /**
@@ -515,27 +355,12 @@ operator fun UByteArray.get(pattern: String): List<UByte> {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UShortArray.get(pattern: String): List<UShort> {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) return listOf(this[p.toIndex(this.size)])
-    if (p.all { it == ':' }) return this.toList()
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) return this[start..end]
-    return this[IntProgression.fromClosedRange(start, end, step)]
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) return listOf(this[ps.asNumber()])
+    if (ps.isClone) return this.toList()
+    if (ps.isReverse) return this.reversed()
+    if (ps.isRange) return this[ps.asRange()]
+    return this[ps.asProgression()]
 }
 
 /**
@@ -545,27 +370,12 @@ operator fun UShortArray.get(pattern: String): List<UShort> {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UIntArray.get(pattern: String): List<UInt> {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) return listOf(this[p.toIndex(this.size)])
-    if (p.all { it == ':' }) return this.toList()
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) return this[start..end]
-    return this[IntProgression.fromClosedRange(start, end, step)]
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) return listOf(this[ps.asNumber()])
+    if (ps.isClone) return this.toList()
+    if (ps.isReverse) return this.reversed()
+    if (ps.isRange) return this[ps.asRange()]
+    return this[ps.asProgression()]
 }
 
 /**
@@ -575,27 +385,12 @@ operator fun UIntArray.get(pattern: String): List<UInt> {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun ULongArray.get(pattern: String): List<ULong> {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) return listOf(this[p.toIndex(this.size)])
-    if (p.all { it == ':' }) return this.toList()
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) return this[start..end]
-    return this[IntProgression.fromClosedRange(start, end, step)]
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) return listOf(this[ps.asNumber()])
+    if (ps.isClone) return this.toList()
+    if (ps.isReverse) return this.reversed()
+    if (ps.isRange) return this[ps.asRange()]
+    return this[ps.asProgression()]
 }
 
 /**
@@ -604,27 +399,12 @@ operator fun ULongArray.get(pattern: String): List<ULong> {
  * @see Array.get get(pattern: String)
  */
 operator fun BooleanArray.get(pattern: String): List<Boolean> {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) return listOf(this[p.toIndex(this.size)])
-    if (p.all { it == ':' }) return this.toList()
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) return this[start..end]
-    return this[IntProgression.fromClosedRange(start, end, step)]
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) return listOf(this[ps.asNumber()])
+    if (ps.isClone) return this.toList()
+    if (ps.isReverse) return this.reversed()
+    if (ps.isRange) return this[ps.asRange()]
+    return this[ps.asProgression()]
 }
 
 operator fun <T> MutableList<T>.set(indices: Iterable<Int>, elements: List<T>) {
@@ -884,1436 +664,649 @@ operator fun ULongArray.set(indices: Iterable<Int>, elements: ULongArray) {
 }
 
 operator fun <T> MutableList<T>.set(pattern: String, elements: List<T>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
         throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun <T> MutableList<T>.set(pattern: String, elements: Array<out T>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun <T> MutableList<T>.set(pattern: String, element: T) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    if (':' in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (!ps.isNumber) {
         throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
     }
-    this[p.toIndex(this.size)] = element
+    this[ps.asNumber()] = element
 }
 
 operator fun <T> Array<T>.set(pattern: String, elements: List<T>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
         throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    }
-    if (p.all { it == ':' }) {
-        require(this.size == elements.size) { "Attempt to assign array of size ${elements.size} to extended slice of size ${this.size}" }
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun <T> Array<T>.set(pattern: String, elements: Array<out T>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun <T> Array<T>.set(pattern: String, element: T) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    if (':' in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (!ps.isNumber) {
         throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
     }
-    this[p.toIndex(this.size)] = element
+    this[ps.asNumber()] = element
 }
 
 operator fun ByteArray.set(pattern: String, elements: List<Byte>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
         throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    }
-    if (p.all { it == ':' }) {
-        require(this.size == elements.size) { "Attempt to assign array of size ${elements.size} to extended slice of size ${this.size}" }
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun ByteArray.set(pattern: String, elements: Array<out Byte>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun ByteArray.set(pattern: String, elements: ByteArray) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun ByteArray.set(pattern: String, element: Byte) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    if (':' in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (!ps.isNumber) {
         throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
     }
-    this[p.toIndex(this.size)] = element
+    this[ps.asNumber()] = element
 }
 
 operator fun CharArray.set(pattern: String, elements: List<Char>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
         throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    }
-    if (p.all { it == ':' }) {
-        require(this.size == elements.size) { "Attempt to assign array of size ${elements.size} to extended slice of size ${this.size}" }
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun CharArray.set(pattern: String, elements: Array<out Char>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun CharArray.set(pattern: String, elements: CharArray) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun CharArray.set(pattern: String, element: Char) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    if (':' in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (!ps.isNumber) {
         throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
     }
-    this[p.toIndex(this.size)] = element
+    this[ps.asNumber()] = element
 }
 
 operator fun ShortArray.set(pattern: String, elements: List<Short>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
         throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    }
-    if (p.all { it == ':' }) {
-        require(this.size == elements.size) { "Attempt to assign array of size ${elements.size} to extended slice of size ${this.size}" }
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun ShortArray.set(pattern: String, elements: Array<out Short>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun ShortArray.set(pattern: String, elements: ShortArray) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun ShortArray.set(pattern: String, element: Short) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    if (':' in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (!ps.isNumber) {
         throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
     }
-    this[p.toIndex(this.size)] = element
+    this[ps.asNumber()] = element
 }
 
 operator fun IntArray.set(pattern: String, elements: List<Int>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
         throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    }
-    if (p.all { it == ':' }) {
-        require(this.size == elements.size) { "Attempt to assign array of size ${elements.size} to extended slice of size ${this.size}" }
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun IntArray.set(pattern: String, elements: Array<out Int>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun IntArray.set(pattern: String, elements: IntArray) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun IntArray.set(pattern: String, element: Int) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    if (':' in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (!ps.isNumber) {
         throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
     }
-    this[p.toIndex(this.size)] = element
+    this[ps.asNumber()] = element
 }
 
 operator fun LongArray.set(pattern: String, elements: List<Long>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
         throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    }
-    if (p.all { it == ':' }) {
-        require(this.size == elements.size) { "Attempt to assign array of size ${elements.size} to extended slice of size ${this.size}" }
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun LongArray.set(pattern: String, elements: Array<out Long>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun LongArray.set(pattern: String, elements: LongArray) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun LongArray.set(pattern: String, element: Long) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    if (':' in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (!ps.isNumber) {
         throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
     }
-    this[p.toIndex(this.size)] = element
+    this[ps.asNumber()] = element
 }
 
 operator fun FloatArray.set(pattern: String, elements: List<Float>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
         throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    }
-    if (p.all { it == ':' }) {
-        require(this.size == elements.size) { "Attempt to assign array of size ${elements.size} to extended slice of size ${this.size}" }
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun FloatArray.set(pattern: String, elements: Array<out Float>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun FloatArray.set(pattern: String, elements: FloatArray) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun FloatArray.set(pattern: String, element: Float) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    if (':' in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (!ps.isNumber) {
         throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
     }
-    this[p.toIndex(this.size)] = element
+    this[ps.asNumber()] = element
 }
 
 operator fun DoubleArray.set(pattern: String, elements: List<Double>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
         throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    }
-    if (p.all { it == ':' }) {
-        require(this.size == elements.size) { "Attempt to assign array of size ${elements.size} to extended slice of size ${this.size}" }
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun DoubleArray.set(pattern: String, elements: Array<out Double>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun DoubleArray.set(pattern: String, elements: DoubleArray) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun DoubleArray.set(pattern: String, element: Double) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    if (':' in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (!ps.isNumber) {
         throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
     }
-    this[p.toIndex(this.size)] = element
+    this[ps.asNumber()] = element
 }
 
 operator fun BooleanArray.set(pattern: String, elements: List<Boolean>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
         throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    }
-    if (p.all { it == ':' }) {
-        require(this.size == elements.size) { "Attempt to assign array of size ${elements.size} to extended slice of size ${this.size}" }
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun BooleanArray.set(pattern: String, elements: Array<out Boolean>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun BooleanArray.set(pattern: String, elements: BooleanArray) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 operator fun BooleanArray.set(pattern: String, element: Boolean) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    if (':' in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (!ps.isNumber) {
         throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
     }
-    this[p.toIndex(this.size)] = element
+    this[ps.asNumber()] = element
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UByteArray.set(pattern: String, elements: List<UByte>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
         throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    }
-    if (p.all { it == ':' }) {
-        require(this.size == elements.size) { "Attempt to assign array of size ${elements.size} to extended slice of size ${this.size}" }
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UByteArray.set(pattern: String, elements: Array<out UByte>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UByteArray.set(pattern: String, elements: UByteArray) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UByteArray.set(pattern: String, element: UByte) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    if (':' in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (!ps.isNumber) {
         throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
     }
-    this[p.toIndex(this.size)] = element
+    this[ps.asNumber()] = element
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UShortArray.set(pattern: String, elements: List<UShort>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
         throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    }
-    if (p.all { it == ':' }) {
-        require(this.size == elements.size) { "Attempt to assign array of size ${elements.size} to extended slice of size ${this.size}" }
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UShortArray.set(pattern: String, elements: Array<out UShort>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UShortArray.set(pattern: String, elements: UShortArray) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UShortArray.set(pattern: String, element: UShort) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    if (':' in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (!ps.isNumber) {
         throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
     }
-    this[p.toIndex(this.size)] = element
+    this[ps.asNumber()] = element
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UIntArray.set(pattern: String, elements: List<UInt>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
         throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    }
-    if (p.all { it == ':' }) {
-        require(this.size == elements.size) { "Attempt to assign array of size ${elements.size} to extended slice of size ${this.size}" }
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UIntArray.set(pattern: String, elements: Array<out UInt>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UIntArray.set(pattern: String, elements: UIntArray) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UIntArray.set(pattern: String, element: UInt) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    if (':' in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (!ps.isNumber) {
         throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
     }
-    this[p.toIndex(this.size)] = element
+    this[ps.asNumber()] = element
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun ULongArray.set(pattern: String, elements: List<ULong>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
         throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    }
-    if (p.all { it == ':' }) {
-        require(this.size == elements.size) { "Attempt to assign array of size ${elements.size} to extended slice of size ${this.size}" }
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun ULongArray.set(pattern: String, elements: Array<out ULong>) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun ULongArray.set(pattern: String, elements: ULongArray) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    val pSplit = p.split(":")
-    require(pSplit.size < 4) { "Pattern is invalid! It only contains a maximum of two colons." }
-    if (':' !in p) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of an array can't be changed.")
-    }
-    if (p.all { it == ':' }) {
+    val ps = PySlices.parse(pattern, this)
+    if (ps.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (ps.isClone) {
         this.indices.forEach { this[it] = elements[it] }
-        return
+    } else if (ps.isRange) {
+        this[ps.asRange()] = elements
+    } else {
+        this[ps.asProgression()] = elements
     }
-    var start: Int = 0
-    var end: Int = this.size
-    var step: Int = 1
-    if (pSplit.size == 3 && pSplit[2].isNotEmpty()) {
-        step = pSplit[2].toInt()
-        if (step < 0) {
-            start = this.lastIndex
-            end = -1
-        }
-    }
-    if (pSplit[0].isNotEmpty()) start = pSplit[0].toIndex(this.size)
-    if (pSplit[1].isNotEmpty()) end = pSplit[1].toIndex(this.size)
-    end += if (step >= 0) -1 else 1
-    if (step == 1) {
-        this[start..end] = elements
-        return
-    }
-    this[IntProgression.fromClosedRange(start, end, step)] = elements
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun ULongArray.set(pattern: String, element: ULong) {
-    require(pattern.any { it == ':' || it == ' ' || it == '-' || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
-    val p = pattern.replace(" ", "")
-    if (':' in p) {
+    val ps = PySlices.parse(pattern, this)
+    if (!ps.isNumber) {
         throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
     }
-    this[p.toIndex(this.size)] = element
+    this[ps.asNumber()] = element
 }

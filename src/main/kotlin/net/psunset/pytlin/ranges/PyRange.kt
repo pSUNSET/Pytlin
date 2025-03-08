@@ -2,18 +2,16 @@ package net.psunset.pytlin.ranges
 
 /**
  * The function is similar in `range` function in python.
- * @param end which is exclusive
  */
-fun range(start: Int, end: Int, step: Int): IntProgression = IntProgression.fromClosedRange(start, end - 1, step)
+fun range(start: Int, endExclusive: Int, step: Int): IntProgression =
+    IntProgression.fromClosedRange(start, endExclusive.let { it + if (step < 0) 1 else -1 }, step)
 
 /**
  * The function is similar in `range` function in python.
- * @param end which is exclusive
  */
-fun range(start: Int, end: Int): IntRange = IntRange(start, end - 1)
+fun range(start: Int, endExclusive: Int): IntRange = IntRange(start, endExclusive - 1)
 
 /**
  * The function is similar in `range` function in python.
- * @param end which is exclusive
  */
-fun range(end: Int): IntRange = IntRange(0, end - 1)
+fun range(endExclusive: Int): IntRange = IntRange(0, endExclusive - 1)
