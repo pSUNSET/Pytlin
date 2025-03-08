@@ -5,7 +5,7 @@
 package net.psunset.pytlin.lang
 
 import net.psunset.pytlin.collections.Tensor_D
-import java.util.Optional
+import java.util.*
 
 /**
  * Basic `toBool()` function

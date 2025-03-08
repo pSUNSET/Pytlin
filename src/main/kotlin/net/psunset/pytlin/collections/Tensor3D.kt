@@ -1,7 +1,7 @@
 package net.psunset.pytlin.collections
 
 import net.psunset.pytlin.lang.times
-import net.psunset.pytlin.COMING_SOON
+import net.psunset.pytlin.utils.COMING_SOON
 import java.math.BigDecimal
 import java.math.BigInteger
 
