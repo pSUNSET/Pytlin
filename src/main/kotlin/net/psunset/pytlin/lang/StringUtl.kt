@@ -11,7 +11,7 @@ import net.psunset.pytlin.collections.times
  * @return A string made with `n` repeat raw string.
  * @see CharSequence.repeat
  */
-operator fun CharSequence.times(n: Int): String = this.repeat(n)
+operator fun CharSequence.times(n: Int): String = this.repeat(n.let { if (it <= 0) 0 else it })
 
 /**
  * Calls [CharSequence.repeat] function which is below this function.
@@ -40,9 +40,9 @@ operator fun CharSequence.times(n: Int): String = this.repeat(n)
 operator fun CharSequence.times(kwargs: Kwargs): String {
     val n = kwargs["n", Int::class]
     val sep =
-        kwargs["separator", kwargs["sep", ""]] // Accept using either "separator" or "sep" simply.
+        kwargs["separator", kwargs["sep", ""]] // Allow using either "separator" or "sep" as the key word
     val prefix = kwargs["prefix", ""]
-    val postfix = kwargs ["postfix", ""]
+    val postfix = kwargs["postfix", ""]
     val limit = kwargs["limit", -1]
     val truncated = kwargs["truncated", "..."]
 
@@ -83,15 +83,18 @@ fun CharSequence.repeat(
     return strList.joinToString(separator, prefix, postfix, limit, truncated, transform)
 }
 
-operator fun Char.times(n: Int): String {
-    if (n <= 0) return ""
-    if (n == 1) return String(CharArray(n) {this} )
 
-    val result = StringBuilder(n)
-    for (i in 1 until n) {
-        result.append(this)
-    }
-    return result.toString()
+/**
+ * Calls [Char.repeat]
+ * @return A string made with `n` repeat raw char.
+ * @see Char.repeat
+ */
+operator fun Char.times(n: Int): String = this.repeat(n.let { if (it <= 0) 0 else it })
+
+fun Char.repeat(n: Int): String {
+    require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
+    if (n == 0) return ""
+    return String(CharArray(n) { this })
 }
 
 /**
@@ -122,23 +125,23 @@ operator fun String.get(indies: Iterable<Int>): String = this.slice(indies)
 /**
  * Parses the slice pattern and calls another overload get function.
  */
-operator fun CharSequence.get(pattern: String): CharSequence{
+operator fun CharSequence.get(pattern: String): CharSequence {
     val ps = Py.slice(pattern, this)
-    if (ps.isNumber) return String(CharArray(1) { this[ps.asNumber()] } )
+    if (ps.isNumber) return String(CharArray(1) { this[ps.asNumber()] })
     if (ps.isClone) return this
     if (ps.isReverse) return this.reversed()
-    if (ps.isRange) return this[ps.asRange()] // Directly returns an IntRange
+    if (ps.isRange) return this[ps.asRange()]
     return this[ps.asProgression()]
 }
 
 /**
  * Parses the slice pattern and calls another overload get function.
  */
-operator fun String.get(pattern: String): String{
+operator fun String.get(pattern: String): String {
     val ps = Py.slice(pattern, this)
-    if (ps.isNumber) return String(CharArray(1) { this[ps.asNumber()] } )
+    if (ps.isNumber) return String(CharArray(1) { this[ps.asNumber()] })
     if (ps.isClone) return this
     if (ps.isReverse) return this.reversed()
-    if (ps.isRange) return this[ps.asRange()] // Directly returns an IntRange
+    if (ps.isRange) return this[ps.asRange()]
     return this[ps.asProgression()]
 }
