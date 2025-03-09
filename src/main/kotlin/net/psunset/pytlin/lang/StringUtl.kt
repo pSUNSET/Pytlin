@@ -8,7 +8,7 @@ import net.psunset.pytlin.collections.times
 
 /**
  * Calls [CharSequence.repeat]
- * @return A string made with `n` repeat raw string.
+ * @return a string containing this char sequence repeated [n] times.
  * @see CharSequence.repeat
  */
 operator fun CharSequence.times(n: Int): String = this.repeat(n.let { if (it <= 0) 0 else it })
@@ -86,11 +86,15 @@ fun CharSequence.repeat(
 
 /**
  * Calls [Char.repeat]
- * @return A string made with `n` repeat raw char.
+ * @return a string containing this char repeated [n] times.
  * @see Char.repeat
  */
 operator fun Char.times(n: Int): String = this.repeat(n.let { if (it <= 0) 0 else it })
 
+/**
+ * @return a string containing this char repeated [n] times.
+ * @throws [IllegalArgumentException] when n < 0.
+ */
 fun Char.repeat(n: Int): String {
     require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
     if (n == 0) return ""

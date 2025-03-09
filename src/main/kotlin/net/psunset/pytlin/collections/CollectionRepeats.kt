@@ -10,7 +10,7 @@ package net.psunset.pytlin.collections
  * println(list2) // Result: [0, 1, 2, 0, 1, 2]
  * // It is successful!
  * ```
- * @return [EmptyList] if `n` is less than 1; otherwise, A new list which has `n` repeat elements in the raw collection.
+ * @return [EmptyList] if [n] is less than 1; otherwise, A new list containing elements in the raw collection repeated [n] time.
  */
 operator fun <T> List<T>.times(n: Int): List<T> {
     if (n <= 0) return emptyList()
@@ -265,8 +265,8 @@ operator fun ULongArray.times(n: Int): List<ULong> {
 }
 
 /**
- * If `n` is less than 1, this mutable list object will be empty;
- * otherwise, this list will be stretched with repeat elements.
+ * If [n] is less than 1, clear all elements in this list;
+ * otherwise, the elements in this list are going to be repeated [n] time.
  * For example:
  * ```
  * val list = mutableListOf(0, 1, 2)
@@ -278,13 +278,13 @@ operator fun ULongArray.times(n: Int): List<ULong> {
  * In the example, I use `val` instead `var`, but it's still working after I call `*=` operator.
  * It's because that we make the list directly update the elements without changing the list's pointer.
  *
- * But If you're using an immutable list, the compiler will crash.
- * Because, in fact, it calls [List.times] first, and then update its pointer.
+ * But If you're using an immutable list, the preceding code is going to be on error.
+ * Because, it calls [List.times] first, and then update its pointer.
  * ```
  * val list = listOf(0, 1, 2)
  * list *= 3 // Error: val cannot be reassigned
  * ```
- * There are two solutions: one is using `var` instead, the other is make the list a mutable list by [toMutableList]
+ * There are two solutions: one is using `var` instead, the other is make the list mutable by [toMutableList]
  * ```
  * var list = listOf(0, 1, 2)
  * // or
