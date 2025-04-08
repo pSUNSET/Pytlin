@@ -104,14 +104,14 @@ fun BigDecimal.truncate(): BigDecimal = this.setScale(0, RoundingMode.DOWN)
  * @return `true` if the numbers have the same value, `false` otherwise.
  */
 infix fun Number.valEq(other: Number): Boolean =
-    this.toString().toBigDecimal().compareTo(other.toString().toBigDecimal()) == 0
+    this.toBigDecimal().compareTo(other.toBigDecimal()) == 0
 
 /**
  * Calls [valEq] function
  * @see Number.valEq
  */
 @JvmName("valueEquals")
-fun valEq(a: Number, b: Number): Boolean = a valEq b
+fun valEq(a: Number, b: Number): Boolean = a.valEq(b)
 
 inline fun Number.toBigInteger(): BigInteger = BigInteger(this.toString())
 
