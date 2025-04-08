@@ -48,4 +48,12 @@ class PySlice internal constructor(pattern: String, val dataSize: Int) {
     fun asRange(): IntRange = IntRange(this.start, this.endInclusive)
 
     fun asProgression(): IntProgression = IntProgression.fromClosedRange(this.start, this.endInclusive, this.step)
+
+    val indies: Iterable<Int> =
+        if (isNumber) listOf(asNumber())
+        else if (isRange) this.asRange()
+        else this.asProgression()
+
+    operator fun iterator(): Iterator<Int> = indies.iterator()
+
 }
