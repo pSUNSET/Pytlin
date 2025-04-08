@@ -43,3 +43,4 @@ bin/
 
 ### Other ###
 gradle.private.properties
+test/

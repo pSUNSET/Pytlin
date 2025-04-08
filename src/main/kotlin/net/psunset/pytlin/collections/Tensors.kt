@@ -147,6 +147,11 @@ abstract class Tensor_D<E : Number>(
         return this as Tensor2D<E>
     }
 
+    fun as3D(): Tensor3D<E> {
+        require(this.ndim == 3) { "Incorrect number of dimension!." }
+        return this as Tensor3D<E>
+    }
+
     abstract fun clone(): Tensor_D<E>
 
     abstract operator fun iterator(): Iterator<*>

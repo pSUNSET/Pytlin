@@ -179,7 +179,6 @@ abstract class Tensor1D<E : Number> (
     protected abstract fun doMul(a: E, b: E): E
     protected abstract fun doDiv(a: E, b: E): E
     protected abstract fun doMod(a: E, b: E): E
-    protected abstract fun doPow(a: E, b: Int): E // Call the official pow function with Int exponent for better performance
     protected abstract fun <N: Number> doPow(a: E, b: N): E
     protected abstract fun newOne(l: List<E>): Tensor1D<E>
 
@@ -252,9 +251,6 @@ class IntTensor1D(
     override fun <N : Number> doPow(a: Int, b: N): Int =
         a.toDouble().pow(b.toDouble()).toInt()
 
-    override fun doPow(a: Int, b: Int): Int =
-        a.toDouble().pow(b).toInt()
-
     override fun newOne(l: List<Int>): Tensor1D<Int> =
         IntTensor1D(l.toTypedArray())
 
@@ -284,9 +280,6 @@ class LongTensor1D(
      */
     override fun <N : Number> doPow(a: Long, b: N): Long =
         a.toDouble().pow(b.toDouble()).toLong()
-
-    override fun doPow(a: Long, b: Int): Long =
-        a.toDouble().pow(b).toLong()
 
     override fun newOne(l: List<Long>): Tensor1D<Long> =
         LongTensor1D(l.toTypedArray())
@@ -318,9 +311,6 @@ class FloatTensor1D(
     override fun <N : Number> doPow(a: Float, b: N): Float =
         a.pow(b.toFloat())
 
-    override fun doPow(a: Float, b: Int): Float =
-        a.pow(b)
-
     override fun newOne(l: List<Float>): Tensor1D<Float> =
         FloatTensor1D(l.toTypedArray())
 
@@ -350,9 +340,6 @@ class DoubleTensor1D(
      */
     override fun <N : Number> doPow(a: Double, b: N): Double =
         a.pow(b.toDouble())
-
-    override fun doPow(a: Double, b: Int): Double =
-        a.pow(b)
 
     override fun newOne(l: List<Double>): Tensor1D<Double> =
         DoubleTensor1D(l.toTypedArray())
@@ -384,9 +371,6 @@ class BigIntegerTensor1D(
     override fun <N : Number> doPow(a: BigInteger, b: N): BigInteger =
         a.pow(b.toInt()) // Only access Int
 
-    override fun doPow(a: BigInteger, b: Int): BigInteger =
-        a.pow(b)
-
     override fun newOne(l: List<BigInteger>): Tensor1D<BigInteger> =
         BigIntegerTensor1D(l.toTypedArray())
 
@@ -416,9 +400,6 @@ class BigDecimalTensor1D(
      */
     override fun <N : Number> doPow(a: BigDecimal, b: N): BigDecimal =
         a.pow(b.toInt()) // Only access Int
-
-    override fun doPow(a: BigDecimal, b: Int): BigDecimal =
-        a.pow(b)
 
     override fun newOne(l: List<BigDecimal>): Tensor1D<BigDecimal> =
         BigDecimalTensor1D(l.toTypedArray())

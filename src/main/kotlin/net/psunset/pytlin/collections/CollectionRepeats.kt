@@ -275,8 +275,9 @@ operator fun ULongArray.times(n: Int): List<ULong> {
  * list *= 0
  * println(list) // Result: []
  * ```
- * In the example, I use `val` instead `var`, but it's still working after I call `*=` operator.
- * It's because that we make the list directly update the elements without changing the list's pointer.
+ * In the example, I use `val` instead `var`.
+ * It's still working after calling `*=` operator,
+ * because making the list directly update the elements without changing the list's pointer.
  *
  * But If you're using an immutable list, the preceding code is going to be on error.
  * Because, it calls [List.times] first, and then update its pointer.
