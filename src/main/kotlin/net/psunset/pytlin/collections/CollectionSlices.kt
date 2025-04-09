@@ -1811,7 +1811,3 @@ operator fun ULongArray.set(pattern: String, element: ULong) {
     this[ps.asNumber()] = element
 }
 
-/**
- * @return the actual index of a collection, negative numbers are available
- */
-fun String.toIndex(dataSize: Int) = this.toInt().let { if (it >= 0) it else dataSize + it }
