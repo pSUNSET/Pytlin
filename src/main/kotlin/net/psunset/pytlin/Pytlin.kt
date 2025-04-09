@@ -8,84 +8,84 @@ object Pytlin {
     /** Parse the slice pattern with a collection */
     @Deprecated(
         "Directly providing the length of the array-like.",
-        replaceWith = ReplaceWith("Py.slice(pattern, s.length)")
+        replaceWith = ReplaceWith("Py.slice(pattern, c.size)")
     )
     fun <E> slice(pattern: String, c: Collection<E>): PySlice = PySlice(pattern, c.size)
 
     /** Parse the slice pattern with a collection */
     @Deprecated(
         "Directly providing the length of the array-like.",
-        replaceWith = ReplaceWith("Py.slice(pattern, s.length)")
+        replaceWith = ReplaceWith("Py.slice(pattern, i.count())")
     )
     fun <E> slice(pattern: String, i: Iterable<E>): PySlice = PySlice(pattern, i.count())
 
     /** Parse the slice pattern with a collection */
     @Deprecated(
         "Directly providing the length of the array-like.",
-        replaceWith = ReplaceWith("Py.slice(pattern, s.length)")
+        replaceWith = ReplaceWith("Py.slice(pattern, s.count())")
     )
-    fun <E> slice(pattern: String, i: Sequence<E>): PySlice = PySlice(pattern, i.count())
+    fun <E> slice(pattern: String, s: Sequence<E>): PySlice = PySlice(pattern, s.count())
 
     /** Parse the slice pattern with an array */
     @Deprecated(
         "Directly providing the length of the array-like.",
-        replaceWith = ReplaceWith("Py.slice(pattern, s.length)")
+        replaceWith = ReplaceWith("Py.slice(pattern, a.size)")
     )
     fun <E> slice(pattern: String, a: Array<out E>): PySlice = PySlice(pattern, a.size)
 
     /** Parse the slice pattern with an array */
     @Deprecated(
         "Directly providing the length of the array-like.",
-        replaceWith = ReplaceWith("Py.slice(pattern, s.length)")
+        replaceWith = ReplaceWith("Py.slice(pattern, a.size)")
     )
     fun slice(pattern: String, a: ByteArray): PySlice = PySlice(pattern, a.size)
 
     /** Parse the slice pattern with an array */
     @Deprecated(
         "Directly providing the length of the array-like.",
-        replaceWith = ReplaceWith("Py.slice(pattern, s.length)")
+        replaceWith = ReplaceWith("Py.slice(pattern, a.size)")
     )
     fun slice(pattern: String, a: CharArray): PySlice = PySlice(pattern, a.size)
 
     /** Parse the slice pattern with an array */
     @Deprecated(
         "Directly providing the length of the array-like.",
-        replaceWith = ReplaceWith("Py.slice(pattern, s.length)")
+        replaceWith = ReplaceWith("Py.slice(pattern, a.size)")
     )
     fun slice(pattern: String, a: ShortArray): PySlice = PySlice(pattern, a.size)
 
     /** Parse the slice pattern with an array */
     @Deprecated(
         "Directly providing the length of the array-like.",
-        replaceWith = ReplaceWith("Py.slice(pattern, s.length)")
+        replaceWith = ReplaceWith("Py.slice(pattern, a.size)")
     )
     fun slice(pattern: String, a: IntArray): PySlice = PySlice(pattern, a.size)
 
     /** Parse the slice pattern with an array */
     @Deprecated(
         "Directly providing the length of the array-like.",
-        replaceWith = ReplaceWith("Py.slice(pattern, s.length)")
+        replaceWith = ReplaceWith("Py.slice(pattern, a.size)")
     )
     fun slice(pattern: String, a: LongArray): PySlice = PySlice(pattern, a.size)
 
     /** Parse the slice pattern with an array */
     @Deprecated(
         "Directly providing the length of the array-like.",
-        replaceWith = ReplaceWith("Py.slice(pattern, s.length)")
+        replaceWith = ReplaceWith("Py.slice(pattern, a.size)")
     )
     fun slice(pattern: String, a: FloatArray): PySlice = PySlice(pattern, a.size)
 
     /** Parse the slice pattern with an array */
     @Deprecated(
         "Directly providing the length of the array-like.",
-        replaceWith = ReplaceWith("Py.slice(pattern, s.length)")
+        replaceWith = ReplaceWith("Py.slice(pattern, a.size)")
     )
     fun slice(pattern: String, a: DoubleArray): PySlice = PySlice(pattern, a.size)
 
     /** Parse the slice pattern with an array */
     @Deprecated(
         "Directly providing the length of the array-like.",
-        replaceWith = ReplaceWith("Py.slice(pattern, s.length)")
+        replaceWith = ReplaceWith("Py.slice(pattern, a.size)")
     )
     fun slice(pattern: String, a: BooleanArray): PySlice = PySlice(pattern, a.size)
 
@@ -93,7 +93,7 @@ object Pytlin {
     @OptIn(ExperimentalUnsignedTypes::class)
     @Deprecated(
         "Directly providing the length of the array-like.",
-        replaceWith = ReplaceWith("Py.slice(pattern, s.length)")
+        replaceWith = ReplaceWith("Py.slice(pattern, a.size)")
     )
     fun slice(pattern: String, a: UByteArray): PySlice = PySlice(pattern, a.size)
 
@@ -101,7 +101,7 @@ object Pytlin {
     @OptIn(ExperimentalUnsignedTypes::class)
     @Deprecated(
         "Directly providing the length of the array-like.",
-        replaceWith = ReplaceWith("Py.slice(pattern, s.length)")
+        replaceWith = ReplaceWith("Py.slice(pattern, a.size)")
     )
     fun slice(pattern: String, a: UShortArray): PySlice = PySlice(pattern, a.size)
 
@@ -109,7 +109,7 @@ object Pytlin {
     @OptIn(ExperimentalUnsignedTypes::class)
     @Deprecated(
         "Directly providing the length of the array-like.",
-        replaceWith = ReplaceWith("Py.slice(pattern, s.length)")
+        replaceWith = ReplaceWith("Py.slice(pattern, a.size)")
     )
     fun slice(pattern: String, a: UIntArray): PySlice = PySlice(pattern, a.size)
 
@@ -117,7 +117,7 @@ object Pytlin {
     @OptIn(ExperimentalUnsignedTypes::class)
     @Deprecated(
         "Directly providing the length of the array-like.",
-        replaceWith = ReplaceWith("Py.slice(pattern, s.length)")
+        replaceWith = ReplaceWith("Py.slice(pattern, a.size)")
     )
     fun slice(pattern: String, a: ULongArray): PySlice = PySlice(pattern, a.size)
 
