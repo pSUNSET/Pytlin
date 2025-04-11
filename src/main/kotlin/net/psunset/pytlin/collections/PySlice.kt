@@ -1,17 +1,25 @@
 package net.psunset.pytlin.collections
 
-import kotlin.properties.Delegates
-
 /**
  * Parses a [String] as a python slice.
  * To use this class, using [Py.slice] functions.
  */
 class PySlice internal constructor(pattern: String) {
 
-    var len by Delegates.notNull<Int>()
     var start: Int = 0
+        private set
     var endInclusive: Int = 0 // exclusive before init
+        private set
     var step: Int = 1
+        private set
+    var len: Int = -1
+        get() {
+            require(field < 0) {
+                "len seems have not be init yet, please use 'postInit' function before get this field."
+            }
+            return field
+        }
+        private set
 
     val isNumber: Boolean get() = step == 0
     val isClone: Boolean get() = start == 0 && endInclusive == len - 1 && step == 1
@@ -44,6 +52,15 @@ class PySlice internal constructor(pattern: String) {
         }
     }
 
+    private fun applyLen(len: Int) {
+        require(len >= 0) {
+            "len cannot be a negative number!"
+        }
+        this.len = len
+        if (this.start < 0) this.start = len - this.start  // Correct index
+        if (this.endInclusive < 0) this.endInclusive = len - this.endInclusive  // Correct index
+    }
+
     /** Checking out if [isNumber] is true before calling this function */
     fun asNumber(): Int = this.start
 
@@ -52,18 +69,12 @@ class PySlice internal constructor(pattern: String) {
 
     fun asProgression(): IntProgression = IntProgression.fromClosedRange(this.start, this.endInclusive, this.step)
 
-    fun indices(): Iterable<Int> =
-        if (isNumber) listOf(asNumber())
-        else if (isRange) this.asRange()
-        else this.asProgression()
+    /**
+     * @return A [Triple] which contains (start, end, step)
+     */
+    fun indices(len: Int): Triple<Int, Int, Int> {
+        this.applyLen(len)
 
-    fun indices(len: Int): Iterable<Int> {
-        this.len = len
-        return indices()
+        return Triple(this.start, this.endInclusive, this.step)
     }
-
-    operator fun iterator(): Iterator<Int> = indices().iterator()
-
-    private fun Int.correctIndex(len: Int) = this.let { if (this < 0) len - this else this }
-
 }
