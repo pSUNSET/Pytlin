@@ -130,22 +130,18 @@ operator fun String.get(indies: Iterable<Int>): String = this.slice(indies)
  * Parses the slice pattern and calls another overload get function.
  */
 operator fun CharSequence.get(pattern: String): CharSequence {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) return String(CharArray(1) { this[ps.asNumber()] })
-    if (ps.isClone) return this
-    if (ps.isReverse) return this.reversed()
-    if (ps.isRange) return this[ps.asRange()]
-    return this[ps.asProgression()]
+    val ps = Py.slice(pattern)
+    if (ps.isNumber) return String(CharArray(1) { this[ps.asNumber(this.length)] })
+    if (ps.isRange) return this[ps.asRange(this.length)]
+    return this[ps.asProgression(this.length)]
 }
 
 /**
  * Parses the slice pattern and calls another overload get function.
  */
 operator fun String.get(pattern: String): String {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) return String(CharArray(1) { this[ps.asNumber()] })
-    if (ps.isClone) return this
-    if (ps.isReverse) return this.reversed()
-    if (ps.isRange) return this[ps.asRange()]
-    return this[ps.asProgression()]
+    val ps = Py.slice(pattern)
+    if (ps.isNumber) return String(CharArray(1) { this[ps.asNumber(this.length)] })
+    if (ps.isRange) return this[ps.asRange(this.length)]
+    return this[ps.asProgression(this.length)]
 }

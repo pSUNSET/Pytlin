@@ -12,19 +12,9 @@ class PySlice internal constructor(pattern: String) {
         private set
     var step: Int = 1
         private set
-    var len: Int = -1
-        get() {
-            require(field < 0) {
-                "len seems have not be init yet, please use 'postInit' function before get this field."
-            }
-            return field
-        }
-        private set
 
-    val isNumber: Boolean get() = step == 0
-    val isClone: Boolean get() = start == 0 && endInclusive == len - 1 && step == 1
-    val isReverse: Boolean get() = start == 0 && endInclusive == len - 1 && step == -1
-    val isRange: Boolean get() = step == 1
+    val isNumber get() = this.step == 0
+    val isRange get() = this.step == 1
 
     init {
         require(pattern.any { it in ":- " || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
@@ -43,7 +33,7 @@ class PySlice internal constructor(pattern: String) {
                 if (step < 0) {
                     // The Default value is different when the step is negative.
                     start = -1
-                    endInclusive = -1 // exclusive before init
+                    endInclusive = -1 // exclusive
                 }
             }
             if (pSplit[0].isNotEmpty()) start = pSplit[0].toInt()
@@ -52,29 +42,48 @@ class PySlice internal constructor(pattern: String) {
         }
     }
 
-    private fun applyLen(len: Int) {
+    fun asNumber(len: Int): Int {
+        require(this.isNumber) { "step does not equals to one!" }
+        require(len >= 0) { "len cannot be a negative number!" }
+
+        val start = if (this.start < 0) len + this.start else this.start  // Correct index
+        return start
+    }
+
+    fun asRange(len: Int): IntRange {
+        require(this.isRange) { "step does not equals to one!" }
+        require(len >= 0) { "len cannot be a negative number!" }
+
+        val rangeStart = if (this.start < 0) len + this.start else this.start  // Correct index
+        val rangeEndInclusive =
+            if (this.endInclusive < 0) len + this.endInclusive else this.endInclusive // Correct index
+        return IntRange(rangeStart, rangeEndInclusive)
+    }
+
+    /**
+     * @return a [IntProgression] which this slice stands for
+     */
+    fun asProgression(len: Int): IntProgression {
+        require(len >= 0) { "len cannot be a negative number!" }
+
+        val rangeStart = if (this.start < 0) len + this.start else this.start  // Correct index
+        val rangeEndInclusive =
+            if (this.endInclusive < 0) len + this.endInclusive else this.endInclusive // Correct index
+        return IntProgression.fromClosedRange(rangeStart, rangeEndInclusive, this.step)
+    }
+
+    /**
+     * @return a [Triple] which contains (start, endExclusive, step)
+     */
+    fun indices(len: Int): Triple<Int, Int, Int> {
         require(len >= 0) {
             "len cannot be a negative number!"
         }
-        this.len = len
-        if (this.start < 0) this.start = len - this.start  // Correct index
-        if (this.endInclusive < 0) this.endInclusive = len - this.endInclusive  // Correct index
-    }
 
-    /** Checking out if [isNumber] is true before calling this function */
-    fun asNumber(): Int = this.start
+        val rangeStart = if (this.start < 0) len + this.start else this.start  // Correct index
+        val rangeEndExclusive = // Correct index and make it exclusive
+            (if (this.endInclusive < 0) len + this.endInclusive else this.endInclusive) + (if (step >= 0) 1 else -1)
 
-    /** Checking out if [isRange] is true before calling this function */
-    fun asRange(): IntRange = IntRange(this.start, this.endInclusive)
-
-    fun asProgression(): IntProgression = IntProgression.fromClosedRange(this.start, this.endInclusive, this.step)
-
-    /**
-     * @return A [Triple] which contains (start, end, step)
-     */
-    fun indices(len: Int): Triple<Int, Int, Int> {
-        this.applyLen(len)
-
-        return Triple(this.start, this.endInclusive, this.step)
+        return Triple(rangeStart, rangeEndExclusive, this.step)
     }
 }

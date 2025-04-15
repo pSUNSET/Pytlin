@@ -111,8 +111,8 @@ inline operator fun <T> Sequence<T>?.not(): Boolean = this == null || this.count
 /**
  * @return `true` when the collection isn't empty, otherwise `false`.
  */
-inline fun <T> Collection<T>?.toBool(): Boolean = this != null && this.isNotEmpty()
-inline operator fun <T> Collection<T>?.not(): Boolean = this == null || this.isEmpty()
+inline fun <T> Collection<T>?.toBool(): Boolean = !this.isNullOrEmpty()
+inline operator fun <T> Collection<T>?.not(): Boolean = this.isNullOrEmpty()
 
 /**
  * @return `true` when the array isn't empty, otherwise `false`.
@@ -201,8 +201,8 @@ inline operator fun ULongProgression?.not(): Boolean = this == null || this.isEm
 /**
  * @return `true` when the map isn't empty, otherwise `false`.
  */
-inline fun <K, T> Map<K, T>?.toBool(): Boolean = this != null && this.isNotEmpty()
-inline operator fun <K, T> Map<K, T>?.not(): Boolean = this == null || this.isEmpty()
+inline fun <K, T> Map<K, T>?.toBool(): Boolean = !this.isNullOrEmpty()
+inline operator fun <K, T> Map<K, T>?.not(): Boolean = this.isNullOrEmpty()
 
 /**
  * @return `true` when the tensor isn't empty, otherwise `false`.

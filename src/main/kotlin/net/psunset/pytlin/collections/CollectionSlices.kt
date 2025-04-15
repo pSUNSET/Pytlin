@@ -214,12 +214,9 @@ operator fun ULongArray.get(indices: Iterable<Int>): List<ULong> =
  * @return The slices of list if the slice pattern is valid, an empty list otherwise.
  */
 operator fun <T> List<T>.get(pattern: String): List<T> {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) return listOf(this[ps.asNumber()])
-    if (ps.isClone) return this.toList()
-    if (ps.isReverse) return this.reversed()
-    if (ps.isRange) return this[ps.asRange()]
-    return this[ps.asProgression()]
+    val slice = Py.slice(pattern)
+    if (slice.isRange) return this[slice.asRange(this.size)]
+    return this[Py.slice(pattern).asProgression(this.size)]
 }
 
 /**
@@ -229,12 +226,9 @@ operator fun <T> List<T>.get(pattern: String): List<T> {
  * @see List.get get(pattern: String) which is preceding this function
  */
 operator fun <T> Array<out T>.get(pattern: String): List<T> {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) return listOf(this[ps.asNumber()])
-    if (ps.isClone) return this.toList()
-    if (ps.isReverse) return this.reversed()
-    if (ps.isRange) return this[ps.asRange()]
-    return this[ps.asProgression()]
+    val slice = Py.slice(pattern)
+    if (slice.isRange) return this[slice.asRange(this.size)]
+    return this[Py.slice(pattern).asProgression(this.size)]
 }
 
 /**
@@ -244,12 +238,9 @@ operator fun <T> Array<out T>.get(pattern: String): List<T> {
  * @see List.get get(pattern: String)
  */
 operator fun ByteArray.get(pattern: String): List<Byte> {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) return listOf(this[ps.asNumber()])
-    if (ps.isClone) return this.toList()
-    if (ps.isReverse) return this.reversed()
-    if (ps.isRange) return this[ps.asRange()]
-    return this[ps.asProgression()]
+    val slice = Py.slice(pattern)
+    if (slice.isRange) return this[slice.asRange(this.size)]
+    return this[Py.slice(pattern).asProgression(this.size)]
 }
 
 /**
@@ -259,12 +250,9 @@ operator fun ByteArray.get(pattern: String): List<Byte> {
  * @see List.get get(pattern: String)
  */
 operator fun CharArray.get(pattern: String): List<Char> {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) return listOf(this[ps.asNumber()])
-    if (ps.isClone) return this.toList()
-    if (ps.isReverse) return this.reversed()
-    if (ps.isRange) return this[ps.asRange()]
-    return this[ps.asProgression()]
+    val slice = Py.slice(pattern)
+    if (slice.isRange) return this[slice.asRange(this.size)]
+    return this[Py.slice(pattern).asProgression(this.size)]
 }
 
 
@@ -275,12 +263,9 @@ operator fun CharArray.get(pattern: String): List<Char> {
  * @see List.get get(pattern: String)
  */
 operator fun ShortArray.get(pattern: String): List<Short> {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) return listOf(this[ps.asNumber()])
-    if (ps.isClone) return this.toList()
-    if (ps.isReverse) return this.reversed()
-    if (ps.isRange) return this[ps.asRange()]
-    return this[ps.asProgression()]
+    val slice = Py.slice(pattern)
+    if (slice.isRange) return this[slice.asRange(this.size)]
+    return this[Py.slice(pattern).asProgression(this.size)]
 }
 
 /**
@@ -290,12 +275,9 @@ operator fun ShortArray.get(pattern: String): List<Short> {
  * @see List.get get(pattern: String)
  */
 operator fun IntArray.get(pattern: String): List<Int> {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) return listOf(this[ps.asNumber()])
-    if (ps.isClone) return this.toList()
-    if (ps.isReverse) return this.reversed()
-    if (ps.isRange) return this[ps.asRange()]
-    return this[ps.asProgression()]
+    val slice = Py.slice(pattern)
+    if (slice.isRange) return this[slice.asRange(this.size)]
+    return this[Py.slice(pattern).asProgression(this.size)]
 }
 
 /**
@@ -305,12 +287,9 @@ operator fun IntArray.get(pattern: String): List<Int> {
  * @see List.get get(pattern: String)
  */
 operator fun LongArray.get(pattern: String): List<Long> {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) return listOf(this[ps.asNumber()])
-    if (ps.isClone) return this.toList()
-    if (ps.isReverse) return this.reversed()
-    if (ps.isRange) return this[ps.asRange()]
-    return this[ps.asProgression()]
+    val slice = Py.slice(pattern)
+    if (slice.isRange) return this[slice.asRange(this.size)]
+    return this[Py.slice(pattern).asProgression(this.size)]
 }
 
 /**
@@ -320,12 +299,9 @@ operator fun LongArray.get(pattern: String): List<Long> {
  * @see List.get get(pattern: String)
  */
 operator fun FloatArray.get(pattern: String): List<Float> {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) return listOf(this[ps.asNumber()])
-    if (ps.isClone) return this.toList()
-    if (ps.isReverse) return this.reversed()
-    if (ps.isRange) return this[ps.asRange()]
-    return this[ps.asProgression()]
+    val slice = Py.slice(pattern)
+    if (slice.isRange) return this[slice.asRange(this.size)]
+    return this[Py.slice(pattern).asProgression(this.size)]
 }
 
 /**
@@ -335,12 +311,9 @@ operator fun FloatArray.get(pattern: String): List<Float> {
  * @see List.get get(pattern: String)
  */
 operator fun DoubleArray.get(pattern: String): List<Double> {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) return listOf(this[ps.asNumber()])
-    if (ps.isClone) return this.toList()
-    if (ps.isReverse) return this.reversed()
-    if (ps.isRange) return this[ps.asRange()]
-    return this[ps.asProgression()]
+    val slice = Py.slice(pattern)
+    if (slice.isRange) return this[slice.asRange(this.size)]
+    return this[Py.slice(pattern).asProgression(this.size)]
 }
 
 /**
@@ -351,12 +324,9 @@ operator fun DoubleArray.get(pattern: String): List<Double> {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UByteArray.get(pattern: String): List<UByte> {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) return listOf(this[ps.asNumber()])
-    if (ps.isClone) return this.toList()
-    if (ps.isReverse) return this.reversed()
-    if (ps.isRange) return this[ps.asRange()]
-    return this[ps.asProgression()]
+    val slice = Py.slice(pattern)
+    if (slice.isRange) return this[slice.asRange(this.size)]
+    return this[Py.slice(pattern).asProgression(this.size)]
 }
 
 /**
@@ -367,12 +337,9 @@ operator fun UByteArray.get(pattern: String): List<UByte> {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UShortArray.get(pattern: String): List<UShort> {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) return listOf(this[ps.asNumber()])
-    if (ps.isClone) return this.toList()
-    if (ps.isReverse) return this.reversed()
-    if (ps.isRange) return this[ps.asRange()]
-    return this[ps.asProgression()]
+    val slice = Py.slice(pattern)
+    if (slice.isRange) return this[slice.asRange(this.size)]
+    return this[Py.slice(pattern).asProgression(this.size)]
 }
 
 /**
@@ -383,12 +350,9 @@ operator fun UShortArray.get(pattern: String): List<UShort> {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UIntArray.get(pattern: String): List<UInt> {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) return listOf(this[ps.asNumber()])
-    if (ps.isClone) return this.toList()
-    if (ps.isReverse) return this.reversed()
-    if (ps.isRange) return this[ps.asRange()]
-    return this[ps.asProgression()]
+    val slice = Py.slice(pattern)
+    if (slice.isRange) return this[slice.asRange(this.size)]
+    return this[Py.slice(pattern).asProgression(this.size)]
 }
 
 /**
@@ -399,12 +363,9 @@ operator fun UIntArray.get(pattern: String): List<UInt> {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun ULongArray.get(pattern: String): List<ULong> {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) return listOf(this[ps.asNumber()])
-    if (ps.isClone) return this.toList()
-    if (ps.isReverse) return this.reversed()
-    if (ps.isRange) return this[ps.asRange()]
-    return this[ps.asProgression()]
+    val slice = Py.slice(pattern)
+    if (slice.isRange) return this[slice.asRange(this.size)]
+    return this[Py.slice(pattern).asProgression(this.size)]
 }
 
 /**
@@ -414,12 +375,9 @@ operator fun ULongArray.get(pattern: String): List<ULong> {
  * @see List.get get(pattern: String)
  */
 operator fun BooleanArray.get(pattern: String): List<Boolean> {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) return listOf(this[ps.asNumber()])
-    if (ps.isClone) return this.toList()
-    if (ps.isReverse) return this.reversed()
-    if (ps.isRange) return this[ps.asRange()]
-    return this[ps.asProgression()]
+    val slice = Py.slice(pattern)
+    if (slice.isRange) return this[slice.asRange(this.size)]
+    return this[Py.slice(pattern).asProgression(this.size)]
 }
 
 /**
@@ -850,16 +808,9 @@ operator fun ULongArray.set(indices: Iterable<Int>, elements: ULongArray) {
  * @param pattern The string which contains slices whose format is similar to python one.
  */
 operator fun <T> MutableList<T>.set(pattern: String, elements: List<T>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 /**
@@ -868,16 +819,9 @@ operator fun <T> MutableList<T>.set(pattern: String, elements: List<T>) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun <T> MutableList<T>.set(pattern: String, elements: Array<out T>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 /**
@@ -897,11 +841,7 @@ operator fun <T> MutableList<T>.set(pattern: String, elements: Array<out T>) {
  * @param pattern The string which contains slices whose format is similar to python one.
  */
 operator fun <T> MutableList<T>.set(pattern: String, element: T) {
-    val ps = Py.slice(pattern, this)
-    if (!ps.isNumber) {
-        throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
-    }
-    this[ps.asNumber()] = element
+    this[Py.slice(pattern).asNumber(this.size)] = element
 }
 
 /**
@@ -910,16 +850,9 @@ operator fun <T> MutableList<T>.set(pattern: String, element: T) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun <T> Array<T>.set(pattern: String, elements: List<T>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -929,16 +862,9 @@ operator fun <T> Array<T>.set(pattern: String, elements: List<T>) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun <T> Array<T>.set(pattern: String, elements: Array<out T>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 /**
@@ -947,11 +873,7 @@ operator fun <T> Array<T>.set(pattern: String, elements: Array<out T>) {
  * @see MutableList.set set(pattern: String, element: T)
  */
 operator fun <T> Array<T>.set(pattern: String, element: T) {
-    val ps = Py.slice(pattern, this)
-    if (!ps.isNumber) {
-        throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
-    }
-    this[ps.asNumber()] = element
+    this[Py.slice(pattern).asNumber(this.size)] = element
 }
 
 
@@ -961,16 +883,9 @@ operator fun <T> Array<T>.set(pattern: String, element: T) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun ByteArray.set(pattern: String, elements: List<Byte>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -980,16 +895,9 @@ operator fun ByteArray.set(pattern: String, elements: List<Byte>) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun ByteArray.set(pattern: String, elements: Array<out Byte>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -999,16 +907,9 @@ operator fun ByteArray.set(pattern: String, elements: Array<out Byte>) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun ByteArray.set(pattern: String, elements: ByteArray) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 /**
@@ -1017,11 +918,7 @@ operator fun ByteArray.set(pattern: String, elements: ByteArray) {
  * @see MutableList.set set(pattern: String, element: T)
  */
 operator fun ByteArray.set(pattern: String, element: Byte) {
-    val ps = Py.slice(pattern, this)
-    if (!ps.isNumber) {
-        throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
-    }
-    this[ps.asNumber()] = element
+    this[Py.slice(pattern).asNumber(this.size)] = element
 }
 
 
@@ -1031,16 +928,9 @@ operator fun ByteArray.set(pattern: String, element: Byte) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun CharArray.set(pattern: String, elements: List<Char>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1050,16 +940,9 @@ operator fun CharArray.set(pattern: String, elements: List<Char>) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun CharArray.set(pattern: String, elements: Array<out Char>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1069,16 +952,9 @@ operator fun CharArray.set(pattern: String, elements: Array<out Char>) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun CharArray.set(pattern: String, elements: CharArray) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 /**
@@ -1087,11 +963,7 @@ operator fun CharArray.set(pattern: String, elements: CharArray) {
  * @see MutableList.set set(pattern: String, element: T)
  */
 operator fun CharArray.set(pattern: String, element: Char) {
-    val ps = Py.slice(pattern, this)
-    if (!ps.isNumber) {
-        throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
-    }
-    this[ps.asNumber()] = element
+    this[Py.slice(pattern).asNumber(this.size)] = element
 }
 
 
@@ -1101,16 +973,9 @@ operator fun CharArray.set(pattern: String, element: Char) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun ShortArray.set(pattern: String, elements: List<Short>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1120,16 +985,9 @@ operator fun ShortArray.set(pattern: String, elements: List<Short>) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun ShortArray.set(pattern: String, elements: Array<out Short>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1139,16 +997,9 @@ operator fun ShortArray.set(pattern: String, elements: Array<out Short>) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun ShortArray.set(pattern: String, elements: ShortArray) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 /**
@@ -1157,11 +1008,7 @@ operator fun ShortArray.set(pattern: String, elements: ShortArray) {
  * @see MutableList.set set(pattern: String, element: T)
  */
 operator fun ShortArray.set(pattern: String, element: Short) {
-    val ps = Py.slice(pattern, this)
-    if (!ps.isNumber) {
-        throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
-    }
-    this[ps.asNumber()] = element
+    this[Py.slice(pattern).asNumber(this.size)] = element
 }
 
 
@@ -1171,16 +1018,9 @@ operator fun ShortArray.set(pattern: String, element: Short) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun IntArray.set(pattern: String, elements: List<Int>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1190,16 +1030,9 @@ operator fun IntArray.set(pattern: String, elements: List<Int>) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun IntArray.set(pattern: String, elements: Array<out Int>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1209,16 +1042,9 @@ operator fun IntArray.set(pattern: String, elements: Array<out Int>) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun IntArray.set(pattern: String, elements: IntArray) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 /**
@@ -1227,11 +1053,7 @@ operator fun IntArray.set(pattern: String, elements: IntArray) {
  * @see MutableList.set set(pattern: String, element: T)
  */
 operator fun IntArray.set(pattern: String, element: Int) {
-    val ps = Py.slice(pattern, this)
-    if (!ps.isNumber) {
-        throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
-    }
-    this[ps.asNumber()] = element
+    this[Py.slice(pattern).asNumber(this.size)] = element
 }
 
 
@@ -1241,16 +1063,9 @@ operator fun IntArray.set(pattern: String, element: Int) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun LongArray.set(pattern: String, elements: List<Long>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1260,16 +1075,9 @@ operator fun LongArray.set(pattern: String, elements: List<Long>) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun LongArray.set(pattern: String, elements: Array<out Long>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1279,16 +1087,9 @@ operator fun LongArray.set(pattern: String, elements: Array<out Long>) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun LongArray.set(pattern: String, elements: LongArray) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 /**
@@ -1297,11 +1098,7 @@ operator fun LongArray.set(pattern: String, elements: LongArray) {
  * @see MutableList.set set(pattern: String, element: T)
  */
 operator fun LongArray.set(pattern: String, element: Long) {
-    val ps = Py.slice(pattern, this)
-    if (!ps.isNumber) {
-        throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
-    }
-    this[ps.asNumber()] = element
+    this[Py.slice(pattern).asNumber(this.size)] = element
 }
 
 
@@ -1311,16 +1108,9 @@ operator fun LongArray.set(pattern: String, element: Long) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun FloatArray.set(pattern: String, elements: List<Float>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1330,16 +1120,9 @@ operator fun FloatArray.set(pattern: String, elements: List<Float>) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun FloatArray.set(pattern: String, elements: Array<out Float>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1349,16 +1132,9 @@ operator fun FloatArray.set(pattern: String, elements: Array<out Float>) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun FloatArray.set(pattern: String, elements: FloatArray) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 /**
@@ -1367,11 +1143,7 @@ operator fun FloatArray.set(pattern: String, elements: FloatArray) {
  * @see MutableList.set set(pattern: String, element: T)
  */
 operator fun FloatArray.set(pattern: String, element: Float) {
-    val ps = Py.slice(pattern, this)
-    if (!ps.isNumber) {
-        throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
-    }
-    this[ps.asNumber()] = element
+    this[Py.slice(pattern).asNumber(this.size)] = element
 }
 
 
@@ -1381,16 +1153,9 @@ operator fun FloatArray.set(pattern: String, element: Float) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun DoubleArray.set(pattern: String, elements: List<Double>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1400,16 +1165,9 @@ operator fun DoubleArray.set(pattern: String, elements: List<Double>) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun DoubleArray.set(pattern: String, elements: Array<out Double>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1419,16 +1177,9 @@ operator fun DoubleArray.set(pattern: String, elements: Array<out Double>) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun DoubleArray.set(pattern: String, elements: DoubleArray) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 /**
@@ -1437,11 +1188,7 @@ operator fun DoubleArray.set(pattern: String, elements: DoubleArray) {
  * @see MutableList.set set(pattern: String, element: T)
  */
 operator fun DoubleArray.set(pattern: String, element: Double) {
-    val ps = Py.slice(pattern, this)
-    if (!ps.isNumber) {
-        throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
-    }
-    this[ps.asNumber()] = element
+    this[Py.slice(pattern).asNumber(this.size)] = element
 }
 
 
@@ -1451,16 +1198,9 @@ operator fun DoubleArray.set(pattern: String, element: Double) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun BooleanArray.set(pattern: String, elements: List<Boolean>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1470,16 +1210,9 @@ operator fun BooleanArray.set(pattern: String, elements: List<Boolean>) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun BooleanArray.set(pattern: String, elements: Array<out Boolean>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1489,16 +1222,9 @@ operator fun BooleanArray.set(pattern: String, elements: Array<out Boolean>) {
  * @see MutableList.set set(pattern: String, elements: List<T>)
  */
 operator fun BooleanArray.set(pattern: String, elements: BooleanArray) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 /**
@@ -1507,11 +1233,7 @@ operator fun BooleanArray.set(pattern: String, elements: BooleanArray) {
  * @see MutableList.set set(pattern: String, element: T)
  */
 operator fun BooleanArray.set(pattern: String, element: Boolean) {
-    val ps = Py.slice(pattern, this)
-    if (!ps.isNumber) {
-        throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
-    }
-    this[ps.asNumber()] = element
+    this[Py.slice(pattern).asNumber(this.size)] = element
 }
 
 
@@ -1522,16 +1244,9 @@ operator fun BooleanArray.set(pattern: String, element: Boolean) {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UByteArray.set(pattern: String, elements: List<UByte>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1542,16 +1257,9 @@ operator fun UByteArray.set(pattern: String, elements: List<UByte>) {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UByteArray.set(pattern: String, elements: Array<out UByte>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1562,16 +1270,9 @@ operator fun UByteArray.set(pattern: String, elements: Array<out UByte>) {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UByteArray.set(pattern: String, elements: UByteArray) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1582,11 +1283,7 @@ operator fun UByteArray.set(pattern: String, elements: UByteArray) {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UByteArray.set(pattern: String, element: UByte) {
-    val ps = Py.slice(pattern, this)
-    if (!ps.isNumber) {
-        throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
-    }
-    this[ps.asNumber()] = element
+    this[Py.slice(pattern).asNumber(this.size)] = element
 }
 
 
@@ -1597,16 +1294,9 @@ operator fun UByteArray.set(pattern: String, element: UByte) {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UShortArray.set(pattern: String, elements: List<UShort>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1617,16 +1307,9 @@ operator fun UShortArray.set(pattern: String, elements: List<UShort>) {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UShortArray.set(pattern: String, elements: Array<out UShort>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1637,16 +1320,9 @@ operator fun UShortArray.set(pattern: String, elements: Array<out UShort>) {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UShortArray.set(pattern: String, elements: UShortArray) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 /**
@@ -1656,11 +1332,7 @@ operator fun UShortArray.set(pattern: String, elements: UShortArray) {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UShortArray.set(pattern: String, element: UShort) {
-    val ps = Py.slice(pattern, this)
-    if (!ps.isNumber) {
-        throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
-    }
-    this[ps.asNumber()] = element
+    this[Py.slice(pattern).asNumber(this.size)] = element
 }
 
 
@@ -1671,16 +1343,9 @@ operator fun UShortArray.set(pattern: String, element: UShort) {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UIntArray.set(pattern: String, elements: List<UInt>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1691,16 +1356,9 @@ operator fun UIntArray.set(pattern: String, elements: List<UInt>) {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UIntArray.set(pattern: String, elements: Array<out UInt>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1711,16 +1369,9 @@ operator fun UIntArray.set(pattern: String, elements: Array<out UInt>) {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UIntArray.set(pattern: String, elements: UIntArray) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 /**
@@ -1730,11 +1381,7 @@ operator fun UIntArray.set(pattern: String, elements: UIntArray) {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UIntArray.set(pattern: String, element: UInt) {
-    val ps = Py.slice(pattern, this)
-    if (!ps.isNumber) {
-        throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
-    }
-    this[ps.asNumber()] = element
+    this[Py.slice(pattern).asNumber(this.size)] = element
 }
 
 
@@ -1745,16 +1392,9 @@ operator fun UIntArray.set(pattern: String, element: UInt) {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun ULongArray.set(pattern: String, elements: List<ULong>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1765,16 +1405,9 @@ operator fun ULongArray.set(pattern: String, elements: List<ULong>) {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun ULongArray.set(pattern: String, elements: Array<out ULong>) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 
@@ -1785,16 +1418,9 @@ operator fun ULongArray.set(pattern: String, elements: Array<out ULong>) {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun ULongArray.set(pattern: String, elements: ULongArray) {
-    val ps = Py.slice(pattern, this)
-    if (ps.isNumber) {
-        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
-    } else if (ps.isClone) {
-        this.indices.forEach { this[it] = elements[it] }
-    } else if (ps.isRange) {
-        this[ps.asRange()] = elements
-    } else {
-        this[ps.asProgression()] = elements
-    }
+    val slice = Py.slice(pattern)
+    if (slice.isRange) this[slice.asRange(this.size)] = elements
+    else this[slice.asProgression(this.size)] = elements
 }
 
 /**
@@ -1804,10 +1430,6 @@ operator fun ULongArray.set(pattern: String, elements: ULongArray) {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun ULongArray.set(pattern: String, element: ULong) {
-    val ps = Py.slice(pattern, this)
-    if (!ps.isNumber) {
-        throw IllegalArgumentException("Slices should be without any colon when there is only an element joins in.")
-    }
-    this[ps.asNumber()] = element
+    this[Py.slice(pattern).asNumber(this.size)] = element
 }
 
