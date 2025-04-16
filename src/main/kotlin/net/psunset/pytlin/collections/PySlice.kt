@@ -13,8 +13,10 @@ class PySlice internal constructor(pattern: String) {
     var step: Int = 1
         private set
 
-    val isNumber get() = this.step == 0
-    val isRange get() = this.step == 1
+    internal val isNumber get() = this.step == 0
+    internal val isRange get() = this.step == 1
+    internal val isClone get() = this.start == 0 && this.endInclusive == -1 && this.step == 1
+    internal val isReverse get() = this.start == -1 && this.endInclusive == 0 && this.step == -1
 
     init {
         require(pattern.any { it in ":- " || it.isDigit() }) { "Pattern is invalid! It must only contains digit, minus sign, space and colon." }
@@ -43,7 +45,7 @@ class PySlice internal constructor(pattern: String) {
     }
 
     fun asNumber(len: Int): Int {
-        require(this.isNumber) { "step does not equals to one!" }
+        require(this.isNumber) { "step does not equals to zero!" }
         require(len >= 0) { "len cannot be a negative number!" }
 
         val start = if (this.start < 0) len + this.start else this.start  // Correct index

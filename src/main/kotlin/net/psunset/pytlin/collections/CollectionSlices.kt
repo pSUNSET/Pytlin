@@ -215,6 +215,9 @@ operator fun ULongArray.get(indices: Iterable<Int>): List<ULong> =
  */
 operator fun <T> List<T>.get(pattern: String): List<T> {
     val slice = Py.slice(pattern)
+    if (slice.isNumber) return listOf(this[slice.asNumber(this.size)])
+    if (slice.isClone) return this.toList()
+    if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
     return this[Py.slice(pattern).asProgression(this.size)]
 }
@@ -227,6 +230,9 @@ operator fun <T> List<T>.get(pattern: String): List<T> {
  */
 operator fun <T> Array<out T>.get(pattern: String): List<T> {
     val slice = Py.slice(pattern)
+    if (slice.isNumber) return listOf(this[slice.asNumber(this.size)])
+    if (slice.isClone) return this.toList()
+    if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
     return this[Py.slice(pattern).asProgression(this.size)]
 }
@@ -239,6 +245,9 @@ operator fun <T> Array<out T>.get(pattern: String): List<T> {
  */
 operator fun ByteArray.get(pattern: String): List<Byte> {
     val slice = Py.slice(pattern)
+    if (slice.isNumber) return listOf(this[slice.asNumber(this.size)])
+    if (slice.isClone) return this.toList()
+    if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
     return this[Py.slice(pattern).asProgression(this.size)]
 }
@@ -251,6 +260,9 @@ operator fun ByteArray.get(pattern: String): List<Byte> {
  */
 operator fun CharArray.get(pattern: String): List<Char> {
     val slice = Py.slice(pattern)
+    if (slice.isNumber) return listOf(this[slice.asNumber(this.size)])
+    if (slice.isClone) return this.toList()
+    if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
     return this[Py.slice(pattern).asProgression(this.size)]
 }
@@ -264,6 +276,9 @@ operator fun CharArray.get(pattern: String): List<Char> {
  */
 operator fun ShortArray.get(pattern: String): List<Short> {
     val slice = Py.slice(pattern)
+    if (slice.isNumber) return listOf(this[slice.asNumber(this.size)])
+    if (slice.isClone) return this.toList()
+    if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
     return this[Py.slice(pattern).asProgression(this.size)]
 }
@@ -276,6 +291,9 @@ operator fun ShortArray.get(pattern: String): List<Short> {
  */
 operator fun IntArray.get(pattern: String): List<Int> {
     val slice = Py.slice(pattern)
+    if (slice.isNumber) return listOf(this[slice.asNumber(this.size)])
+    if (slice.isClone) return this.toList()
+    if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
     return this[Py.slice(pattern).asProgression(this.size)]
 }
@@ -288,6 +306,9 @@ operator fun IntArray.get(pattern: String): List<Int> {
  */
 operator fun LongArray.get(pattern: String): List<Long> {
     val slice = Py.slice(pattern)
+    if (slice.isNumber) return listOf(this[slice.asNumber(this.size)])
+    if (slice.isClone) return this.toList()
+    if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
     return this[Py.slice(pattern).asProgression(this.size)]
 }
@@ -300,6 +321,9 @@ operator fun LongArray.get(pattern: String): List<Long> {
  */
 operator fun FloatArray.get(pattern: String): List<Float> {
     val slice = Py.slice(pattern)
+    if (slice.isNumber) return listOf(this[slice.asNumber(this.size)])
+    if (slice.isClone) return this.toList()
+    if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
     return this[Py.slice(pattern).asProgression(this.size)]
 }
@@ -312,6 +336,9 @@ operator fun FloatArray.get(pattern: String): List<Float> {
  */
 operator fun DoubleArray.get(pattern: String): List<Double> {
     val slice = Py.slice(pattern)
+    if (slice.isNumber) return listOf(this[slice.asNumber(this.size)])
+    if (slice.isClone) return this.toList()
+    if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
     return this[Py.slice(pattern).asProgression(this.size)]
 }
@@ -325,6 +352,9 @@ operator fun DoubleArray.get(pattern: String): List<Double> {
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UByteArray.get(pattern: String): List<UByte> {
     val slice = Py.slice(pattern)
+    if (slice.isNumber) return listOf(this[slice.asNumber(this.size)])
+    if (slice.isClone) return this.toList()
+    if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
     return this[Py.slice(pattern).asProgression(this.size)]
 }
@@ -338,6 +368,9 @@ operator fun UByteArray.get(pattern: String): List<UByte> {
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UShortArray.get(pattern: String): List<UShort> {
     val slice = Py.slice(pattern)
+    if (slice.isNumber) return listOf(this[slice.asNumber(this.size)])
+    if (slice.isClone) return this.toList()
+    if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
     return this[Py.slice(pattern).asProgression(this.size)]
 }
@@ -351,6 +384,9 @@ operator fun UShortArray.get(pattern: String): List<UShort> {
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UIntArray.get(pattern: String): List<UInt> {
     val slice = Py.slice(pattern)
+    if (slice.isNumber) return listOf(this[slice.asNumber(this.size)])
+    if (slice.isClone) return this.toList()
+    if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
     return this[Py.slice(pattern).asProgression(this.size)]
 }
@@ -364,6 +400,9 @@ operator fun UIntArray.get(pattern: String): List<UInt> {
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun ULongArray.get(pattern: String): List<ULong> {
     val slice = Py.slice(pattern)
+    if (slice.isNumber) return listOf(this[slice.asNumber(this.size)])
+    if (slice.isClone) return this.toList()
+    if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
     return this[Py.slice(pattern).asProgression(this.size)]
 }
@@ -376,6 +415,9 @@ operator fun ULongArray.get(pattern: String): List<ULong> {
  */
 operator fun BooleanArray.get(pattern: String): List<Boolean> {
     val slice = Py.slice(pattern)
+    if (slice.isNumber) return listOf(this[slice.asNumber(this.size)])
+    if (slice.isClone) return this.toList()
+    if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
     return this[Py.slice(pattern).asProgression(this.size)]
 }
@@ -809,8 +851,17 @@ operator fun ULongArray.set(indices: Iterable<Int>, elements: ULongArray) {
  */
 operator fun <T> MutableList<T>.set(pattern: String, elements: List<T>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 /**
@@ -820,8 +871,17 @@ operator fun <T> MutableList<T>.set(pattern: String, elements: List<T>) {
  */
 operator fun <T> MutableList<T>.set(pattern: String, elements: Array<out T>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 /**
@@ -851,8 +911,17 @@ operator fun <T> MutableList<T>.set(pattern: String, element: T) {
  */
 operator fun <T> Array<T>.set(pattern: String, elements: List<T>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -863,8 +932,17 @@ operator fun <T> Array<T>.set(pattern: String, elements: List<T>) {
  */
 operator fun <T> Array<T>.set(pattern: String, elements: Array<out T>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 /**
@@ -884,8 +962,17 @@ operator fun <T> Array<T>.set(pattern: String, element: T) {
  */
 operator fun ByteArray.set(pattern: String, elements: List<Byte>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -896,8 +983,17 @@ operator fun ByteArray.set(pattern: String, elements: List<Byte>) {
  */
 operator fun ByteArray.set(pattern: String, elements: Array<out Byte>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -908,8 +1004,17 @@ operator fun ByteArray.set(pattern: String, elements: Array<out Byte>) {
  */
 operator fun ByteArray.set(pattern: String, elements: ByteArray) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 /**
@@ -929,8 +1034,17 @@ operator fun ByteArray.set(pattern: String, element: Byte) {
  */
 operator fun CharArray.set(pattern: String, elements: List<Char>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -941,8 +1055,17 @@ operator fun CharArray.set(pattern: String, elements: List<Char>) {
  */
 operator fun CharArray.set(pattern: String, elements: Array<out Char>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -953,8 +1076,17 @@ operator fun CharArray.set(pattern: String, elements: Array<out Char>) {
  */
 operator fun CharArray.set(pattern: String, elements: CharArray) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 /**
@@ -974,8 +1106,17 @@ operator fun CharArray.set(pattern: String, element: Char) {
  */
 operator fun ShortArray.set(pattern: String, elements: List<Short>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -986,8 +1127,17 @@ operator fun ShortArray.set(pattern: String, elements: List<Short>) {
  */
 operator fun ShortArray.set(pattern: String, elements: Array<out Short>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -998,8 +1148,17 @@ operator fun ShortArray.set(pattern: String, elements: Array<out Short>) {
  */
 operator fun ShortArray.set(pattern: String, elements: ShortArray) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 /**
@@ -1019,8 +1178,17 @@ operator fun ShortArray.set(pattern: String, element: Short) {
  */
 operator fun IntArray.set(pattern: String, elements: List<Int>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -1031,8 +1199,17 @@ operator fun IntArray.set(pattern: String, elements: List<Int>) {
  */
 operator fun IntArray.set(pattern: String, elements: Array<out Int>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -1043,8 +1220,17 @@ operator fun IntArray.set(pattern: String, elements: Array<out Int>) {
  */
 operator fun IntArray.set(pattern: String, elements: IntArray) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 /**
@@ -1064,8 +1250,17 @@ operator fun IntArray.set(pattern: String, element: Int) {
  */
 operator fun LongArray.set(pattern: String, elements: List<Long>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -1076,8 +1271,17 @@ operator fun LongArray.set(pattern: String, elements: List<Long>) {
  */
 operator fun LongArray.set(pattern: String, elements: Array<out Long>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -1088,8 +1292,17 @@ operator fun LongArray.set(pattern: String, elements: Array<out Long>) {
  */
 operator fun LongArray.set(pattern: String, elements: LongArray) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 /**
@@ -1109,8 +1322,17 @@ operator fun LongArray.set(pattern: String, element: Long) {
  */
 operator fun FloatArray.set(pattern: String, elements: List<Float>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -1121,8 +1343,17 @@ operator fun FloatArray.set(pattern: String, elements: List<Float>) {
  */
 operator fun FloatArray.set(pattern: String, elements: Array<out Float>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -1133,8 +1364,17 @@ operator fun FloatArray.set(pattern: String, elements: Array<out Float>) {
  */
 operator fun FloatArray.set(pattern: String, elements: FloatArray) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 /**
@@ -1154,8 +1394,17 @@ operator fun FloatArray.set(pattern: String, element: Float) {
  */
 operator fun DoubleArray.set(pattern: String, elements: List<Double>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -1166,8 +1415,17 @@ operator fun DoubleArray.set(pattern: String, elements: List<Double>) {
  */
 operator fun DoubleArray.set(pattern: String, elements: Array<out Double>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -1178,8 +1436,17 @@ operator fun DoubleArray.set(pattern: String, elements: Array<out Double>) {
  */
 operator fun DoubleArray.set(pattern: String, elements: DoubleArray) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 /**
@@ -1199,8 +1466,17 @@ operator fun DoubleArray.set(pattern: String, element: Double) {
  */
 operator fun BooleanArray.set(pattern: String, elements: List<Boolean>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -1211,8 +1487,17 @@ operator fun BooleanArray.set(pattern: String, elements: List<Boolean>) {
  */
 operator fun BooleanArray.set(pattern: String, elements: Array<out Boolean>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -1223,8 +1508,17 @@ operator fun BooleanArray.set(pattern: String, elements: Array<out Boolean>) {
  */
 operator fun BooleanArray.set(pattern: String, elements: BooleanArray) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 /**
@@ -1245,8 +1539,17 @@ operator fun BooleanArray.set(pattern: String, element: Boolean) {
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UByteArray.set(pattern: String, elements: List<UByte>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -1258,8 +1561,17 @@ operator fun UByteArray.set(pattern: String, elements: List<UByte>) {
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UByteArray.set(pattern: String, elements: Array<out UByte>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -1271,8 +1583,17 @@ operator fun UByteArray.set(pattern: String, elements: Array<out UByte>) {
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UByteArray.set(pattern: String, elements: UByteArray) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -1295,8 +1616,17 @@ operator fun UByteArray.set(pattern: String, element: UByte) {
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UShortArray.set(pattern: String, elements: List<UShort>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -1308,8 +1638,17 @@ operator fun UShortArray.set(pattern: String, elements: List<UShort>) {
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UShortArray.set(pattern: String, elements: Array<out UShort>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -1321,8 +1660,17 @@ operator fun UShortArray.set(pattern: String, elements: Array<out UShort>) {
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UShortArray.set(pattern: String, elements: UShortArray) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 /**
@@ -1344,8 +1692,17 @@ operator fun UShortArray.set(pattern: String, element: UShort) {
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UIntArray.set(pattern: String, elements: List<UInt>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -1357,8 +1714,17 @@ operator fun UIntArray.set(pattern: String, elements: List<UInt>) {
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UIntArray.set(pattern: String, elements: Array<out UInt>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -1370,8 +1736,17 @@ operator fun UIntArray.set(pattern: String, elements: Array<out UInt>) {
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UIntArray.set(pattern: String, elements: UIntArray) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 /**
@@ -1393,8 +1768,17 @@ operator fun UIntArray.set(pattern: String, element: UInt) {
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun ULongArray.set(pattern: String, elements: List<ULong>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -1406,8 +1790,17 @@ operator fun ULongArray.set(pattern: String, elements: List<ULong>) {
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun ULongArray.set(pattern: String, elements: Array<out ULong>) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 
@@ -1419,8 +1812,17 @@ operator fun ULongArray.set(pattern: String, elements: Array<out ULong>) {
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun ULongArray.set(pattern: String, elements: ULongArray) {
     val slice = Py.slice(pattern)
-    if (slice.isRange) this[slice.asRange(this.size)] = elements
-    else this[slice.asProgression(this.size)] = elements
+    if (slice.isNumber) {
+        throw IllegalArgumentException("Kotlin is unlike python! The type of a list can't be changed.")
+    } else if (slice.isClone) {
+        this.indices.forEach { this[it] = elements[it] }
+    } else if (slice.isReverse) {
+        this.indices.forEach { this[it] = elements.reversed()[it] }
+    } else if (slice.isRange) {
+        this[slice.asRange(this.size)] = elements
+    } else {
+        this[slice.asProgression(this.size)] = elements
+    }
 }
 
 /**
