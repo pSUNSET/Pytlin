@@ -6,90 +6,19 @@ import net.psunset.pytlin.lang.not
 import java.util.function.BiFunction
 import kotlin.reflect.KClass
 
-/**
- * Honestly, this class isn't the original class for `kwargs` but [MutableKwargs].
- * So the most function is copied from it.
- * For more information, please check it out.
- *
- * The difference between this class and [MutableKwargs] is that all key-value pairs in this class can't be changed.
- * @see MutableKwargs
- */
-class Kwargs : HashMap<String, Any?> {
+interface Kwargs : Map<String, Any?> {
 
-    constructor() : super()
-    constructor(m: Map<out String, Any?>) : super(m)
+    operator fun <T : Any> get(key: String, type: KClass<T>): T?
 
-    @Suppress("UNCHECKED_CAST")
-    operator fun <T : Any> get(key: String, type: KClass<T>): T? = this[key] as T?
+    operator fun <T : Any?> get(key: String, defaultValue: T): T
 
-    @Suppress("UNCHECKED_CAST")
-    operator fun <T : Any?> get(key: String, defaultValue: T): T = (this[key] as T?) ?: defaultValue
-
-    @Suppress("UNCHECKED_CAST")
-    operator fun <T : Any, D : T> get(key: String, defaultValue: D, type: KClass<T>): T = (this[key] as T?) ?: defaultValue
-
-    /**
-     * Make self a [MutableKwargs]
-     */
-    fun mutable(): MutableKwargs = MutableKwargs(this)
-
-    //**************************************** INVALID FUNCTIONS ****************************************//
-
-    @Deprecated("This class is an immutable collection which is read-only.", level = DeprecationLevel.HIDDEN)
-    override fun put(key: String, value: Any?) = throw UnsupportedOperationException()
-
-    @Deprecated("This class is an immutable collection which is read-only.", level = DeprecationLevel.HIDDEN)
-    override fun putAll(from: Map<out String, Any?>) = throw UnsupportedOperationException()
-
-    @Deprecated("This class is an immutable collection which is read-only.", level = DeprecationLevel.HIDDEN)
-    override fun putIfAbsent(key: String, value: Any?) = throw UnsupportedOperationException()
-
-    @Deprecated("This class is an immutable collection which is read-only.", level = DeprecationLevel.HIDDEN)
-    override fun remove(key: String) = throw UnsupportedOperationException()
-
-    @Deprecated("This class is an immutable collection which is read-only.", level = DeprecationLevel.HIDDEN)
-    override fun remove(key: String, value: Any?) = throw UnsupportedOperationException()
-
-    @Deprecated("This class is an immutable collection which is read-only.", level = DeprecationLevel.HIDDEN)
-    override fun replaceAll(function: BiFunction<in String, in Any?, out Any?>) = throw UnsupportedOperationException()
-
-    @Deprecated("This class is an immutable collection which is read-only.", level = DeprecationLevel.HIDDEN)
-    override fun replace(key: String, value: Any?) = throw UnsupportedOperationException()
-
-    @Deprecated("This class is an immutable collection which is read-only.", level = DeprecationLevel.HIDDEN)
-    override fun replace(key: String, oldValue: Any?, newValue: Any?) = throw UnsupportedOperationException()
-
-    @Deprecated("This class is an immutable collection which is read-only.", level = DeprecationLevel.HIDDEN)
-    override fun clear() = throw UnsupportedOperationException()
-
-    @Deprecated(
-        "This class is an immutable collection which is read-only.",
-        replaceWith = ReplaceWith("this[key]"),
-        level = DeprecationLevel.ERROR
-    )
-    operator fun div(key: String): Nothing = throw UnsupportedOperationException()
-
-    @Deprecated(
-        "This class is an immutable collection which is read-only.",
-        replaceWith = ReplaceWith("this[keyToType.first, keyToType.second]"),
-        level = DeprecationLevel.ERROR
-    )
-    @JvmName("div2PopAs")
-    operator fun <T : Any> div(keyToType: Pair<String, KClass<T>>): Nothing = throw UnsupportedOperationException()
-
-
-    @Deprecated(
-        "This class is an immutable collection which is read-only.",
-        replaceWith = ReplaceWith("this[keyToDefaultValue.first, keyToDefaultValue.second]"),
-        level = DeprecationLevel.ERROR
-    )
-    operator fun <T : Any?> div(keyToDefaultValue: Pair<String, T>): Nothing = throw UnsupportedOperationException()
+    operator fun <T : Any, D : T> get(key: String, defaultValue: D, type: KClass<T>): T
 }
 
 /**
  * Returns an empty new [Kwargs].
  */
-inline fun kwargsOf(): Kwargs = Kwargs()
+inline fun kwargsOf(): Kwargs = MutableKwargs()
 
 
 /**
@@ -101,14 +30,14 @@ inline fun kwargsOf(): Kwargs = Kwargs()
  * Entries of the map are iterated in the order they were specified.
  */
 fun kwargsOf(vararg pairs: Pair<String, Any?>): Kwargs =
-    if (!pairs) Kwargs() else Kwargs(mapOf(*pairs))
+    if (!pairs) MutableKwargs() else MutableKwargs(mapOf(*pairs))
 
 /**
  * Returns a new [Kwargs] containing all key-value pairs from the original map.
  *
  * The returned map preserves the entry iteration order of the original map.
  */
-fun Map<String, Any?>.toKwargs(): Kwargs = Kwargs(this)
+fun Map<String, Any?>.toKwargs(): Kwargs = MutableKwargs(this)
 
 
 /**
@@ -118,7 +47,7 @@ fun Map<String, Any?>.toKwargs(): Kwargs = Kwargs(this)
  * The returned map preserves the entry iteration order of the original map.
  */
 @JvmName("toKwargsByStrKeys")
-fun <K : Any, V : Any?> Map<K, V>.toKwargs(): Kwargs = Kwargs(this.mapKeys { it.toString() })
+fun <K : Any, V : Any?> Map<K, V>.toKwargs(): Kwargs = MutableKwargs(this.mapKeys { it.toString() })
 
 /**
  * In python, keyword arguments feature, as known as kwargs, is a very convenient way to store data.
@@ -128,7 +57,7 @@ fun <K : Any, V : Any?> Map<K, V>.toKwargs(): Kwargs = Kwargs(this.mapKeys { it.
  * It's like a map, but key is always [String]. And value is [Any]`?` because it can save all data you want.
  * All the values are nullable.
  */
-class MutableKwargs : HashMap<String, Any?> {
+class MutableKwargs : HashMap<String, Any?>, Kwargs {
 
     constructor(initialCapacity: Int, loadFactor: Float) : super(initialCapacity, loadFactor)
     constructor(initialCapacity: Int) : super(initialCapacity)
@@ -155,7 +84,7 @@ class MutableKwargs : HashMap<String, Any?> {
      * @return The value got by key with cast into the correct class.
      */
     @Suppress("UNCHECKED_CAST")
-    operator fun <T : Any> get(key: String, type: KClass<T>): T? = this[key] as T?
+    override operator fun <T : Any> get(key: String, type: KClass<T>): T? = this[key] as T?
 
     /**
      * This function doesn't equal to [getOrDefault]
@@ -179,7 +108,7 @@ class MutableKwargs : HashMap<String, Any?> {
      * defaultValue otherwise
      */
     @Suppress("UNCHECKED_CAST")
-    operator fun <T : Any?> get(key: String, defaultValue: T): T = (this[key] as T?) ?: defaultValue
+    override operator fun <T : Any?> get(key: String, defaultValue: T): T = (this[key] as T?) ?: defaultValue
 
     /**
      * The overload function preceding this function converts the value in the map into the type of the defaultValue.
@@ -204,7 +133,7 @@ class MutableKwargs : HashMap<String, Any?> {
      * ```
      */
     @Suppress("UNCHECKED_CAST")
-    operator fun <T : Any, D : T> get(key: String, defaultValue: D, type: KClass<T>): T =
+    override operator fun <T : Any, D : T> get(key: String, defaultValue: D, type: KClass<T>): T =
         (this[key] as T?) ?: defaultValue
 
     /**
@@ -246,11 +175,6 @@ class MutableKwargs : HashMap<String, Any?> {
      */
     @Suppress("UNCHECKED_CAST")
     fun <T : Any, D : T> pop(key: String, defaultValue: D, type: KClass<T>): T = (this.remove(key) as T?) ?: defaultValue
-
-    /**
-     * Makes self a immutable [Kwargs]
-     */
-    fun immutable(): Kwargs = Kwargs(this)
 
     /**
      * Add a `Pair<String, Any?>` should return [MutableKwargs] instead of [Map]

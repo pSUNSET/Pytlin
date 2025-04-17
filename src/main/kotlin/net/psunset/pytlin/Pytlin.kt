@@ -4,6 +4,9 @@ import net.psunset.pytlin.collections.PySlice
 
 typealias Py = Pytlin
 
+/**
+ * The object containing the built-in functions in python.
+ */
 object Pytlin {
 
     /** Parse the slice pattern with a string */
