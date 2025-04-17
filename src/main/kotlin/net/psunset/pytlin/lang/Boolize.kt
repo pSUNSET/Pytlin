@@ -201,8 +201,8 @@ inline operator fun ULongProgression?.not(): Boolean = this == null || this.isEm
 /**
  * @return `true` when the map isn't empty, otherwise `false`.
  */
-inline fun <K, T> Map<K, T>?.toBool(): Boolean = !this.isNullOrEmpty()
-inline operator fun <K, T> Map<K, T>?.not(): Boolean = this.isNullOrEmpty()
+inline fun <K, T> Map<out K, T>?.toBool(): Boolean = !this.isNullOrEmpty()
+inline operator fun <K, T> Map<out K, T>?.not(): Boolean = this.isNullOrEmpty()
 
 /**
  * @return `true` when the tensor isn't empty, otherwise `false`.
