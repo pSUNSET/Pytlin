@@ -186,16 +186,19 @@ abstract class Tensor3D<E : Number>(
 
     @JvmName("powOfInt")
     infix fun pow(scalar: Int): Tensor3D<E> = this.clone().apply { this.pow_(scalar) }
-    infix fun <N: Number> pow(scalar: N): Tensor3D<E> = this.clone().apply { this.pow_(scalar) }
+    infix fun <N : Number> pow(scalar: N): Tensor3D<E> = this.clone().apply { this.pow_(scalar) }
+
     @JvmName("powOfInt")
     infix fun pow(vector: Tensor1D<Int>): Tensor3D<E> = this.clone().apply { this.pow_(vector) }
-    infix fun <N: Number> pow(vector: Tensor1D<N>): Tensor3D<E> = this.clone().apply { this.pow_(vector) }
+    infix fun <N : Number> pow(vector: Tensor1D<N>): Tensor3D<E> = this.clone().apply { this.pow_(vector) }
+
     @JvmName("powOfInt")
     infix fun pow(matrix: Tensor2D<Int>): Tensor3D<E> = this.clone().apply { this.pow_(matrix) }
-    infix fun <N: Number> pow(matrix: Tensor2D<N>): Tensor3D<E> = this.clone().apply { this.pow_(matrix) }
+    infix fun <N : Number> pow(matrix: Tensor2D<N>): Tensor3D<E> = this.clone().apply { this.pow_(matrix) }
+
     @JvmName("powOfInt")
     infix fun pow(tensor3d: Tensor3D<Int>): Tensor3D<E> = this.clone().apply { this.pow_(tensor3d) }
-    infix fun <N: Number> pow(tensor3d: Tensor3D<N>): Tensor3D<E> = this.clone().apply { this.pow_(tensor3d) }
+    infix fun <N : Number> pow(tensor3d: Tensor3D<N>): Tensor3D<E> = this.clone().apply { this.pow_(tensor3d) }
 
     @JvmName("pow_OfInt")
     fun pow_(scalar: Int) {
@@ -204,7 +207,7 @@ abstract class Tensor3D<E : Number>(
         }
     }
 
-    fun <N: Number> pow_(scalar: N) {
+    fun <N : Number> pow_(scalar: N) {
         for (i in 0..<this.shape[0]) {
             this.data[i].pow_(scalar)
         }
@@ -217,7 +220,7 @@ abstract class Tensor3D<E : Number>(
         }
     }
 
-    fun <N: Number> pow_(vector: Tensor1D<N>) {
+    fun <N : Number> pow_(vector: Tensor1D<N>) {
         for (i in 0..<this.shape[0]) {
             this.data[i].pow_(vector)
         }
@@ -230,7 +233,7 @@ abstract class Tensor3D<E : Number>(
         }
     }
 
-    fun <N: Number> pow_(matrix: Tensor2D<N>) {
+    fun <N : Number> pow_(matrix: Tensor2D<N>) {
         for (i in 0..<this.shape[0]) {
             this.data[i].pow_(matrix)
         }
@@ -244,7 +247,7 @@ abstract class Tensor3D<E : Number>(
         }
     }
 
-    fun <N: Number> pow_(tensor3d: Tensor3D<N>) {
+    fun <N : Number> pow_(tensor3d: Tensor3D<N>) {
         requireSameDim1Size(tensor3d)
         for (i in 0..<this.shape[0]) {
             this.data[i].pow_(tensor3d.data[i])
@@ -275,10 +278,17 @@ abstract class Tensor3D<E : Number>(
     open fun toBigDecimalTensor(): Tensor3D<BigDecimal> =
         BigDecimalTensor3D(this.data.map { it.toBigDecimalTensor() }.toTypedArray())
 
-    fun toIntTensor(factory: (E) -> Int): Tensor3D<Int> = IntTensor3D(this.data.map { it.toIntTensor(factory) }.toTypedArray())
-    fun toLongTensor(factory: (E) -> Long): Tensor3D<Long> = LongTensor3D(this.data.map { it.toLongTensor(factory) }.toTypedArray())
-    fun toFloatTensor(factory: (E) -> Float): Tensor3D<Float> = FloatTensor3D(this.data.map { it.toFloatTensor(factory) }.toTypedArray())
-    fun toDoubleTensor(factory: (E) -> Double): Tensor3D<Double> = DoubleTensor3D(this.data.map { it.toDoubleTensor(factory) }.toTypedArray())
+    fun toIntTensor(factory: (E) -> Int): Tensor3D<Int> =
+        IntTensor3D(this.data.map { it.toIntTensor(factory) }.toTypedArray())
+
+    fun toLongTensor(factory: (E) -> Long): Tensor3D<Long> =
+        LongTensor3D(this.data.map { it.toLongTensor(factory) }.toTypedArray())
+
+    fun toFloatTensor(factory: (E) -> Float): Tensor3D<Float> =
+        FloatTensor3D(this.data.map { it.toFloatTensor(factory) }.toTypedArray())
+
+    fun toDoubleTensor(factory: (E) -> Double): Tensor3D<Double> =
+        DoubleTensor3D(this.data.map { it.toDoubleTensor(factory) }.toTypedArray())
 
     fun toBigIntegerTensor(factory: (E) -> BigInteger): Tensor3D<BigInteger> =
         BigIntegerTensor3D(this.data.map { it.toBigIntegerTensor(factory) }.toTypedArray())
@@ -286,7 +296,7 @@ abstract class Tensor3D<E : Number>(
     fun toBigDecimalTensor(factory: (E) -> BigDecimal): Tensor3D<BigDecimal> =
         BigDecimalTensor3D(this.data.map { it.toBigDecimalTensor(factory) }.toTypedArray())
 
-    abstract override fun clone(): Tensor3D<E> 
+    abstract override fun clone(): Tensor3D<E>
 
     override fun iterator(): Iterator<Tensor2D<E>> = this.data.iterator()
 
@@ -343,17 +353,22 @@ class BigDecimalTensor3D(
 
 @JvmName("tensorOf3DList_Tensor2D")
 inline fun <reified E : Number> tensorOf(data: List<Tensor2D<out E>>): Tensor3D<E> = data.toTensor()
+
 @JvmName("tensorOf3DList_List_List")
 inline fun <reified E : Number> tensorOf(data: List<List<List<E>>>): Tensor3D<E> = data.toTensor()
+
 @JvmName("tensorOf3DArray_Tensor2D")
 inline fun <reified E : Number> tensorOf(data: Array<out Tensor2D<out E>>): Tensor3D<E> = data.toTensor()
+
 @JvmName("tensorOf3DArray_Array_Array")
 inline fun <reified E : Number> tensorOf(data: Array<out Array<out Array<out E>>>): Tensor3D<E> = data.toTensor()
+
 @JvmName("tensorOf3DVararg_Tensor2D")
 inline fun <reified E : Number> tensorOf(vararg data: Tensor2D<out E>): Tensor3D<E> = data.toTensor()
 
 @JvmName("list_tensor2DToTensor3D")
 inline fun <reified E : Number> List<Tensor2D<out E>>.toTensor(): Tensor3D<E> = Tensors.of3D(this.toTypedArray())
+
 @JvmName("list_list_listToTensor3D")
 inline fun <reified E : Number> List<List<List<E>>>.toTensor(): Tensor3D<E> =
     Tensors.of3D(this.map { _2d -> _2d.map { _1d -> _1d.toTensor() }.toTensor() }.toTypedArray())

@@ -9,7 +9,7 @@ package net.psunset.pytlin.collections
  * println(a) // Result: {x=10, i=1, v=5}
  * // ("x" to 10) key-value pair is already saved into the map.
  * ```
- * 
+ *
  * @return The value got by key if the key is present;
  * otherwise, returns the defaultValue and set the key to defaultValue in the map.
  */

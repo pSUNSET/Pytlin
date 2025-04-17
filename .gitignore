@@ -44,3 +44,4 @@ bin/
 ### Other ###
 gradle.private.properties
 src/test/
+src/test/kotlin/net/psunset/pytlin/Test.kt

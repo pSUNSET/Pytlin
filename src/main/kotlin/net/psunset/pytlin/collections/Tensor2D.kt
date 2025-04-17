@@ -4,7 +4,7 @@ import net.psunset.pytlin.lang.times
 import java.math.BigDecimal
 import java.math.BigInteger
 
-abstract class Tensor2D<E : Number> (
+abstract class Tensor2D<E : Number>(
     data: Array<out Tensor1D<E>>
 ) : Tensor_D<E>(data, Tensors.space(data.size, data[0].size)) {
 
@@ -177,13 +177,15 @@ abstract class Tensor2D<E : Number> (
 
     @JvmName("powOfInt")
     infix fun pow(scalar: Int): Tensor2D<E> = this.clone().apply { this.pow_(scalar) }
-    infix fun <N: Number> pow(scalar: N): Tensor2D<E> = this.clone().apply { this.pow_(scalar) }
+    infix fun <N : Number> pow(scalar: N): Tensor2D<E> = this.clone().apply { this.pow_(scalar) }
+
     @JvmName("powOfInt")
     infix fun pow(vector: Tensor1D<Int>): Tensor2D<E> = this.clone().apply { this.pow_(vector) }
-    infix fun <N: Number> pow(vector: Tensor1D<N>): Tensor2D<E> = this.clone().apply { this.pow_(vector) }
+    infix fun <N : Number> pow(vector: Tensor1D<N>): Tensor2D<E> = this.clone().apply { this.pow_(vector) }
+
     @JvmName("powOfInt")
     infix fun pow(matrix: Tensor2D<Int>): Tensor2D<E> = this.clone().apply { this.pow_(matrix) }
-    infix fun <N: Number> pow(matrix: Tensor2D<N>): Tensor2D<E> = this.clone().apply { this.pow_(matrix) }
+    infix fun <N : Number> pow(matrix: Tensor2D<N>): Tensor2D<E> = this.clone().apply { this.pow_(matrix) }
 
     @JvmName("pow_OfInt")
     fun pow_(scalar: Int) {
@@ -192,7 +194,7 @@ abstract class Tensor2D<E : Number> (
         }
     }
 
-    fun <N: Number> pow_(scalar: N) {
+    fun <N : Number> pow_(scalar: N) {
         for (i in 0..<this.rows) {
             this.data[i].pow_(scalar)
         }
@@ -205,7 +207,7 @@ abstract class Tensor2D<E : Number> (
         }
     }
 
-    fun <N: Number> pow_(vector: Tensor1D<N>) {
+    fun <N : Number> pow_(vector: Tensor1D<N>) {
         for (i in 0..<this.rows) {
             this.data[i].pow_(vector)
         }
@@ -219,7 +221,7 @@ abstract class Tensor2D<E : Number> (
         }
     }
 
-    fun <N: Number> pow_(matrix: Tensor2D<N>) {
+    fun <N : Number> pow_(matrix: Tensor2D<N>) {
         requireSameDim1Size(matrix)
         for (i in 0..<this.rows) {
             this.data[i].pow_(matrix.data[i])
@@ -253,10 +255,17 @@ abstract class Tensor2D<E : Number> (
     open fun toBigDecimalTensor(): Tensor2D<BigDecimal> =
         BigDecimalTensor2D(this.data.map { it.toBigDecimalTensor() }.toTypedArray())
 
-    fun toIntTensor(factory: (E) -> Int): Tensor2D<Int> = IntTensor2D(this.data.map { it.toIntTensor(factory) }.toTypedArray())
-    fun toLongTensor(factory: (E) -> Long): Tensor2D<Long> = LongTensor2D(this.data.map { it.toLongTensor(factory) }.toTypedArray())
-    fun toFloatTensor(factory: (E) -> Float): Tensor2D<Float> = FloatTensor2D(this.data.map { it.toFloatTensor(factory) }.toTypedArray())
-    fun toDoubleTensor(factory: (E) -> Double): Tensor2D<Double> = DoubleTensor2D(this.data.map { it.toDoubleTensor(factory) }.toTypedArray())
+    fun toIntTensor(factory: (E) -> Int): Tensor2D<Int> =
+        IntTensor2D(this.data.map { it.toIntTensor(factory) }.toTypedArray())
+
+    fun toLongTensor(factory: (E) -> Long): Tensor2D<Long> =
+        LongTensor2D(this.data.map { it.toLongTensor(factory) }.toTypedArray())
+
+    fun toFloatTensor(factory: (E) -> Float): Tensor2D<Float> =
+        FloatTensor2D(this.data.map { it.toFloatTensor(factory) }.toTypedArray())
+
+    fun toDoubleTensor(factory: (E) -> Double): Tensor2D<Double> =
+        DoubleTensor2D(this.data.map { it.toDoubleTensor(factory) }.toTypedArray())
 
     fun toBigIntegerTensor(factory: (E) -> BigInteger): Tensor2D<BigInteger> =
         BigIntegerTensor2D(this.data.map { it.toBigIntegerTensor(factory) }.toTypedArray())
@@ -338,30 +347,40 @@ class BigDecimalTensor2D(
 
 @JvmName("tensor2DOfList_Tensor1D")
 inline fun <reified E : Number> tensorOf(data: List<Tensor1D<out E>>): Tensor2D<E> = data.toTensor()
+
 @JvmName("tensor2DOfList_List")
 inline fun <reified E : Number> tensorOf(data: List<List<E>>): Tensor2D<E> = data.toTensor()
+
 @JvmName("tensor2DOfList_Array")
 inline fun <reified E : Number> tensorOf(data: List<Array<out E>>): Tensor2D<E> = data.toTensor()
+
 @JvmName("tensor2DOfArray_Tensor1D")
 inline fun <reified E : Number> tensorOf(data: Array<out Tensor1D<out E>>): Tensor2D<E> = data.toTensor()
+
 @JvmName("tensor2DOfArray_List")
 inline fun <reified E : Number> tensorOf(data: Array<out List<E>>): Tensor2D<E> = data.toTensor()
+
 @JvmName("tensor2DOfArray_Array")
 inline fun <reified E : Number> tensorOf(data: Array<out Array<out E>>): Tensor2D<E> = data.toTensor()
+
 @JvmName("tensor2DOfVararg_Tensor1D")
 inline fun <reified E : Number> tensorOf(vararg data: Tensor1D<out E>): Tensor2D<E> = data.toTensor()
+
 @JvmName("tensor2DOfVararg_List")
 inline fun <reified E : Number> tensorOf(vararg data: List<E>): Tensor2D<E> = data.toTensor()
+
 @JvmName("tensor2DOfVararg_Array")
 inline fun <reified E : Number> tensorOf(vararg data: Array<out E>): Tensor2D<E> = data.toTensor()
 
 @JvmName("list_tensor1DToTensor2D")
 inline fun <reified E : Number> List<Tensor1D<out E>>.toTensor(): Tensor2D<E> = Tensors.of2D(this.toTypedArray())
+
 @JvmName("list_listToTensor2D")
 inline fun <reified E : Number> List<List<E>>.toTensor(): Tensor2D<E> = tensorOf(this.map { it.toTensor() })
+
 @JvmName("list_arrayToTensor2D")
 inline fun <reified E : Number> List<Array<out E>>.toTensor(): Tensor2D<E> = tensorOf(this.map { it.toTensor() })
 
-inline fun <reified E : Number> Array<out Tensor1D<out E>>.toTensor(): Tensor2D<E> =  Tensors.of2D(this)
+inline fun <reified E : Number> Array<out Tensor1D<out E>>.toTensor(): Tensor2D<E> = Tensors.of2D(this)
 inline fun <reified E : Number> Array<out List<E>>.toTensor(): Tensor2D<E> = tensorOf(this.map { it.toTensor() })
 inline fun <reified E : Number> Array<out Array<out E>>.toTensor(): Tensor2D<E> = tensorOf(this.map { it.toTensor() })

@@ -1,5 +1,6 @@
 package net.psunset.pytlin.collections
 
+import net.psunset.pytlin.collections.Tensors.space
 import net.psunset.pytlin.utils.COMING_SOON
 import java.math.BigDecimal
 import java.math.BigInteger

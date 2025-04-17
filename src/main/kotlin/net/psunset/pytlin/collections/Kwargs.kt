@@ -3,7 +3,6 @@
 package net.psunset.pytlin.collections
 
 import net.psunset.pytlin.lang.not
-import java.util.function.BiFunction
 import kotlin.reflect.KClass
 
 interface Kwargs : Map<String, Any?> {
@@ -174,7 +173,8 @@ class MutableKwargs : HashMap<String, Any?>, Kwargs {
      * @see remove remove(Object key, Object value) (Java)
      */
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any, D : T> pop(key: String, defaultValue: D, type: KClass<T>): T = (this.remove(key) as T?) ?: defaultValue
+    fun <T : Any, D : T> pop(key: String, defaultValue: D, type: KClass<T>): T =
+        (this.remove(key) as T?) ?: defaultValue
 
     /**
      * Add a `Pair<String, Any?>` should return [MutableKwargs] instead of [Map]

@@ -6,7 +6,7 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import kotlin.math.pow
 
-abstract class Tensor1D<E : Number> (
+abstract class Tensor1D<E : Number>(
     data: Array<out E>
 ) : Tensor_D<E>(data, Tensors.space(data.size)) {
 
@@ -136,10 +136,11 @@ abstract class Tensor1D<E : Number> (
 
     @JvmName("powOfInt")
     infix fun pow(scalar: Int): Tensor1D<E> = this.clone().apply { this.pow_(scalar) }
-    infix fun <N: Number> pow(scalar: N): Tensor1D<E> = this.clone().apply { this.pow_(scalar) }
+    infix fun <N : Number> pow(scalar: N): Tensor1D<E> = this.clone().apply { this.pow_(scalar) }
+
     @JvmName("powOfInt")
     infix fun pow(vector: Tensor1D<Int>): Tensor1D<E> = this.clone().apply { this.pow_(vector) }
-    infix fun <N: Number> pow(vector: Tensor1D<N>): Tensor1D<E> = this.clone().apply { this.pow_(vector) }
+    infix fun <N : Number> pow(vector: Tensor1D<N>): Tensor1D<E> = this.clone().apply { this.pow_(vector) }
 
     @JvmName("pow_OfInt")
     fun pow_(scalar: Int) {
@@ -148,7 +149,7 @@ abstract class Tensor1D<E : Number> (
         }
     }
 
-    fun <N: Number> pow_(scalar: N) {
+    fun <N : Number> pow_(scalar: N) {
         for (i in 0..<this.numel) {
             this[i] = doPow(this[i], scalar)
         }
@@ -161,7 +162,7 @@ abstract class Tensor1D<E : Number> (
         }
     }
 
-    fun <N: Number> pow_(vector: Tensor1D<N>) {
+    fun <N : Number> pow_(vector: Tensor1D<N>) {
         requireSameDim1Size(vector)
         for (i in 0..<this.numel) {
             this[i] = doPow(this[i], vector[i])
@@ -179,7 +180,7 @@ abstract class Tensor1D<E : Number> (
     protected abstract fun doMul(a: E, b: E): E
     protected abstract fun doDiv(a: E, b: E): E
     protected abstract fun doMod(a: E, b: E): E
-    protected abstract fun <N: Number> doPow(a: E, b: N): E
+    protected abstract fun <N : Number> doPow(a: E, b: N): E
     protected abstract fun newOne(l: List<E>): Tensor1D<E>
 
     open fun toIntTensor(): Tensor1D<Int> = IntTensor1D(this.data.map { it.toInt() }.toTypedArray())
@@ -216,7 +217,7 @@ abstract class Tensor1D<E : Number> (
 
     fun toBigDecimalTensor(factory: (E) -> BigDecimal): Tensor1D<BigDecimal> =
         BigDecimalTensor1D(this.data.map(factory).toTypedArray())
-    
+
     abstract override fun clone(): Tensor1D<E>
 
     override fun iterator(): Iterator<E> = this.data.iterator()
@@ -345,7 +346,7 @@ class DoubleTensor1D(
         DoubleTensor1D(l.toTypedArray())
 
     override fun toDoubleTensor(): DoubleTensor1D = DoubleTensor1D(this.data.clone())
-    
+
     override fun clone(): Tensor1D<Double> = this.toDoubleTensor()
 }
 
@@ -411,8 +412,10 @@ class BigDecimalTensor1D(
 
 @JvmName("tensor1DOfList")
 inline fun <reified E : Number> tensorOf(data: List<E>): Tensor1D<E> = data.toTensor()
+
 @JvmName("tensor1DOfArray")
 inline fun <reified E : Number> tensorOf(data: Array<out E>): Tensor1D<E> = data.toTensor()
+
 @JvmName("tensor1DOfVararg")
 inline fun <reified E : Number> tensorOf(vararg data: E): Tensor1D<E> = data.toTensor()
 
@@ -421,14 +424,19 @@ inline fun <reified E : Number> Array<out E>.toTensor(): Tensor1D<E> = Tensors.o
 
 @JvmName("tensor1DOfByteArray")
 fun tensorOf(data: ByteArray): IntTensor1D = data.toTensor()
+
 @JvmName("tensor1DOfShortArray")
 fun tensorOf(data: ShortArray): IntTensor1D = data.toTensor()
+
 @JvmName("tensor1DOfIntArray")
 fun tensorOf(data: IntArray): IntTensor1D = data.toTensor()
+
 @JvmName("tensor1DOfLongArray")
 fun tensorOf(data: LongArray): LongTensor1D = data.toTensor()
+
 @JvmName("tensor1DOfFloatArray")
 fun tensorOf(data: FloatArray): FloatTensor1D = data.toTensor()
+
 @JvmName("tensor1DOfDoubleArray")
 fun tensorOf(data: DoubleArray): DoubleTensor1D = data.toTensor()
 

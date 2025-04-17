@@ -1,5 +1,3 @@
-@file:JvmName("SumAndProdUtil")
-
 package net.psunset.pytlin.collections
 
 import java.math.BigDecimal
@@ -690,7 +688,7 @@ inline fun <T> Stream<T>.prodOf(selector: (T) -> UInt): UInt {
 @OptIn(ExperimentalTypeInference::class)
 @OverloadResolutionByLambdaReturnType
 @JvmName("prodOfULong")
-@Deprecated("We won't remove this function. But it very likely return unexpected value. Because this function possibly store a negative value into ULong.",)
+@Deprecated("We won't remove this function. But it very likely return unexpected value. Because this function possibly store a negative value into ULong.")
 inline fun <T> Stream<T>.prodOf(selector: (T) -> ULong): ULong {
     var prod: ULong = 1.toULong()
     for (element in this) {
