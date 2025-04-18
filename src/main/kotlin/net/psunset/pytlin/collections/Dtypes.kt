@@ -7,36 +7,36 @@ import kotlin.reflect.KClass
 /**
  * A class for indicating what type of data a tensor storaging.
  */
-interface WithDtype {
+internal interface WithDtype {
     val dtype: KClass<out Number>
-}
 
-interface IntAsDtype : WithDtype {
-    override val dtype: KClass<out Number>
-        get() = Int::class
-}
+    interface DInt : WithDtype {
+        override val dtype: KClass<out Number>
+            get() = Int::class
+    }
 
-interface LongAsDtype : WithDtype {
-    override val dtype: KClass<out Number>
-        get() = Long::class
-}
+    interface DLong : WithDtype {
+        override val dtype: KClass<out Number>
+            get() = Long::class
+    }
 
-interface FloatAsDtype : WithDtype {
-    override val dtype: KClass<out Number>
-        get() = Float::class
-}
+    interface DFloat : WithDtype {
+        override val dtype: KClass<out Number>
+            get() = Float::class
+    }
 
-interface DoubleAsDtype : WithDtype {
-    override val dtype: KClass<out Number>
-        get() = Double::class
-}
+    interface DDouble : WithDtype {
+        override val dtype: KClass<out Number>
+            get() = Double::class
+    }
 
-interface BigIntegerAsDtype : WithDtype {
-    override val dtype: KClass<out Number>
-        get() = BigInteger::class
-}
+    interface DBigInteger : WithDtype {
+        override val dtype: KClass<out Number>
+            get() = BigInteger::class
+    }
 
-interface BigDecimalAsDtype : WithDtype {
-    override val dtype: KClass<out Number>
-        get() = BigDecimal::class
+    interface DBigDecimal : WithDtype {
+        override val dtype: KClass<out Number>
+            get() = BigDecimal::class
+    }
 }

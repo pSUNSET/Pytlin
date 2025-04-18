@@ -316,37 +316,37 @@ abstract class Tensor3D<E : Number>(
 
 class IntTensor3D(
     data: Array<out Tensor2D<Int>>
-) : Tensor3D<Int>(data), IntAsDtype {
+) : Tensor3D<Int>(data), WithDtype.DInt {
     override fun clone(): Tensor3D<Int> = this.toIntTensor()
 }
 
 class LongTensor3D(
     data: Array<out Tensor2D<Long>>
-) : Tensor3D<Long>(data), LongAsDtype {
+) : Tensor3D<Long>(data), WithDtype.DLong {
     override fun clone(): Tensor3D<Long> = this.toLongTensor()
 }
 
 class FloatTensor3D(
     data: Array<out Tensor2D<Float>>
-) : Tensor3D<Float>(data), FloatAsDtype {
+) : Tensor3D<Float>(data), WithDtype.DFloat {
     override fun clone(): Tensor3D<Float> = this.toFloatTensor()
 }
 
 class DoubleTensor3D(
     data: Array<out Tensor2D<Double>>
-) : Tensor3D<Double>(data), DoubleAsDtype {
+) : Tensor3D<Double>(data), WithDtype.DDouble {
     override fun clone(): Tensor3D<Double> = this.toDoubleTensor()
 }
 
 class BigIntegerTensor3D(
     data: Array<out Tensor2D<BigInteger>>
-) : Tensor3D<BigInteger>(data), BigIntegerAsDtype {
+) : Tensor3D<BigInteger>(data), WithDtype.DBigInteger {
     override fun clone(): Tensor3D<BigInteger> = this.toBigIntegerTensor()
 }
 
 class BigDecimalTensor3D(
     data: Array<out Tensor2D<BigDecimal>>
-) : Tensor3D<BigDecimal>(data), BigDecimalAsDtype {
+) : Tensor3D<BigDecimal>(data), WithDtype.DBigDecimal {
     override fun clone(): Tensor3D<BigDecimal> = this.toBigDecimalTensor()
 }
 

@@ -36,7 +36,7 @@ fun kwargsOf(vararg pairs: Pair<String, Any?>): Kwargs =
  *
  * The returned map preserves the entry iteration order of the original map.
  */
-fun Map<String, Any?>.toKwargs(): Kwargs = MutableKwargs(this)
+fun Map<out String, Any?>.toKwargs(): Kwargs = MutableKwargs(this)
 
 
 /**
@@ -46,7 +46,7 @@ fun Map<String, Any?>.toKwargs(): Kwargs = MutableKwargs(this)
  * The returned map preserves the entry iteration order of the original map.
  */
 @JvmName("toKwargsByStrKeys")
-fun <K : Any, V : Any?> Map<K, V>.toKwargs(): Kwargs = MutableKwargs(this.mapKeys { it.toString() })
+fun <K : Any, V : Any?> Map<out K, V>.toKwargs(): Kwargs = MutableKwargs(this.mapKeys { it.toString() })
 
 /**
  * In python, keyword arguments feature, as known as kwargs, is a very convenient way to store data.
@@ -217,19 +217,19 @@ class MutableKwargs : HashMap<String, Any?>, Kwargs {
      * Removes some entries of the kwargs should return [MutableKwargs] instead of [Map]
      * @see Map.minus Map<out K, V>.minus(keys: Iterable<K>)
      */
-    operator fun minus(keys: Iterable<String>): MutableKwargs = MutableKwargs(this).apply { minusAssign(keys) }
+    operator fun minus(keys: Iterable<String>): MutableKwargs = MutableKwargs(this).apply { minusAssign(keys.toSet()) }
 
     /**
      * Removes some entries of the kwargs should return [MutableKwargs] instead of [Map]
      * @see Map.minus Map<out K, V>.minus(keys: Array<out K>)
      */
-    operator fun minus(keys: Array<out String>): MutableKwargs = MutableKwargs(this).apply { minusAssign(keys) }
+    operator fun minus(keys: Array<out String>): MutableKwargs = MutableKwargs(this).apply { minusAssign(keys.toSet()) }
 
     /**
      * Removes some entries of the kwargs should return [MutableKwargs] instead of [Map]
      * @see Map.minus Map<out K, V>.minus(keys: Sequence<K>)
      */
-    operator fun minus(keys: Sequence<String>): MutableKwargs = MutableKwargs(this).apply { minusAssign(keys) }
+    operator fun minus(keys: Sequence<String>): MutableKwargs = MutableKwargs(this).apply { minusAssign(keys.toSet()) }
 
     /**
      * Calls [pop] function
@@ -324,7 +324,7 @@ fun mutableKwargsOf(vararg pairs: Pair<String, Any?>): MutableKwargs =
  *
  * The returned map preserves the entry iteration order of the original map.
  */
-fun Map<String, Any?>.toMutableKwargs(): MutableKwargs = MutableKwargs(this)
+fun Map<out String, Any?>.toMutableKwargs(): MutableKwargs = MutableKwargs(this)
 
 
 /**
@@ -334,5 +334,5 @@ fun Map<String, Any?>.toMutableKwargs(): MutableKwargs = MutableKwargs(this)
  * The returned map preserves the entry iteration order of the original map.
  */
 @JvmName("toMutableKwargsByStrKeys")
-fun <K : Any, V : Any?> Map<K, V>.toMutableKwargs(): MutableKwargs =
+fun <K : Any, V : Any?> Map<out K, V>.toMutableKwargs(): MutableKwargs =
     MutableKwargs(this.mapKeys { it.toString() })

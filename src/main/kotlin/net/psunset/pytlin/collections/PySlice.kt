@@ -78,9 +78,7 @@ class PySlice internal constructor(pattern: String) {
      * @return a [Triple] which contains (start, endExclusive, step)
      */
     fun indices(len: Int): Triple<Int, Int, Int> {
-        require(len >= 0) {
-            "len cannot be a negative number!"
-        }
+        require(len >= 0) { "len cannot be a negative number!" }
 
         val rangeStart = if (this.start < 0) len + this.start else this.start  // Correct index
         val rangeEndExclusive = // Correct index and make it exclusive

@@ -293,7 +293,7 @@ abstract class Tensor2D<E : Number>(
 
 class IntTensor2D(
     data: Array<out Tensor1D<Int>>
-) : Tensor2D<Int>(data), IntAsDtype {
+) : Tensor2D<Int>(data), WithDtype.DInt {
     override fun newOne(l: List<List<Int>>): Tensor2D<Int> =
         IntTensor2D(l.map { tensorOf(it) }.toTypedArray())
 
@@ -302,7 +302,7 @@ class IntTensor2D(
 
 class LongTensor2D(
     data: Array<out Tensor1D<Long>>
-) : Tensor2D<Long>(data), LongAsDtype {
+) : Tensor2D<Long>(data), WithDtype.DLong {
     override fun newOne(l: List<List<Long>>): Tensor2D<Long> =
         LongTensor2D(l.map { tensorOf(it) }.toTypedArray())
 
@@ -311,7 +311,7 @@ class LongTensor2D(
 
 class FloatTensor2D(
     data: Array<out Tensor1D<Float>>
-) : Tensor2D<Float>(data), FloatAsDtype {
+) : Tensor2D<Float>(data), WithDtype.DFloat {
     override fun newOne(l: List<List<Float>>): Tensor2D<Float> =
         FloatTensor2D(l.map { tensorOf(it) }.toTypedArray())
 
@@ -320,7 +320,7 @@ class FloatTensor2D(
 
 class DoubleTensor2D(
     data: Array<out Tensor1D<Double>>
-) : Tensor2D<Double>(data), DoubleAsDtype {
+) : Tensor2D<Double>(data), WithDtype.DDouble {
     override fun newOne(l: List<List<Double>>): Tensor2D<Double> =
         DoubleTensor2D(l.map { tensorOf(it) }.toTypedArray())
 
@@ -329,7 +329,7 @@ class DoubleTensor2D(
 
 class BigIntegerTensor2D(
     data: Array<out Tensor1D<BigInteger>>
-) : Tensor2D<BigInteger>(data), BigIntegerAsDtype {
+) : Tensor2D<BigInteger>(data), WithDtype.DBigInteger {
     override fun newOne(l: List<List<BigInteger>>): Tensor2D<BigInteger> =
         BigIntegerTensor2D(l.map { tensorOf(it) }.toTypedArray())
 
@@ -338,7 +338,7 @@ class BigIntegerTensor2D(
 
 class BigDecimalTensor2D(
     data: Array<out Tensor1D<BigDecimal>>
-) : Tensor2D<BigDecimal>(data), BigDecimalAsDtype {
+) : Tensor2D<BigDecimal>(data), WithDtype.DBigDecimal {
     override fun newOne(l: List<List<BigDecimal>>): Tensor2D<BigDecimal> =
         BigDecimalTensor2D(l.map { tensorOf(it) }.toTypedArray())
 

@@ -235,7 +235,7 @@ abstract class Tensor1D<E : Number>(
  */
 class IntTensor1D(
     data: Array<out Int>
-) : Tensor1D<Int>(data), IntAsDtype {
+) : Tensor1D<Int>(data), WithDtype.DInt {
     override fun doAdd(a: Int, b: Int): Int = a + b
 
     override fun doSub(a: Int, b: Int): Int = a - b
@@ -265,7 +265,7 @@ class IntTensor1D(
  */
 class LongTensor1D(
     data: Array<out Long>
-) : Tensor1D<Long>(data), LongAsDtype {
+) : Tensor1D<Long>(data), WithDtype.DLong {
     override fun doAdd(a: Long, b: Long): Long = a + b
 
     override fun doSub(a: Long, b: Long): Long = a - b
@@ -295,7 +295,7 @@ class LongTensor1D(
  */
 class FloatTensor1D(
     data: Array<out Float>
-) : Tensor1D<Float>(data), FloatAsDtype {
+) : Tensor1D<Float>(data), WithDtype.DFloat {
     override fun doAdd(a: Float, b: Float): Float = a + b
 
     override fun doSub(a: Float, b: Float): Float = a - b
@@ -325,7 +325,7 @@ class FloatTensor1D(
  */
 class DoubleTensor1D(
     data: Array<out Double>
-) : Tensor1D<Double>(data), DoubleAsDtype {
+) : Tensor1D<Double>(data), WithDtype.DDouble {
     override fun doAdd(a: Double, b: Double): Double = a + b
 
     override fun doSub(a: Double, b: Double): Double = a - b
@@ -355,7 +355,7 @@ class DoubleTensor1D(
  */
 class BigIntegerTensor1D(
     data: Array<out BigInteger>
-) : Tensor1D<BigInteger>(data), BigIntegerAsDtype {
+) : Tensor1D<BigInteger>(data), WithDtype.DBigInteger {
     override fun doAdd(a: BigInteger, b: BigInteger): BigInteger = a + b
 
     override fun doSub(a: BigInteger, b: BigInteger): BigInteger = a - b
@@ -385,7 +385,7 @@ class BigIntegerTensor1D(
  */
 class BigDecimalTensor1D(
     data: Array<out BigDecimal>
-) : Tensor1D<BigDecimal>(data), BigDecimalAsDtype {
+) : Tensor1D<BigDecimal>(data), WithDtype.DBigDecimal {
     override fun doAdd(a: BigDecimal, b: BigDecimal): BigDecimal = a + b
 
     override fun doSub(a: BigDecimal, b: BigDecimal): BigDecimal = a - b
