@@ -298,7 +298,7 @@ print(a[::-1]) # Result: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
 ```
 
 Now, with this library,
-you can achieve the same effect in kotlin by making the slice in python surrounded by `"` to make it a string.
+you can achieve the same effect in kotlin by wrapping the slice symbol with `"` to make it a string.
 For example:
 
 ```kotlin
