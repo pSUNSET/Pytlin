@@ -6,7 +6,7 @@ An implementation of some `python` features for `kotlin`.
 
 ### Maven
 
-Add `pytlin` to your `<dependencies>` tag in your POM file:
+Add `pytlin` to your `<dependency>` tag in your POM file:
 
 (pom.xml):
 
