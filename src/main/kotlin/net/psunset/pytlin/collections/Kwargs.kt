@@ -19,7 +19,6 @@ interface Kwargs : Map<String, Any?> {
  */
 inline fun kwargsOf(): Kwargs = MutableKwargs()
 
-
 /**
  * Returns a new [Kwargs] with the specified contents, given as a list of pairs
  * where the first component is the key and the second is the value.
