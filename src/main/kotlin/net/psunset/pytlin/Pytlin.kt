@@ -1,6 +1,8 @@
 package net.psunset.pytlin
 
 import net.psunset.pytlin.collections.PySlice
+import net.psunset.pytlin.collections.prod
+import net.psunset.pytlin.collections.sum
 
 typealias Py = Pytlin
 
@@ -9,7 +11,27 @@ typealias Py = Pytlin
  */
 object Pytlin {
 
-    /** Parse the slice pattern with a string */
+    /**
+     * A static function which is like `sum(iterable)` in python.
+     * But, in fact, using `iter.sum()` function is a better way.
+     * Also, without knowing what precise user needs,
+     * directly cast all elements into [Double] which causes that the return type is [Double] as well.
+     * @return The sum of the all elements in the `iter` as [Double].
+     */
+    fun <N : Number> sum(iter: Iterable<N>): Double = iter.sum()
+
+    /**
+     * A static function which is like `sum(iterable)` in python.
+     * But, in fact, using `iter.prod()` function is a better way.
+     * Also, without knowing what precise user needs,
+     * directly cast all elements into [Double] which causes that the return type is [Double] as well.
+     * @return The prod of the all elements in the `iter` as [Double].
+     */
+    fun <N : Number> prod(iter: Iterable<N>): Double = iter.prod()
+
+    /**
+     * Parse the slice pattern with a string
+     */
     fun slice(pattern: String): PySlice = PySlice(pattern)
 
     /**

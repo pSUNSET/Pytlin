@@ -10,21 +10,6 @@ import kotlin.experimental.ExperimentalTypeInference
 
 
 /**
- * A static function which is like `sum(iterable)` in python.
- * But I think that using `iter.sum()` function which is below this function is a better way.
- * Also, We don't know what precise user needs.
- * So we directly cast all elements into [Double] which causes that the return type is [Double] as well.
- * @return The sum of the all elements in the `iter` as [Double].
- */
-@Deprecated(
-    "Please use this.sum() instead.",
-    replaceWith = ReplaceWith("iter.sum()")
-)
-fun <N : Number> sum(iter: Iterable<N>): Double {
-    return iter.sum()
-}
-
-/**
  * @return The sum of the all elements in the collection as [Double].
  */
 @JvmName("sumOfNumberToDouble")
@@ -177,21 +162,6 @@ inline fun <T> Stream<T>.sumOf(selector: (T) -> ULong): ULong {
 }
 
 /**
- * A static function which is like `sum(iterable)` in python.
- * But I think the better way is using `iter.prod()` function which is below this function.
- * Also, We don't know what precise user needs.
- * So we directly cast all elements into [Double] which causes that the return type is [Double] as well.
- * @return The prod of the all elements in the `iter` as [Double].
- */
-@Deprecated(
-    "Please use this.prod() instead.",
-    replaceWith = ReplaceWith("iter.prod()")
-)
-fun <N : Number> prod(iter: Iterable<N>): Double {
-    return iter.prod()
-}
-
-/**
  * @return The prod of the all elements in the collection as [Double].
  */
 @JvmName("prodOfNumberToDouble")
@@ -261,7 +231,7 @@ inline fun <T> Iterable<T>.prodOf(selector: (T) -> Long): Long {
 @OptIn(ExperimentalTypeInference::class)
 @OverloadResolutionByLambdaReturnType
 @JvmName("prodOfUInt")
-@Deprecated("We won't remove this function. But it is very likely  return unexpected value. Because this function possibly store a negative value into UInt.")
+@Deprecated("We won't remove this function. But it is very likely return unexpected value. Because this function possibly store a negative value into UInt.")
 inline fun <T> Iterable<T>.prodOf(selector: (T) -> UInt): UInt {
     var prod: UInt = 1.toUInt()
     for (element in this) {
@@ -276,7 +246,7 @@ inline fun <T> Iterable<T>.prodOf(selector: (T) -> UInt): UInt {
 @OptIn(ExperimentalTypeInference::class)
 @OverloadResolutionByLambdaReturnType
 @JvmName("prodOfULong")
-@Deprecated("We won't remove this function. But it is very likely  return unexpected value. Because this function possibly store a negative value into ULong.")
+@Deprecated("We won't remove this function. But it is very likely return unexpected value. Because this function possibly store a negative value into ULong.")
 inline fun <T> Iterable<T>.prodOf(selector: (T) -> ULong): ULong {
     var prod: ULong = 1.toULong()
     for (element in this) {
@@ -548,7 +518,7 @@ fun DoubleArray.prod(): Double {
  * @see Iterable.prodOf prodOf(selector: (T) -> UInt)
  */
 @OptIn(ExperimentalUnsignedTypes::class)
-@Deprecated("We won't remove this function. But it is very likely  return unexpected value. Because this function possibly store a negative value into UInt.")
+@Deprecated("We won't remove this function. But it is very likely return unexpected value. Because this function possibly store a negative value into UInt.")
 fun UByteArray.prod(): UInt = this.prodOf { it.toUInt() }
 
 /**
@@ -556,7 +526,7 @@ fun UByteArray.prod(): UInt = this.prodOf { it.toUInt() }
  * @see Iterable.prodOf prodOf(selector: (T) -> UInt)
  */
 @OptIn(ExperimentalUnsignedTypes::class)
-@Deprecated("We won't remove this function. But it is very likely  return unexpected value. Because this function possibly store a negative value into UInt.")
+@Deprecated("We won't remove this function. But it is very likely return unexpected value. Because this function possibly store a negative value into UInt.")
 fun UShortArray.prod(): UInt = this.prodOf { it.toUInt() }
 
 /**
@@ -564,7 +534,7 @@ fun UShortArray.prod(): UInt = this.prodOf { it.toUInt() }
  * @see Iterable.prodOf prodOf(selector: (T) -> UInt)
  */
 @OptIn(ExperimentalUnsignedTypes::class)
-@Deprecated("We won't remove this function. But it is very likely  return unexpected value. Because this function possibly store a negative value into UInt.")
+@Deprecated("We won't remove this function. But it is very likely return unexpected value. Because this function possibly store a negative value into UInt.")
 fun UIntArray.prod(): UInt = this.prodOf { it }
 
 
@@ -573,7 +543,7 @@ fun UIntArray.prod(): UInt = this.prodOf { it }
  * @see Iterable.prodOf prodOf(selector: (T) -> ULong)
  */
 @OptIn(ExperimentalUnsignedTypes::class)
-@Deprecated("We won't remove this function. But it is very likely  return unexpected value. Because this function possibly store a negative value into ULong.")
+@Deprecated("We won't remove this function. But it is very likely return unexpected value. Because this function possibly store a negative value into ULong.")
 fun ULongArray.prod(): ULong = this.prodOf { it }
 
 /**
@@ -673,7 +643,7 @@ inline fun <T> Stream<T>.prodOf(selector: (T) -> Long): Long {
 @OptIn(ExperimentalTypeInference::class)
 @OverloadResolutionByLambdaReturnType
 @JvmName("prodOfUInt")
-@Deprecated("We won't remove this function. But it is very likely  return unexpected value. Because this function possibly store a negative value into UInt.")
+@Deprecated("We won't remove this function. But it is very likely return unexpected value. Because this function possibly store a negative value into UInt.")
 inline fun <T> Stream<T>.prodOf(selector: (T) -> UInt): UInt {
     var prod: UInt = 1.toUInt()
     for (element in this) {
@@ -688,7 +658,7 @@ inline fun <T> Stream<T>.prodOf(selector: (T) -> UInt): UInt {
 @OptIn(ExperimentalTypeInference::class)
 @OverloadResolutionByLambdaReturnType
 @JvmName("prodOfULong")
-@Deprecated("We won't remove this function. But it is very likely  return unexpected value. Because this function possibly store a negative value into ULong.")
+@Deprecated("We won't remove this function. But it is very likely return unexpected value. Because this function possibly store a negative value into ULong.")
 inline fun <T> Stream<T>.prodOf(selector: (T) -> ULong): ULong {
     var prod: ULong = 1.toULong()
     for (element in this) {
