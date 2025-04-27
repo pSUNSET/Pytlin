@@ -1,5 +1,5 @@
 import java.io.FileReader
-import java.util.*
+import java.util.Properties
 
 plugins {
     kotlin("jvm") version "2.1.0"
@@ -10,7 +10,7 @@ plugins {
 }
 
 val _properties = Properties().apply {
-    load(FileReader("gradle.private.properties"))
+    load(FileReader("secrets.properties"))
 }.toMutableMap()
 
 for ((k, v) in _properties) {

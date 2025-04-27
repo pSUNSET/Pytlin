@@ -42,5 +42,5 @@ bin/
 .DS_Store
 
 ### Other ###
-gradle.private.properties
+secrets.properties
 src/test/
