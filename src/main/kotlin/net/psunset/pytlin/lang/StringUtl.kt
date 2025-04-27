@@ -5,6 +5,8 @@ package net.psunset.pytlin.lang
 import net.psunset.pytlin.Py
 import net.psunset.pytlin.collections.Kwargs
 import net.psunset.pytlin.collections.times
+import net.psunset.pytlin.collections.get
+import net.psunset.pytlin.collections.getAs
 
 /**
  * Calls [CharSequence.repeat]
@@ -38,7 +40,7 @@ operator fun CharSequence.times(n: Int): String = this.repeat(n.let { if (it <= 
  * @see CharSequence.repeat times(n: Int, separator: CharSequence, prefix: CharSequence, postfix: CharSequence, limit: Int, truncated: CharSequence, transform: ((String) -> CharSequence)?)
  */
 operator fun CharSequence.times(kwargs: Kwargs): String {
-    val n = kwargs["n", Int::class]
+    val n = kwargs.getAs("n", Int::class)
     val sep =
         kwargs["separator", kwargs["sep", ""]] // Allow using either "separator" or "sep" as the key word
     val prefix = kwargs["prefix", ""]
@@ -46,9 +48,10 @@ operator fun CharSequence.times(kwargs: Kwargs): String {
     val limit = kwargs["limit", -1]
     val truncated = kwargs["truncated", "..."]
 
+    // Can't mark what the class transform should be, so use `as` to cast it here.
     @Suppress("UNCHECKED_CAST")
     val transform =
-        (kwargs["transform", Function1::class]) as ((CharSequence) -> CharSequence)? // Can't mark what the class transform should be, so use `as` to cast it here.
+        (kwargs.getAs("transform", Function1::class)) as ((CharSequence) -> CharSequence)?
 
     if (n == null) {
         throw IllegalArgumentException("The \"n\" key should exist in kwargs. And the the value got by it should be present and non-null.")
