@@ -2,7 +2,7 @@ package net.psunset.pytlin.collections
 
 /**
  * Parses a [String] as a python slice.
- * To use this class, using [Py.slice] functions.
+ * To use this class, using `Py.slice` function.
  */
 class PySlice internal constructor(pattern: String) {
 
