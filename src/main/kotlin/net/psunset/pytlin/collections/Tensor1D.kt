@@ -109,7 +109,11 @@ abstract class Tensor1D<E : Number>(
 
     infix fun dot(vector: Tensor1D<E>): E {
         requireSameDim1Size(vector)
-        return this.data.zip(vector.data).map { (a, b) -> doMul(a, b) }.reduce { a, b -> doAdd(a, b) }
+        var result = doMul(this.data[0], vector.data[0])
+        for (i in 1..<this.numel) {
+            result = doAdd(result, doMul(this.data[i], vector.data[i]))
+        }
+        return result
     }
 
     infix fun cross(vector: Tensor1D<E>): Tensor1D<E> {
@@ -446,5 +450,3 @@ fun IntArray.toTensor(): IntTensor1D = IntTensor1D(this.toTypedArray())
 fun LongArray.toTensor(): LongTensor1D = LongTensor1D(this.toTypedArray())
 fun FloatArray.toTensor(): FloatTensor1D = FloatTensor1D(this.toTypedArray())
 fun DoubleArray.toTensor(): DoubleTensor1D = DoubleTensor1D(this.toTypedArray())
-
-

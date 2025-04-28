@@ -16,14 +16,13 @@ operator fun <T> List<T>.times(n: Int): List<T> {
     if (n <= 0) return emptyList()
     if (n == 1) return this.toList()
 
-    val size = this.size
     val newList = MutableList(size * n) { this[0] }
     for (i in 1..<n) {
         for (ii in 1..<size) {
             newList[i * size + ii] = this[ii]
         }
     }
-    return newList
+    return newList.subList(0, size * n)
 }
 
 /**
@@ -34,7 +33,6 @@ inline operator fun <reified T> Array<out T>.times(n: Int): List<T> {
     if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
     if (n == 1) return this.toList()
 
-    val size = this.size
     val newList = MutableList(size * n) { this[0] }
     for (i in 1..<n) {
         for (ii in 1..<size) {
@@ -52,7 +50,6 @@ operator fun ByteArray.times(n: Int): List<Byte> {
     if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
     if (n == 1) return this.toList()
 
-    val size = this.size
     val newList = MutableList(size * n) { this[0] }
     for (i in 1..<n) {
         for (ii in 1..<size) {
@@ -70,7 +67,6 @@ operator fun CharArray.times(n: Int): List<Char> {
     if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
     if (n == 1) return this.toList()
 
-    val size = this.size
     val newList = MutableList(size * n) { this[0] }
     for (i in 1..<n) {
         for (ii in 1..<size) {
@@ -88,7 +84,6 @@ operator fun ShortArray.times(n: Int): List<Short> {
     if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
     if (n == 1) return this.toList()
 
-    val size = this.size
     val newList = MutableList(size * n) { this[0] }
     for (i in 1..<n) {
         for (ii in 1..<size) {
@@ -106,7 +101,6 @@ operator fun IntArray.times(n: Int): List<Int> {
     if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
     if (n == 1) return this.toList()
 
-    val size = this.size
     val newList = MutableList(size * n) { this[0] }
     for (i in 1..<n) {
         for (ii in 1..<size) {
@@ -124,7 +118,6 @@ operator fun LongArray.times(n: Int): List<Long> {
     if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
     if (n == 1) return this.toList()
 
-    val size = this.size
     val newList = MutableList(size * n) { this[0] }
     for (i in 1..<n) {
         for (ii in 1..<size) {
@@ -142,7 +135,6 @@ operator fun FloatArray.times(n: Int): List<Float> {
     if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
     if (n == 1) return this.toList()
 
-    val size = this.size
     val newList = MutableList(size * n) { this[0] }
     for (i in 1..<n) {
         for (ii in 1..<size) {
@@ -160,7 +152,6 @@ operator fun DoubleArray.times(n: Int): List<Double> {
     if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
     if (n == 1) return this.toList()
 
-    val size = this.size
     val newList = MutableList(size * n) { this[0] }
     for (i in 1..<n) {
         for (ii in 1..<size) {
@@ -178,7 +169,6 @@ operator fun BooleanArray.times(n: Int): List<Boolean> {
     if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
     if (n == 1) return this.toList()
 
-    val size = this.size
     val newList = MutableList(size * n) { this[0] }
     for (i in 1..<n) {
         for (ii in 1..<size) {
@@ -197,7 +187,6 @@ operator fun UByteArray.times(n: Int): List<UByte> {
     if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
     if (n == 1) return this.toList()
 
-    val size = this.size
     val newList = MutableList(size * n) { this[0] }
     for (i in 1..<n) {
         for (ii in 1..<size) {
@@ -216,7 +205,6 @@ operator fun UShortArray.times(n: Int): List<UShort> {
     if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
     if (n == 1) return this.toList()
 
-    val size = this.size
     val newList = MutableList(size * n) { this[0] }
     for (i in 1..<n) {
         for (ii in 1..<size) {
@@ -235,7 +223,6 @@ operator fun UIntArray.times(n: Int): List<UInt> {
     if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
     if (n == 1) return this.toList()
 
-    val size = this.size
     val newList = MutableList(size * n) { this[0] }
     for (i in 1..<n) {
         for (ii in 1..<size) {
@@ -254,7 +241,6 @@ operator fun ULongArray.times(n: Int): List<ULong> {
     if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
     if (n == 1) return this.toList()
 
-    val size = this.size
     val newList = MutableList(size * n) { this[0] }
     for (i in 1..<n) {
         for (ii in 1..<size) {
