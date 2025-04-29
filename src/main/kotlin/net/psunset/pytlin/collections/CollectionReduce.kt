@@ -165,9 +165,7 @@ inline fun <T> Stream<T>.sumOf(selector: (T) -> ULong): ULong {
  * @return The prod of the all elements in the collection as [Double].
  */
 @JvmName("prodOfNumberToDouble")
-fun <N : Number> Iterable<N>.prod(): Double {
-    return this.prodOf { it.toDouble() }
-}
+fun <N : Number> Iterable<N>.prod(): Double = this.prodOf { it.toDouble() }
 
 /**
  * @return the prod of all values produced by [selector] function applied to each element in the collection.

@@ -30,7 +30,7 @@ operator fun <T> List<T>.times(n: Int): List<T> {
  * But make it available in an array.
  */
 inline operator fun <reified T> Array<out T>.times(n: Int): List<T> {
-    if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
+    if (n <= 0) return emptyList()
     if (n == 1) return this.toList()
 
     val newList = MutableList(size * n) { this[0] }
@@ -47,7 +47,7 @@ inline operator fun <reified T> Array<out T>.times(n: Int): List<T> {
  * But make it available in a [ByteArray].
  */
 operator fun ByteArray.times(n: Int): List<Byte> {
-    if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
+    if (n <= 0) return emptyList()
     if (n == 1) return this.toList()
 
     val newList = MutableList(size * n) { this[0] }
@@ -64,7 +64,7 @@ operator fun ByteArray.times(n: Int): List<Byte> {
  * But make it available in a [CharArray].
  */
 operator fun CharArray.times(n: Int): List<Char> {
-    if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
+    if (n <= 0) return emptyList()
     if (n == 1) return this.toList()
 
     val newList = MutableList(size * n) { this[0] }
@@ -81,7 +81,7 @@ operator fun CharArray.times(n: Int): List<Char> {
  * But make it available in a [ShortArray].
  */
 operator fun ShortArray.times(n: Int): List<Short> {
-    if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
+    if (n <= 0) return emptyList()
     if (n == 1) return this.toList()
 
     val newList = MutableList(size * n) { this[0] }
@@ -98,7 +98,7 @@ operator fun ShortArray.times(n: Int): List<Short> {
  * But make it available in a [IntArray].
  */
 operator fun IntArray.times(n: Int): List<Int> {
-    if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
+    if (n <= 0) return emptyList()
     if (n == 1) return this.toList()
 
     val newList = MutableList(size * n) { this[0] }
@@ -115,7 +115,7 @@ operator fun IntArray.times(n: Int): List<Int> {
  * But make it available in a [LongArray].
  */
 operator fun LongArray.times(n: Int): List<Long> {
-    if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
+    if (n <= 0) return emptyList()
     if (n == 1) return this.toList()
 
     val newList = MutableList(size * n) { this[0] }
@@ -132,7 +132,7 @@ operator fun LongArray.times(n: Int): List<Long> {
  * But make it available in a [FloatArray].
  */
 operator fun FloatArray.times(n: Int): List<Float> {
-    if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
+    if (n <= 0) return emptyList()
     if (n == 1) return this.toList()
 
     val newList = MutableList(size * n) { this[0] }
@@ -149,7 +149,7 @@ operator fun FloatArray.times(n: Int): List<Float> {
  * But make it available in a [DoubleArray].
  */
 operator fun DoubleArray.times(n: Int): List<Double> {
-    if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
+    if (n <= 0) return emptyList()
     if (n == 1) return this.toList()
 
     val newList = MutableList(size * n) { this[0] }
@@ -166,7 +166,7 @@ operator fun DoubleArray.times(n: Int): List<Double> {
  * But make it available in a [BooleanArray].
  */
 operator fun BooleanArray.times(n: Int): List<Boolean> {
-    if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
+    if (n <= 0) return emptyList()
     if (n == 1) return this.toList()
 
     val newList = MutableList(size * n) { this[0] }
@@ -184,7 +184,7 @@ operator fun BooleanArray.times(n: Int): List<Boolean> {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UByteArray.times(n: Int): List<UByte> {
-    if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
+    if (n <= 0) return emptyList()
     if (n == 1) return this.toList()
 
     val newList = MutableList(size * n) { this[0] }
@@ -202,7 +202,7 @@ operator fun UByteArray.times(n: Int): List<UByte> {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UShortArray.times(n: Int): List<UShort> {
-    if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
+    if (n <= 0) return emptyList()
     if (n == 1) return this.toList()
 
     val newList = MutableList(size * n) { this[0] }
@@ -220,7 +220,7 @@ operator fun UShortArray.times(n: Int): List<UShort> {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun UIntArray.times(n: Int): List<UInt> {
-    if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
+    if (n <= 0) return emptyList()
     if (n == 1) return this.toList()
 
     val newList = MutableList(size * n) { this[0] }
@@ -238,7 +238,7 @@ operator fun UIntArray.times(n: Int): List<UInt> {
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 operator fun ULongArray.times(n: Int): List<ULong> {
-    if (n <= 0) throw IllegalArgumentException("`n` should be a positive value because the length of an array should be greater than 0.")
+    if (n <= 0) return emptyList()
     if (n == 1) return this.toList()
 
     val newList = MutableList(size * n) { this[0] }
