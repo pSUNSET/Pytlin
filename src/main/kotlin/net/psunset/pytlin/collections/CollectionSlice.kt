@@ -219,7 +219,7 @@ operator fun <T> List<T>.get(pattern: String): List<T> {
     if (slice.isClone) return this.toList()
     if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
-    return this[Py.slice(pattern).asProgression(this.size)]
+    return this[slice.asProgression(this.size)]
 }
 
 /**
@@ -234,7 +234,7 @@ operator fun <T> Array<out T>.get(pattern: String): List<T> {
     if (slice.isClone) return this.toList()
     if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
-    return this[Py.slice(pattern).asProgression(this.size)]
+    return this[slice.asProgression(this.size)]
 }
 
 /**
@@ -249,7 +249,7 @@ operator fun ByteArray.get(pattern: String): List<Byte> {
     if (slice.isClone) return this.toList()
     if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
-    return this[Py.slice(pattern).asProgression(this.size)]
+    return this[slice.asProgression(this.size)]
 }
 
 /**
@@ -264,7 +264,7 @@ operator fun CharArray.get(pattern: String): List<Char> {
     if (slice.isClone) return this.toList()
     if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
-    return this[Py.slice(pattern).asProgression(this.size)]
+    return this[slice.asProgression(this.size)]
 }
 
 
@@ -280,7 +280,7 @@ operator fun ShortArray.get(pattern: String): List<Short> {
     if (slice.isClone) return this.toList()
     if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
-    return this[Py.slice(pattern).asProgression(this.size)]
+    return this[slice.asProgression(this.size)]
 }
 
 /**
@@ -295,7 +295,7 @@ operator fun IntArray.get(pattern: String): List<Int> {
     if (slice.isClone) return this.toList()
     if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
-    return this[Py.slice(pattern).asProgression(this.size)]
+    return this[slice.asProgression(this.size)]
 }
 
 /**
@@ -310,7 +310,7 @@ operator fun LongArray.get(pattern: String): List<Long> {
     if (slice.isClone) return this.toList()
     if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
-    return this[Py.slice(pattern).asProgression(this.size)]
+    return this[slice.asProgression(this.size)]
 }
 
 /**
@@ -325,7 +325,7 @@ operator fun FloatArray.get(pattern: String): List<Float> {
     if (slice.isClone) return this.toList()
     if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
-    return this[Py.slice(pattern).asProgression(this.size)]
+    return this[slice.asProgression(this.size)]
 }
 
 /**
@@ -340,7 +340,7 @@ operator fun DoubleArray.get(pattern: String): List<Double> {
     if (slice.isClone) return this.toList()
     if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
-    return this[Py.slice(pattern).asProgression(this.size)]
+    return this[slice.asProgression(this.size)]
 }
 
 /**
@@ -356,7 +356,7 @@ operator fun UByteArray.get(pattern: String): List<UByte> {
     if (slice.isClone) return this.toList()
     if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
-    return this[Py.slice(pattern).asProgression(this.size)]
+    return this[slice.asProgression(this.size)]
 }
 
 /**
@@ -372,7 +372,7 @@ operator fun UShortArray.get(pattern: String): List<UShort> {
     if (slice.isClone) return this.toList()
     if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
-    return this[Py.slice(pattern).asProgression(this.size)]
+    return this[slice.asProgression(this.size)]
 }
 
 /**
@@ -388,7 +388,7 @@ operator fun UIntArray.get(pattern: String): List<UInt> {
     if (slice.isClone) return this.toList()
     if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
-    return this[Py.slice(pattern).asProgression(this.size)]
+    return this[slice.asProgression(this.size)]
 }
 
 /**
@@ -404,7 +404,7 @@ operator fun ULongArray.get(pattern: String): List<ULong> {
     if (slice.isClone) return this.toList()
     if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
-    return this[Py.slice(pattern).asProgression(this.size)]
+    return this[slice.asProgression(this.size)]
 }
 
 /**
@@ -419,7 +419,7 @@ operator fun BooleanArray.get(pattern: String): List<Boolean> {
     if (slice.isClone) return this.toList()
     if (slice.isReverse) return this.reversed()
     if (slice.isRange) return this[slice.asRange(this.size)]
-    return this[Py.slice(pattern).asProgression(this.size)]
+    return this[slice.asProgression(this.size)]
 }
 
 /**

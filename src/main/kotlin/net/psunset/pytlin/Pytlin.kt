@@ -16,12 +16,7 @@ object Pytlin {
      * directly cast all elements into [Double] which causes that the return type is [Double] as well.
      * @return The sum of the all elements in the `iter` as [Double].
      */
-    fun <N : Number> sum(iter: Iterable<N>): Double = when (iter) {
-        is Iterable<Int> -> iter.sum().toDouble()
-        is Iterable<Long> -> iter.sum().toDouble()
-        is Iterable<Double> -> iter.sum()
-        else -> iter.sum()
-    }
+    fun <N : Number> sum(iter: Iterable<N>): Double = iter.sum()
 
     /**
      * A static function which is like `sum(iterable)` in python.
@@ -30,12 +25,7 @@ object Pytlin {
      * directly cast all elements into [Double] which causes that the return type is [Double] as well.
      * @return The prod of the all elements in the `iter` as [Double].
      */
-    fun <N : Number> prod(iter: Iterable<N>): Double = when (iter) {
-        is Iterable<Int> -> iter.prod().toDouble()
-        is Iterable<Long> -> iter.prod().toDouble()
-        is Iterable<Double> -> iter.prod()
-        else -> iter.prod()
-    }
+    fun <N : Number> prod(iter: Iterable<N>): Double = iter.prod()
 
     /**
      * Parse the slice pattern with a string
