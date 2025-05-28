@@ -10,12 +10,13 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.RoundingMode
 import kotlin.math.abs
+import kotlin.math.floor
 import kotlin.math.truncate
 
 /**
  * Determines if the number has a zero fractional part.
  * In other words, it checks if the number is a whole number or if it has a decimal component
- * that isn't equal to zero.
+ * that doesn't equal to zero.
  *
  * @return `true` if the number has a zero fractional part, `false` otherwise.
  */
@@ -24,16 +25,16 @@ fun Float.isFractionalPartZero(): Boolean = this.toBigDecimal() valEq this.toBig
 /**
  * Determines if the number has a zero fractional part.
  * In other words, it checks if the number is a whole number or if it has a decimal component
- * that isn't equal to zero.
+ * that doesn't equal to zero.
  *
  * @return `true` if the number has a zero fractional part, `false` otherwise.
  */
-fun Double.isFractionalPartZero(): Boolean = this.toBigDecimal() valEq this.toBigDecimal().truncate()
+fun Double.isFractionalPartZero(): Boolean = this valEq this.truncate()
 
 /**
  * Determines if the number has a zero fractional part.
  * In other words, it checks if the number is a whole number or if it has a decimal component
- * that isn't equal to zero.
+ * that doesn't equal to zero.
  *
  * @return `true` if the number has a zero fractional part, `false` otherwise.
  */
@@ -123,4 +124,5 @@ inline fun Number.toBigDecimal(): BigDecimal = BigDecimal(this.toString())
  */
 fun Number.toBigDecimal(minScale: Int): BigDecimal =
     BigDecimal(this.toString()).let { if (it.scale() < minScale) it.setScale(minScale) else it }
+
 

@@ -1,6 +1,10 @@
 package net.psunset.pytlin
 
-import net.psunset.pytlin.collections.*
+import net.psunset.pytlin.collections.PySlice
+import net.psunset.pytlin.collections.prod
+import net.psunset.pytlin.collections.sum
+import net.psunset.pytlin.lang.PyMath
+import net.psunset.pytlin.lang.toBool
 
 typealias Py = Pytlin
 
@@ -47,4 +51,67 @@ object Pytlin {
      * The function is similar to the `range` function in python.
      */
     fun range(endExclusive: Int): IntRange = IntRange(0, endExclusive - 1)
+
+    /**
+     * Returns `value.toBool()`
+     */
+    fun bool(value: Any?): Boolean = value.toBool()
+
+    /**
+     * Returns `true` if `x.toBool()` is `true` for all values x in the iterable.
+     *
+     * If the iterable is empty, return `true`.
+     */
+    fun <T> all(iterable: Iterable<T>): Boolean {
+        return iterable.all { it.toBool() }
+    }
+
+    /**
+     * Returns `true` if `x.toBool()` is `true` for any x in the iterable.
+     *
+     * If the iterable is empty, return `false`.
+     */
+    fun <T> any(iterable: Iterable<T>): Boolean {
+        return iterable.any { it.toBool() }
+    }
+
+    /**
+     * Returns the pair (x/y, x%y).
+     * Invariant: div*y + mod == x.
+     * As a side note, the `/` and `%` in this function are using [Math.floorDiv] and [Math.floorMod].
+     */
+    fun divmod(x: Int, y: Int): Pair<Int, Int> {
+        if (y == 0) throw ArithmeticException("division or modulo by zero")
+        return Pair(Math.floorDiv(x, y), Math.floorMod(x, y))
+    }
+
+    /**
+     * Returns the pair (x/y, x%y).
+     * Invariant: div*y + mod == x.
+     * As a side note, the `/` and `%` in this function are using [Math.floorDiv] and [Math.floorMod].
+     */
+    fun divmod(x: Long, y: Long): Pair<Long, Long> {
+        if (y == 0L) throw ArithmeticException("division or modulo by zero")
+        return Pair(Math.floorDiv(x, y), Math.floorMod(x, y))
+    }
+
+    /**
+     * Returns the pair (x/y, x%y).
+     * Invariant: div*y + mod == x.
+     * As a side note, the `/` and `%` in this function are using [Math.floorDiv] and [Math.floorMod].
+     */
+    fun divmod(x: Float, y: Float): Pair<Float, Float> {
+        if (y == 0f) throw ArithmeticException("division or modulo by zero")
+        return Pair(PyMath.floorDiv(x, y), PyMath.floorMod(x, y))
+    }
+
+    /**
+     * Returns the pair (x/y, x%y).
+     * Invariant: div*y + mod == x.
+     * As a side note, the `/` and `%` in this function are using [Math.floorDiv] and [Math.floorMod].
+     */
+    fun divmod(x: Double, y: Double): Pair<Double, Double> {
+        if (y == 0.0) throw ArithmeticException("division or modulo by zero")
+        return Pair(PyMath.floorDiv(x, y), PyMath.floorMod(x, y))
+    }
 }
