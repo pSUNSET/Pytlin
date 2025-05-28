@@ -4,9 +4,9 @@ package net.psunset.pytlin.lang
 
 import net.psunset.pytlin.Py
 import net.psunset.pytlin.collections.Kwargs
-import net.psunset.pytlin.collections.times
 import net.psunset.pytlin.collections.get
 import net.psunset.pytlin.collections.getAs
+import net.psunset.pytlin.collections.times
 
 /**
  * Calls [CharSequence.repeat]
